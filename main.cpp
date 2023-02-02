@@ -3,22 +3,17 @@
 
 #include <QLocale>
 #include <QTranslator>
+#include <binaryClock.h>
+
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = "binaryClock_" + QLocale(locale).name();
-        if (translator.load(":/i18n/" + baseName)) {
-            app.installTranslator(&translator);
-            break;
-        }
-    }
-
     QQmlApplicationEngine engine;
+
+    BinaryClock myBinaryClock;
+
     const QUrl url(u"qrc:/binaryClock/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
