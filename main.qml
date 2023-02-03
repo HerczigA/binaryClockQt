@@ -3,10 +3,11 @@ import QtQuick.Layouts
 import "./binaryClock" as BinClock
 
 Window {
-    width: 640
-    height: 480
+    width: mainApp.width
+    height: mainApp.height
     visible: true
     title: qsTr("Do It, YOU can do IT")
+
 
     BinClock.BinaryClock
     {
