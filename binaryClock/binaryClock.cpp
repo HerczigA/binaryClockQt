@@ -17,7 +17,6 @@ BinaryClock::BinaryClock(QObject *parent)
     mTimer.setInterval(1000);
     mTimer.start(1000);
     InitClock();
-    qDebug() << "time " << mTime;
 }
 
 BinaryClock::~BinaryClock()
