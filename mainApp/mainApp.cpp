@@ -6,6 +6,13 @@ MainApp::MainApp(QObject *parent)
     mBinClock = make_unique<BinaryClock>();
 }
 
+MainApp::MainApp(const int& w, const int& h, QObject *parent)
+    : QObject(parent)
+    , mWidth(w)
+    , mHeight(h)
+{
+    mBinClock = make_unique<BinaryClock>();
+}
 
 MainApp::~MainApp()
 {
@@ -17,7 +24,12 @@ BinaryClock *MainApp::binClock() const
     return mBinClock.get();
 }
 
-QString MainApp::test() const
+const int MainApp::width() const
 {
-    return QString("yolo");
+    return mWidth;
+}
+
+const int MainApp::height() const
+{
+    return mHeight;
 }

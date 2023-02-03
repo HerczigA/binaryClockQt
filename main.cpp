@@ -11,7 +11,9 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    MainApp* mainApp = new MainApp();
+    const auto width = app.primaryScreen()->size().width();
+    const auto height = app.primaryScreen()->size().height();
+    MainApp* mainApp = new MainApp(width, height);
 
     const QUrl url(u"qrc:/binaryClock/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
