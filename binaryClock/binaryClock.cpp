@@ -2,7 +2,9 @@
 
 BinaryClock::BinaryClock(QObject *parent)
     : QObject{parent}
-
+    , mHour(0)
+    , mMinute(0)
+    , mSecond(0)
 {
     mDateTime = QDateTime::currentDateTime();
     mTime = mDateTime.time();
@@ -15,6 +17,7 @@ BinaryClock::BinaryClock(QObject *parent)
     mTimer.setInterval(1000);
     mTimer.start(1000);
     InitClock();
+    qDebug() << "time " << mTime;
 }
 
 BinaryClock::~BinaryClock()
@@ -24,6 +27,7 @@ BinaryClock::~BinaryClock()
 
 void BinaryClock::timeChanged()
 {
+    mTime = QTime::currentTime();
     updateHour();
     updateMinute();
     updateSecond();
@@ -69,7 +73,7 @@ void BinaryClock::updateMinute()
 
 void BinaryClock::updateSecond()
 {
-    const int second = mTime.second();
+    int second = mTime.second();
     for(int i = 0; i < mBinarySecond.size(); i++)
         mBinarySecond[i] = 0x01 & (second >> i);
 
@@ -78,9 +82,7 @@ void BinaryClock::updateSecond()
 
 void BinaryClock::InitClock()
 {
-    mHour = mTime.hour();
-    mMinute = mTime.minute();
-    mSecond = mTime.second();
+
     updateHour();
     updateMinute();
     updateSecond();

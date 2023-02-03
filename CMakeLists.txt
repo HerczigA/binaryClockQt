@@ -11,7 +11,8 @@ find_package(Qt6 REQUIRED COMPONENTS Core)
 
 set(PROJECT appbinaryClock)
 
-set(BIN_CLOCK_SRC binaryClock/binaryClock.cpp binaryClock/binaryClock.h)
+set(BIN_CLOCK_SRC binaryClock/binaryClock.cpp binaryClock/binaryClock.h
+                    mainApp/mainApp.cpp mainApp/mainApp.h)
 
 qt_add_executable(${PROJECT}
     ${BIN_CLOCK_SRC}
@@ -21,7 +22,10 @@ qt_add_executable(${PROJECT}
 qt_add_qml_module(${PROJECT}
     URI binaryClock
     VERSION 1.0
-    QML_FILES main.qml 
+    QML_FILES
+    main.qml
+    binaryClock/BinaryClock.qml
+
 )
 
 set_target_properties(${PROJECT} PROPERTIES
@@ -34,6 +38,7 @@ set_target_properties(${PROJECT} PROPERTIES
 
 target_include_directories(${PROJECT} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/binaryClock
+    ${CMAKE_CURRENT_SOURCE_DIR}/mainApp
 )
 
 target_link_libraries(${PROJECT}

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <QObject>
 #include <QQuickItem>
 #include <QDateTime>
@@ -11,7 +10,9 @@
 class BinaryClock : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QList<bool> binaryHour READ binaryHour NOTIFY binaryHourChanged)
+    //CONSTANT only without write and notify
+
+    Q_PROPERTY(QList<bool> binaryHour READ  binaryHour NOTIFY binaryHourChanged)
     Q_PROPERTY(QList<bool> binaryMinute READ binaryMinute NOTIFY binaryMinuteChanged)
     Q_PROPERTY(QList<bool> binarySecond READ binarySecond NOTIFY binarySecondChanged)
 
