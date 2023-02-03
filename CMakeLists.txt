@@ -5,7 +5,8 @@ project(binaryClock VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.2 COMPONENTS Quick REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Gui)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 
 
@@ -45,6 +46,7 @@ target_link_libraries(${PROJECT}
     PRIVATE
     Qt6::Quick
     Qt6::Core
+    Qt6::Gui
 )
 
 install(TARGETS ${PROJECT}
