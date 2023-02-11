@@ -5,11 +5,15 @@ project(binaryClock VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_LIBRARY_ARCHITECTURE arm-linux-gnueabihf)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Gui)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 
-
+set(CMAKE_EXE_LINKER_FLAGS -fuse-ld=gold, -rpath-link)
 set(PROJECT appbinaryClock)
 
 set(BIN_CLOCK_SRC binaryClock/binaryClock.cpp binaryClock/binaryClock.h
@@ -47,6 +51,7 @@ target_link_libraries(${PROJECT}
     Qt6::Quick
     Qt6::Core
     Qt6::Gui
+#    pthread
 )
 
 install(TARGETS ${PROJECT}
