@@ -13,7 +13,10 @@ find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Gui)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 
-set(CMAKE_EXE_LINKER_FLAGS -fuse-ld=gold, -rpath-link)
+set(CMAKE_USE_RELATIVE_PATHS ON)
+set(CMAKE_EXE_LINKER_FLAGS -fuse-ld=gold)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl, -rpath, \'\$$ORIGIN/libq'")
 set(PROJECT appbinaryClock)
 
 set(BIN_CLOCK_SRC binaryClock/binaryClock.cpp binaryClock/binaryClock.h
@@ -39,6 +42,8 @@ set_target_properties(${PROJECT} PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
+    BUILD_WITH_INSTALL_RPATH FALSE
+    LINK_FLAGS "-Wl,-rpath,$ORIGIN/lib"
 )
 
 target_include_directories(${PROJECT} PUBLIC
