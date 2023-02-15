@@ -10,7 +10,6 @@ Window {
     visibility: "FullScreen"
     title: qsTr("Do It, YOU can do IT")
 
-
     BinClock.BinaryClock
     {
         clock: mainApp.binClock
