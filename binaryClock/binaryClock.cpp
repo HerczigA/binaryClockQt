@@ -1,5 +1,7 @@
 #include "binaryClock.h"
 
+const int lastIndex = 7;
+
 BinaryClock::BinaryClock(QObject *parent)
     : QObject{parent}
     , mHour(0)
@@ -53,7 +55,7 @@ void BinaryClock::updateHour()
     {
         const uint8_t hour = mTime.hour();
         for(int i = 0; i < mBinaryHour.size(); i++)
-            mBinaryHour[i] = 0x01 & (hour >> i);
+            mBinaryHour[lastIndex-i] = 0x01 & (hour >> i);
         emit binaryHourChanged();
     }
 
@@ -65,7 +67,7 @@ void BinaryClock::updateMinute()
     {
         mMinute = mTime.minute();
         for(int i = 0; i < mBinaryMinute.size(); i++)
-            mBinaryMinute[i] = 0x01 & (mMinute >> i);
+            mBinaryMinute[lastIndex-i] = 0x01 & (mMinute >> i);
         emit binaryMinuteChanged();
     }
 }
@@ -74,7 +76,7 @@ void BinaryClock::updateSecond()
 {
     int second = mTime.second();
     for(int i = 0; i < mBinarySecond.size(); i++)
-        mBinarySecond[i] = 0x01 & (second >> i);
+        mBinarySecond[lastIndex-i] = 0x01 & (second >> i);
 
     emit binarySecondChanged();
 }
