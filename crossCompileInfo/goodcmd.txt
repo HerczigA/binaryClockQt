@@ -1,0 +1,9 @@
+cmake /home/adam/Qt6/qtbase  -GNinja -DCMAKE_BUILD_TYPE=Release -DQT_FEATURE_eglfs_egldevice=ON -DQT_FEATURE_eglfs_gbm=ON -DQT_BUILD_TOOLS_WHEN_CROSSCOMPILING=ON  -DQT_BUILD_EXAMPLES=OFF -DQT_BUILD_TESTS=OFF -DQT_HOST_PATH=/home/adam/Qt6/qtHost -DCMAKE_STAGING_PREFIX=/home/adam/Qt6/Raspi -DCMAKE_INSTALL_PREFIX=/home/adam/Qt6/qtRaspi -DCMAKE_PREFIX_PATH=/home/adam/Qt6/sysroot/usr/lib/ -DCMAKE_TOOLCHAIN_FILE=/home/adam/Qt6/toolchainQt.cmake 
+
+
+cmake ../qt5/ -GNinja -DCMAKE_BUILD_TYPE=Release -DINPUT_opengl=es2 -DQT_BUILD_EXAMPLES=OFF -DQT_BUILD_TESTS=OFF -DQT_HOST_PATH=$HOME/qt-host -DCMAKE_STAGING_PREFIX=$HOME/qt-raspi -DCMAKE_INSTALL_PREFIX=/usr/local/qt6 -DCMAKE_TOOLCHAIN_FILE=$HOME/toolchain.cmake -DQT_QMAKE_TARGET_MKSPEC=devices/linux-rasp-pi4-aarch64 -DQT_FEATURE_xcb=ON -DFEATURE_xcb_xlib=ON -DQT_FEATURE_xlib=ON
+
+
+Use the first cmake command with toolchainQt6.cmake. On debian it works.....
+Qt base version v6.3.1
+Tested on raspberry pi 3B with xcb. Binary clock works

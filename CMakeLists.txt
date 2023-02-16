@@ -12,7 +12,6 @@ find_package(Qt6 6.3 COMPONENTS Gui REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Core REQUIRED)
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
-set(CMAKE_EXE_LINKER_FLAGS -fuse-ld=gold)
 
 set(PROJECT appbinaryClock)
 
