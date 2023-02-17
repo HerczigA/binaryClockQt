@@ -14,7 +14,7 @@ Rectangle {
     property var type
     //metalblue
     color : "#1B3D81"
-    RowLayout{
+    Row{
         width: parent.width
         height: parent.height
         Column

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(binaryClock VERSION 0.1 LANGUAGES CXX)
+set(PROJECT mainApp)
+
+project(${PROJECT} VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,13 +15,21 @@ find_package(Qt6 6.3 COMPONENTS Core REQUIRED)
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
 
-set(PROJECT appbinaryClock)
+file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
+file(GLOB_RECURSE COMPONENT_HEADERS components/*.h)
 
-set(BIN_CLOCK_SRC binaryClock/binaryClock.cpp binaryClock/binaryClock.h
-                    mainApp/mainApp.cpp mainApp/mainApp.h)
+list(APPEND QML_COMPONENTS
+    components/binaryClock/BinaryClock.qml)
+
+set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
+
+
+
+set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS})
 
 qt_add_executable(${PROJECT}
-    ${BIN_CLOCK_SRC}
+    ${COMPONENTS}
+    ${MAIN_APP}
     main.cpp
 )
 
@@ -28,7 +38,7 @@ qt_add_qml_module(${PROJECT}
     VERSION 1.0
     QML_FILES
     main.qml
-    binaryClock/BinaryClock.qml
+    ${QML_COMPONENTS}
 
 )
 
@@ -43,7 +53,8 @@ set_target_properties(${PROJECT} PROPERTIES
 )
 
 target_include_directories(${PROJECT} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/binaryClock
+    ${CMAKE_CURRENT_SOURCE_DIR}/components/binaryClock
+    ${CMAKE_CURRENT_SOURCE_DIR}/components/weatherForecast
     ${CMAKE_CURRENT_SOURCE_DIR}/mainApp
 )
 
@@ -52,7 +63,6 @@ target_link_libraries(${PROJECT}
     Qt6::Quick
     Qt6::Core
     Qt6::Gui
-#    pthread
 )
 
 install(TARGETS ${PROJECT}

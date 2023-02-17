@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import "./binaryClock" as BinClock
+import "./components/binaryClock"
 
 Window {
 
@@ -10,11 +10,21 @@ Window {
     visibility: "FullScreen"
     title: qsTr("Do It, YOU can do IT")
 
-    BinClock.BinaryClock
-    {
-        clock: mainApp.binClock
+    Row{
         width: parent.width
         height: parent.height
+      Rectangle{
+          width: parent.width /2
+          height: parent.height
+      }
+      BinaryClock
+      {
+          clock: mainApp.binClock
+          width: parent.width /2
+          height: parent.height
+      }
     }
+
+
 
 }
