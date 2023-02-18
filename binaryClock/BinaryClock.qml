@@ -8,6 +8,12 @@ Rectangle {
         //matt red
         return idx ? color : "white"
     }
+
+    function setCircleProperty()
+    {
+        return  mainBlock.height < mainBlock.width? mainBlock.height/4 - mainBlock.spaceSize*2 : mainBlock.width /6 - mainBlock.spaceSize*2
+    }
+
     property int blockWidthRate : 6
     property int blockHeightRate : 4
     property var clock
@@ -16,109 +22,73 @@ Rectangle {
     property string colorHour : "#B33F40"
     property string colorMinute : "#E9740E"
     property string colorSecond : "#4ABA31"
+    property int spaceSize : 5
     //metalblue
     color : colorBlue
 
-    RowLayout{
+    GridLayout
+    {
+        id : grid
         width: parent.width
-        height: parent.height
-        Column
+        height : parent.height
+        columns: 6
+        rows: 4
+        columnSpacing: spaceSize
+        rowSpacing: spaceSize
+        flow : GridLayout.TopToBottom
+        Repeater
         {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binaryHour[index], colorHour)
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binaryHour[4+index], colorHour)
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binaryMinute[index], colorMinute)
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binaryMinute[4+index], colorMinute)
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binarySecond[index], colorSecond)
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
+            model: clock.binaryHour
 
-            Repeater
+            Rectangle
             {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binarySecond[4+index], colorSecond)
-                    radius: parent.width/2
-                }
+                Layout.maximumWidth: setCircleProperty()
+                Layout.maximumHeight:  setCircleProperty()
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.leftMargin: spaceSize
+                Layout.rightMargin: spaceSize
+
+                color : setActive(clock.binaryHour[index], colorHour)
+
+                radius: width /2
+            }
+        }
+        Repeater
+        {
+            model:clock.binaryMinute
+
+            Rectangle
+            {
+                Layout.maximumWidth: setCircleProperty()
+                Layout.maximumHeight:  setCircleProperty()
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.leftMargin: spaceSize
+                Layout.rightMargin: spaceSize
+
+                color : setActive(clock.binaryMinute[index], colorMinute)
+
+                radius: width /2
+            }
+        }
+        Repeater
+        {
+            model:clock.binarySecond
+
+            Rectangle
+            {
+                Layout.maximumWidth: setCircleProperty()
+                Layout.maximumHeight:  setCircleProperty()
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.leftMargin: spaceSize
+                Layout.rightMargin: spaceSize
+
+                color : setActive(clock.binarySecond[index], colorSecond)
+
+                radius: width /2
             }
         }
     }
-
 }
