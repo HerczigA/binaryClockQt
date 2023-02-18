@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import "./binaryClock" as BinClock
 
 Window {
-
+    id: mainWindow
     width: mainApp.width
     height: mainApp.height
     visible: true
@@ -13,8 +13,8 @@ Window {
     BinClock.BinaryClock
     {
         clock: mainApp.binClock
-        width: parent.width
-        height: parent.height
+        width:  mainWindow.width
+        height:  mainWindow.height
     }
 
 }
