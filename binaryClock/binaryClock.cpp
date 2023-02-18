@@ -59,7 +59,7 @@ void BinaryClock::updateHour()
     if(mHour != mTime.hour())
     {
         mHour = mTime.hour();
-        int hour = convertBCD(hour);
+        int hour = convertBCD(mHour);
         for(int i = 0; i < mBinaryHour.size(); i++)
             mBinaryHour[lastIndex-i] = 0x01 & (hour >> i);
         emit binaryHourChanged();
