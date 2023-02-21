@@ -5,6 +5,7 @@ set(PROJECT mainApp)
 project(${PROJECT} VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -12,6 +13,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 find_package(Qt6 6.3 COMPONENTS Quick REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Gui REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Core REQUIRED)
+find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED)
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
 
@@ -23,13 +25,12 @@ list(APPEND QML_COMPONENTS
 
 set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
 
-
-
-set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS})
+set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS}  util/util.h)
 
 qt_add_executable(${PROJECT}
     ${COMPONENTS}
     ${MAIN_APP}
+    resources.qrc
     main.cpp
 )
 
@@ -53,6 +54,7 @@ set_target_properties(${PROJECT} PROPERTIES
 )
 
 target_include_directories(${PROJECT} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/util
     ${CMAKE_CURRENT_SOURCE_DIR}/components/binaryClock
     ${CMAKE_CURRENT_SOURCE_DIR}/components/weatherForecast
     ${CMAKE_CURRENT_SOURCE_DIR}/mainApp
@@ -63,6 +65,7 @@ target_link_libraries(${PROJECT}
     Qt6::Quick
     Qt6::Core
     Qt6::Gui
+    Qt6::Positioning
 )
 
 install(TARGETS ${PROJECT}

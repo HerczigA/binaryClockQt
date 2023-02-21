@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/wood_surface.jpg</file>
+        <file>img/wood-grain.jpg</file>
+    </qresource>
+</RCC>

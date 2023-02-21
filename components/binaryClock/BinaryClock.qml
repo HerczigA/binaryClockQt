@@ -3,117 +3,117 @@ import QtQuick.Layouts
 
 Rectangle {
     id : mainBlock
-    function setActive(idx)
+    function setActive(idx, color)
     {
         //matt red
-        return idx ? "#B33F40" : "white"
+        return idx ? color : "white"
     }
+
+    function setCircleProperty()
+    {
+        return  mainBlock.height < mainBlock.width? mainBlock.height/4 - mainBlock.spaceSize*2 : mainBlock.width /6 - mainBlock.spaceSize*2
+    }
+
     property int blockWidthRate : 6
     property int blockHeightRate : 4
     property var clock
     property var type
-    //metalblue
-    color : "#1B3D81"
-    Row{
-        width: parent.width
-        height: parent.height
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binaryHour[index])
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binaryHour[4+index])
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binaryMinute[index])
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binaryMinute[4+index])
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
-            Repeater
-            {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binarySecond[index])
-                    radius: parent.width/2
-                }
-            }
-        }
-        Column
-        {
-            width: parent.width / blockWidthRate
-            height: parent.height
+    property string colorBlue : "#1B3D81"
+    property string colorHour : "#B33F40"
+    property string colorMinute : "#E9740E"
+    property string colorSecond : "#4ABA31"
+    property int spaceSize : 5
 
-            Repeater
+    color : "transparent"
+    GridLayout
+    {
+        id : grid
+        width: parent.width
+        height : parent.height
+        columns: 6
+        rows: 4
+        columnSpacing: spaceSize
+        rowSpacing: spaceSize
+        flow : GridLayout.TopToBottom
+        Repeater
+        {
+            model: clock.binaryHour
+
+            Rectangle
             {
-                model:4
-                Rectangle
-                {
-                    width: parent.width
-                    height: parent.height/blockHeightRate
-                    color : setActive(clock.binarySecond[4+index])
-                    radius: parent.width/2
+                Layout.maximumWidth: setCircleProperty()
+                Layout.maximumHeight:  setCircleProperty()
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.leftMargin: spaceSize
+                Layout.rightMargin: spaceSize
+
+                border{
+                    width : 5
+                    color : "black"
                 }
+                color : setActive(clock.binaryHour[index], colorHour)
+
+                radius: width /2
+            }
+        }
+        Repeater
+        {
+            model:clock.binaryMinute
+
+            Rectangle
+            {
+                Layout.maximumWidth: setCircleProperty()
+                Layout.maximumHeight:  setCircleProperty()
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.leftMargin: spaceSize
+                Layout.rightMargin: spaceSize
+
+                color : setActive(clock.binaryMinute[index], colorMinute)
+                border{
+                    width : 5
+                    color : "black"
+                }
+
+                radius: width /2
+            }
+        }
+        Repeater
+        {
+            model:clock.binarySecond
+
+            Rectangle
+            {
+                Layout.maximumWidth: setCircleProperty()
+                Layout.maximumHeight:  setCircleProperty()
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.leftMargin: spaceSize
+                Layout.rightMargin: spaceSize
+
+                border{
+                    width : 5
+                    color : "black"
+                }
+                color : setActive(clock.binarySecond[index], colorSecond)
+//                SequentialAnimation {
+//                    PropertyAnimation{
+//                        target:light
+//                        property : "color"
+//                        to: "red"
+//                        duration :700
+//                    }
+//                    PropertyAnimation{
+//                        target:light
+//                        property : "color"
+//                        to: "green"
+//                        duration :700
+//                    }
+//                }
+
+                radius: width /2
             }
         }
     }
-
 }
