@@ -97,21 +97,6 @@ Rectangle {
                     color : "black"
                 }
                 color : setActive(clock.binarySecond[index], colorSecond)
-//                SequentialAnimation {
-//                    PropertyAnimation{
-//                        target:light
-//                        property : "color"
-//                        to: "red"
-//                        duration :700
-//                    }
-//                    PropertyAnimation{
-//                        target:light
-//                        property : "color"
-//                        to: "green"
-//                        duration :700
-//                    }
-//                }
-
                 radius: width /2
             }
         }

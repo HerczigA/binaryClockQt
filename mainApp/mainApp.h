@@ -1,9 +1,10 @@
 #pragma once
 
-#include <QObject>
+#include <util.h>
 #include <binaryClock.h>
-#include <memory.h>
-#include <QString>
+#include <weatherforecast.h>
+#include <QNetworkAccessManager>
+#include <QMqttClient>
 
 using namespace std;
 
@@ -11,6 +12,7 @@ class MainApp : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(BinaryClock* binClock READ binClock CONSTANT)
+    Q_PROPERTY(WeatherForecast* weather READ weather CONSTANT)
     Q_PROPERTY(int width READ width CONSTANT)
     Q_PROPERTY(int height READ height CONSTANT)
 
@@ -19,6 +21,7 @@ public:
     MainApp(const int& w, const int& h, QObject *parent = nullptr);
     ~MainApp();
     BinaryClock* binClock() const;
+    WeatherForecast* weather() const;
     const int width() const;
     const int height() const;
 
@@ -26,5 +29,9 @@ private:
     int mWidth;
     int mHeight;
     unique_ptr<BinaryClock> mBinClock;
+    unique_ptr<WeatherForecast> mWeatherForecast;
+//    unique_ptr<QNetworkAccessManager> mNetworkManager;
+    QList<QMetaObject::Connection> mConnection;
+
 };
 

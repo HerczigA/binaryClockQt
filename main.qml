@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import "./components/binaryClock"
+import "./components/weatherForecast"
 
 Window {
     id: mainWindow
@@ -11,7 +12,7 @@ Window {
     title: qsTr("Do It, YOU can do IT")
     Image {
         id: woodImg
-        source: "wood_surface.jpg"
+        source: "/img/wood_surface.jpg"
         width: parent.width
         height : parent.height
     }
@@ -19,14 +20,11 @@ Window {
     {
         width : parent.width
         height: parent.height
-        Rectangle{
+        WeatherForecast{
             width: parent.width /2
             height: parent.height
-            Text{
-                anchors.centerIn: parent
-                text: "Here will be a weather forecast"
-            }
-            color : "transparent"
+            weather: mainApp.weather
+            color: "transparent"
         }
 
         BinaryClock

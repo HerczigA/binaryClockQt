@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>img/wood_surface.jpg</file>
         <file>img/wood-grain.jpg</file>
+        <file>components/binaryClock/BinaryClock.qml</file>
+        <file>components/weatherForecast/WeatherForecast.qml</file>
     </qresource>
 </RCC>

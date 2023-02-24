@@ -4,7 +4,9 @@ WeatherForecast::WeatherForecast(QObject *parent)
     : QObject{parent}
 {
     mLocation = make_unique<QGeoLocation>();
+    mAddress = make_unique<QGeoAddress>(mLocation->address());
     mDate = QDate::currentDate();
+
 }
 
 WeatherForecast::WeatherForecast(const WeatherForecast &other)
@@ -17,15 +19,15 @@ void WeatherForecast::updateLocation()
 
 }
 
-QString WeatherForecast::dayOfWeek() const
+QString WeatherForecast::date() const
 {
-    return mDayOfTheWeek;
+    return mDate.toString("yyyy.MM.dd");
 }
 
 QString WeatherForecast::location() const
 {
-    QGeoAddress address = mLocation->address();
-    return address.city();
+    return mAddress->city();
+//    return QString("Budapest");
 }
 
 //QString WeatherForecast::weatherIcon() const
@@ -43,14 +45,22 @@ QString WeatherForecast::temperature() const
     return mTemperature;
 }
 
-void WeatherForecast::setDayOfWeek(const QString &value)
+void WeatherForecast::setDate(const QString &value)
 {
-
+    if(value != mDayOfTheWeek)
+    {
+        mDayOfTheWeek=value;
+        emit dataChanged();
+    }
 }
 
 void WeatherForecast::setLocation(const QString &value)
 {
-
+    if(value != mAddress->city())
+    {
+        mAddress->setCity(value);
+        emit dataChanged();
+    }
 }
 
 void WeatherForecast::setWeatherDescription(const QString &value)
@@ -60,5 +70,9 @@ void WeatherForecast::setWeatherDescription(const QString &value)
 
 void WeatherForecast::setTemperature(const QString &value)
 {
-
+    if(value != mTemperature)
+    {
+        mTemperature=value;
+        emit dataChanged();
+    }
 }

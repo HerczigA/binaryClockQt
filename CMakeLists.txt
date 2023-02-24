@@ -6,6 +6,7 @@ project(${PROJECT} VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -14,6 +15,9 @@ find_package(Qt6 6.3 COMPONENTS Quick REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Gui REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Core REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED)
+find_package(Qt6 6.3 COMPONENTS Network REQUIRED)
+find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED)
+
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
 
@@ -21,16 +25,19 @@ file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
 file(GLOB_RECURSE COMPONENT_HEADERS components/*.h)
 
 list(APPEND QML_COMPONENTS
-    components/binaryClock/BinaryClock.qml)
+    components/binaryClock/BinaryClock.qml
+    components/weatherForecast/WeatherForecast.qml
+)
 
 set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
 
 set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS}  util/util.h)
 
+qt_add_resources(COMPONENTS resources.qrc)
+
 qt_add_executable(${PROJECT}
     ${COMPONENTS}
     ${MAIN_APP}
-    resources.qrc
     main.cpp
 )
 
@@ -66,6 +73,8 @@ target_link_libraries(${PROJECT}
     Qt6::Core
     Qt6::Gui
     Qt6::Positioning
+    Qt6::Network
+    Qt6::Mqtt
 )
 
 install(TARGETS ${PROJECT}
