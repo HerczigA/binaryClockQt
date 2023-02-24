@@ -23,9 +23,8 @@ Rectangle {
     property string colorMinute : "#E9740E"
     property string colorSecond : "#4ABA31"
     property int spaceSize : 5
-    //metalblue
-    color : colorBlue
 
+    color : "transparent"
     GridLayout
     {
         id : grid
@@ -49,6 +48,10 @@ Rectangle {
                 Layout.leftMargin: spaceSize
                 Layout.rightMargin: spaceSize
 
+                border{
+                    width : 5
+                    color : "black"
+                }
                 color : setActive(clock.binaryHour[index], colorHour)
 
                 radius: width /2
@@ -68,6 +71,10 @@ Rectangle {
                 Layout.rightMargin: spaceSize
 
                 color : setActive(clock.binaryMinute[index], colorMinute)
+                border{
+                    width : 5
+                    color : "black"
+                }
 
                 radius: width /2
             }
@@ -85,8 +92,11 @@ Rectangle {
                 Layout.leftMargin: spaceSize
                 Layout.rightMargin: spaceSize
 
+                border{
+                    width : 5
+                    color : "black"
+                }
                 color : setActive(clock.binarySecond[index], colorSecond)
-
                 radius: width /2
             }
         }

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
-import "./binaryClock" as BinClock
+import "./components/binaryClock"
+import "./components/weatherForecast"
 
 Window {
     id: mainWindow
@@ -10,11 +11,28 @@ Window {
     visibility: "FullScreen"
     title: qsTr("Do It, YOU can do IT")
 
-    BinClock.BinaryClock
-    {
-        clock: mainApp.binClock
-        width:  mainWindow.width
-        height:  mainWindow.height
+    Image {
+        id: woodImg
+        source: "/img/wood_surface.jpg"
+        width: parent.width
+        height : parent.height
     }
+    Row
+    {
+        width : parent.width
+        height: parent.height
+        WeatherForecast{
+            width: parent.width /2
+            height: parent.height
+            weather: mainApp.weather
+            color: "transparent"
+        }
 
+        BinaryClock
+        {
+          clock: mainApp.binClock
+          width: parent.width /2
+          height: parent.height
+        }
+    }
 }

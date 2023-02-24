@@ -12,6 +12,9 @@ MainApp::MainApp(const int& w, const int& h, QObject *parent)
     , mHeight(h)
 {
     mBinClock = make_unique<BinaryClock>();
+    mWeatherForecast = make_unique<WeatherForecast>();
+//    mConnection += connect(mNetworkManager, &QNetworkAccessManager::finished, mWeatherForecast, )
+
 }
 
 MainApp::~MainApp()
@@ -22,6 +25,11 @@ MainApp::~MainApp()
 BinaryClock *MainApp::binClock() const
 {
     return mBinClock.get();
+}
+
+WeatherForecast *MainApp::weather() const
+{
+    return mWeatherForecast.get();
 }
 
 const int MainApp::width() const

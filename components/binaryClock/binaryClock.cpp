@@ -10,7 +10,7 @@ BinaryClock::BinaryClock(QObject *parent)
 {
     mDateTime = QDateTime::currentDateTime();
     mTime = mDateTime.time();
-    mDate = mDateTime.date();
+
     mBinaryHour = QList<bool>(8, false);
     mBinaryMinute = QList<bool>(8, false);
     mBinarySecond = QList<bool>(8, false);
