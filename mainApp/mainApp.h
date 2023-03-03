@@ -3,8 +3,7 @@
 #include <util.h>
 #include <binaryClock.h>
 #include <weatherforecast.h>
-#include <QNetworkAccessManager>
-#include <QMqttClient>
+#include <network.h>
 
 using namespace std;
 
@@ -30,8 +29,8 @@ private:
     int mHeight;
     unique_ptr<BinaryClock> mBinClock;
     unique_ptr<WeatherForecast> mWeatherForecast;
-//    unique_ptr<QNetworkAccessManager> mNetworkManager;
-    QList<QMetaObject::Connection> mConnection;
+    unique_ptr<Network> mNetwork;
+    QList<QMetaObject::Connection> mConnections;
 
 };
 
