@@ -6,6 +6,9 @@ WeatherForecast::WeatherForecast(QObject *parent)
     mLocation = make_unique<QGeoLocation>();
     mAddress = make_unique<QGeoAddress>(mLocation->address());
     mDate = QDate::currentDate();
+    qDebug()<< "mlocation "  << mLocation->isEmpty();
+    qDebug()<< "city "  << mAddress->city();
+
 
 }
 
@@ -17,6 +20,11 @@ WeatherForecast::WeatherForecast(const WeatherForecast &other)
 void WeatherForecast::updateLocation()
 {
 
+}
+
+void WeatherForecast::sendRequestWeatherData()
+{
+    emit requestSignal(&mProps, MainAppComponents::Types::WEATHERFORECAST);
 }
 
 QString WeatherForecast::date() const
@@ -35,9 +43,9 @@ QString WeatherForecast::location() const
 
 //}
 
-QString WeatherForecast::weatherDescription() const
+QString WeatherForecast::icon() const
 {
-    return mWeatherDescription;
+    return mWeatherIcon;
 }
 
 QString WeatherForecast::temperature() const
@@ -63,8 +71,13 @@ void WeatherForecast::setLocation(const QString &value)
     }
 }
 
-void WeatherForecast::setWeatherDescription(const QString &value)
+void WeatherForecast::setIcon(const QString &value)
 {
+    if(value != mWeatherIcon)
+    {
+        mWeatherIcon = value;
+        emit dataChanged();
+    }
 
 }
 
@@ -75,4 +88,45 @@ void WeatherForecast::setTemperature(const QString &value)
         mTemperature=value;
         emit dataChanged();
     }
+}
+
+void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray rawData)
+{
+    if (type != MainAppComponents::Types::WEATHERFORECAST)
+        return;
+
+
+    QJsonParseError result;
+    QJsonValue value;
+    QJsonObject obj;
+    QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
+    if(result.error == QJsonParseError::NoError && !document.isEmpty())
+    {
+
+        if(document.isObject())
+            obj = document.object();
+        else{
+            qDebug()<< "error at json parsing object side";
+            return;
+        }
+//        checking header of doc
+        value = obj.value("current");
+        if(!value.isNull())
+        {
+            QString newValue= value["temp_c"].toVariant().toString();
+            newValue += " °C";
+            setTemperature(newValue);
+            newValue = value["condition"]["icon"].toVariant().toString();
+            if(!newValue.isEmpty() && newValue.contains("//"))
+            {
+                newValue = newValue.right(newValue.size()-2);
+                setIcon(newValue);
+            }
+
+
+        }
+    }
+    else
+        sendRequestWeatherData();
+
 }
