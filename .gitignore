@@ -32,3 +32,4 @@ CMakeLists.txt.user
 img*
 *.ini
 *.conf
+*.json
