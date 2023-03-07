@@ -14,7 +14,7 @@
 
 
 using namespace std;
-using SettingProps = QMap<QString, QVariant>;
+using SettingMap = QMap<QString, QVariant>;
 
 const QString weatherApiUrl = QString("http://weatherapi.com");
 const QString weatherApiUrls = QString("https://weatherapi.com");

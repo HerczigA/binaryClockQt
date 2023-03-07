@@ -131,7 +131,7 @@ void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray raw
 
 }
 
-void WeatherForecast::receivedConfig(MainAppComponents::Types type, SettingProps settings)
+void WeatherForecast::receivedConfig(MainAppComponents::Types type, SettingMap  settings)
 {
     if(type == MainAppComponents::Types::WEATHERFORECAST)
     {

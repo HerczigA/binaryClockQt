@@ -12,7 +12,7 @@ MainApp::MainApp(const int& w, const int& h, QObject *parent)
     , mWidth(w)
     , mHeight(h)
 {
-    mConfig = make_unique<Config>("");
+    mConfig = make_unique<Config>();
     mNetwork = make_unique<Network>();
     mBinClock = make_unique<BinaryClock>();
     mWeatherForecast = make_unique<WeatherForecast>();

@@ -7,21 +7,23 @@ class Config : public QSettings
 {
     Q_OBJECT
 public:
-    explicit Config(QString config, QObject *parent = nullptr);
+    explicit Config(QObject *parent = nullptr);
 
 
     void getValue(int&);
     void getValue(QString&);
     void readConfig();
 
+
 signals:
     void configEmpty();
-    void sendData(MainAppComponents::Types type, SettingProps data);
-
+    void sendData(MainAppComponents::Types type, SettingMap  data);
+public slots:
+    void writeConfig(MainAppComponents::Types type, SettingMap  props);
 private:
-
-    QString mConfigFile;
-    SettingProps mSettings;
-
+    void digDeeper(QStringList &groups);
+    QStringList mAllKeys;
+    SettingMap  mSettings;
+    QMap<MainAppComponents::Types, QString> mConfigParts;
 };
 
