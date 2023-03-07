@@ -30,3 +30,5 @@
 build*
 CMakeLists.txt.user
 img*
+*.ini
+*.conf

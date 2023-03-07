@@ -4,6 +4,10 @@
 #include <binaryClock.h>
 #include <weatherforecast.h>
 #include <network.h>
+#include <config.h>
+#include <QNetworkAccessManager>
+#include <QMqttClient>
+
 
 using namespace std;
 
@@ -27,10 +31,13 @@ public:
 private:
     int mWidth;
     int mHeight;
+    unique_ptr<Config> mConfig;
     unique_ptr<BinaryClock> mBinClock;
     unique_ptr<WeatherForecast> mWeatherForecast;
     unique_ptr<Network> mNetwork;
     QList<QMetaObject::Connection> mConnections;
+    QList<QMetaObject::Connection> mConnection;
+
 
 };
 

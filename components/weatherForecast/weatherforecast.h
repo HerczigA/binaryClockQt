@@ -65,6 +65,7 @@ signals:
 
 public slots:
     void receivedData(MainAppComponents::Types type, QByteArray rawData);
+    void receivedConfig(MainAppComponents::Types type, SettingProps data);
 
 
 

@@ -130,3 +130,13 @@ void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray raw
         sendRequestWeatherData();
 
 }
+
+void WeatherForecast::receivedConfig(MainAppComponents::Types type, SettingProps settings)
+{
+    if(type == MainAppComponents::Types::WEATHERFORECAST)
+    {
+        QVariant key = settings.value("apiKey", "");
+        mProps.setApiKey(key.toString());
+        emit requestSignal(&mProps, MainAppComponents::Types::WEATHERFORECAST);
+    }
+}
