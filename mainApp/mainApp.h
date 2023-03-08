@@ -39,6 +39,5 @@ private:
     unique_ptr<Position> mPos;
     QList<QMetaObject::Connection> mConnections;
 
-
 };
 
