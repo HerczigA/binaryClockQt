@@ -20,6 +20,7 @@ class BinaryClock : public QObject
         void binaryHourChanged();
         void binaryMinuteChanged();
         void binarySecondChanged();
+        void updateWeather();
 
 
     private slots:

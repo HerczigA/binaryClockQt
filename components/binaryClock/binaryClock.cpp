@@ -63,6 +63,7 @@ void BinaryClock::updateHour()
         for(int i = 0; i < mBinaryHour.size(); i++)
             mBinaryHour[lastIndex-i] = 0x01 & (hour >> i);
         emit binaryHourChanged();
+        emit updateWeather();
     }
 
 }
