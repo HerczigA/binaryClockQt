@@ -2,9 +2,10 @@
 #include <QGuiApplication>
 
 Config::Config(QObject *parent )
-    : QSettings{"HerczigDocLtd","mainApp", parent}
+    : QSettings{SystemScope, "MainApp","mainApp", parent}
 {
     mConfigParts.insert(MainAppComponents::Types::WEATHERFORECAST, "WeatherForecast");
+    qDebug()<< this->fileName();
 }
 
 void Config::readConfig()
