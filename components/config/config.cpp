@@ -6,7 +6,8 @@ Config::Config(QObject *parent )
 {
     mConfigParts.insert("WeatherForecast", MainAppComponents::Types::WEATHERFORECAST);
     mConfigParts.insert("Position", MainAppComponents::Types::POSITION);
-    qDebug()<< this->fileName();
+    qInfo() << fileName() << "used as config";
+
 }
 
 void Config::readConfig()

@@ -67,12 +67,14 @@ Rectangle {
                 id :locationSection
                 height : parent.height
                 width : parent.width
-                anchors.centerIn: parent
-                text : weather.location
+                anchors.centerIn: locationRectangle
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                text : qsTr(weather.location)
                 color : "white"
                 font{
                     bold : true
-                    pixelSize : 40
+                    pixelSize : parent.height/5*2
                 }
             }
         }
