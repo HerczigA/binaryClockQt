@@ -1,9 +1,4 @@
 #pragma once
-
-#include <QGeoPositionInfoSource>
-#include <QGeoLocation>
-#include <QGeoAddress>
-
 #include <util.h>
 
 
@@ -46,6 +41,7 @@ class WeatherForecast : public QObject
 public:
     explicit WeatherForecast(QObject *parent = nullptr);
     WeatherForecast(const WeatherForecast &other);
+    ~WeatherForecast();
     Q_INVOKABLE void updateLocation();
     void sendRequestWeatherData();
 
@@ -63,21 +59,27 @@ signals:
     void dataChanged();
     void requestSignal(void * props, int sourceType);
 
+
 public slots:
+    void requestArrived();
     void receivedData(MainAppComponents::Types type, QByteArray rawData);
     void receivedConfig(MainAppComponents::Types type, SettingMap  data);
+    void cityUpdated(QString city);
 
 
 
 private:
-    int mWeatherStatus;
-//    QString mLocation;
+
+    QVector<QMetaObject::Connection> mConnections;
+
+
+    QString mCityLocation;
     QString mTemperature;
     QString mDayOfTheWeek;
     QString mWeatherIcon;
 
-    unique_ptr<QGeoLocation> mLocation;
-    unique_ptr<QGeoAddress> mAddress;
+
+
     QDate mDate;
     WeatherProps mProps;
 };

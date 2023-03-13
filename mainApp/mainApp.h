@@ -5,6 +5,7 @@
 #include <weatherforecast.h>
 #include <network.h>
 #include <config.h>
+#include <position.h>
 #include <QNetworkAccessManager>
 #include <QMqttClient>
 
@@ -35,8 +36,8 @@ private:
     unique_ptr<BinaryClock> mBinClock;
     unique_ptr<WeatherForecast> mWeatherForecast;
     unique_ptr<Network> mNetwork;
+    unique_ptr<Position> mPos;
     QList<QMetaObject::Connection> mConnections;
-    QList<QMetaObject::Connection> mConnection;
 
 
 };

@@ -13,12 +13,16 @@ MainApp::MainApp(const int& w, const int& h, QObject *parent)
     , mHeight(h)
 {
     mConfig = make_unique<Config>();
+    mPos = make_unique<Position>();
     mNetwork = make_unique<Network>();
     mBinClock = make_unique<BinaryClock>();
     mWeatherForecast = make_unique<WeatherForecast>();
     mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestSignal, mNetwork.get(), &Network::newRequest);
     mConnections += connect(mNetwork.get(), &Network::sendData, mWeatherForecast.get(), &WeatherForecast::receivedData);
     mConnections += connect(mConfig.get(), &Config::sendData, mWeatherForecast.get(), &WeatherForecast::receivedConfig);
+    mConnections += connect(mPos.get(), &Position::sendCity, mWeatherForecast.get(), &WeatherForecast::cityUpdated);
+
+
     mConfig->readConfig();
     mWeatherForecast->sendRequestWeatherData();
 

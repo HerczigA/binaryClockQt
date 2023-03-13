@@ -3,18 +3,20 @@
 WeatherForecast::WeatherForecast(QObject *parent)
     : QObject{parent}
 {
-    mLocation = make_unique<QGeoLocation>();
-    mAddress = make_unique<QGeoAddress>(mLocation->address());
-    mDate = QDate::currentDate();
-    qDebug()<< "mlocation "  << mLocation->isEmpty();
-    qDebug()<< "city "  << mAddress->city();
 
+    mDate = QDate::currentDate();
 
 }
 
 WeatherForecast::WeatherForecast(const WeatherForecast &other)
 {
 
+}
+
+WeatherForecast::~WeatherForecast()
+{
+    for(auto con : mConnections)
+        disconnect(con);
 }
 
 void WeatherForecast::updateLocation()
@@ -34,8 +36,7 @@ QString WeatherForecast::date() const
 
 QString WeatherForecast::location() const
 {
-    return mAddress->city();
-//    return QString("Budapest");
+    return mCityLocation;
 }
 
 //QString WeatherForecast::weatherIcon() const
@@ -64,9 +65,11 @@ void WeatherForecast::setDate(const QString &value)
 
 void WeatherForecast::setLocation(const QString &value)
 {
-    if(value != mAddress->city())
+    if(mCityLocation != value)
     {
-        mAddress->setCity(value);
+        qInfo()<< "mCityLocation before" << mCityLocation;
+        mCityLocation = value;
+        qInfo()<< "mCityLocation after"<< mCityLocation;
         emit dataChanged();
     }
 }
@@ -90,6 +93,11 @@ void WeatherForecast::setTemperature(const QString &value)
     }
 }
 
+void WeatherForecast::requestArrived()
+{
+    emit requestSignal(&mProps, MainAppComponents::Types::WEATHERFORECAST);
+}
+
 void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray rawData)
 {
     if (type != MainAppComponents::Types::WEATHERFORECAST)
@@ -109,7 +117,6 @@ void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray raw
             qDebug()<< "error at json parsing object side";
             return;
         }
-//        checking header of doc
         value = obj.value("current");
         if(!value.isNull())
         {
@@ -139,4 +146,9 @@ void WeatherForecast::receivedConfig(MainAppComponents::Types type, SettingMap  
         mProps.setApiKey(key.toString());
         emit requestSignal(&mProps, MainAppComponents::Types::WEATHERFORECAST);
     }
+}
+
+void WeatherForecast::cityUpdated(QString city)
+{
+    setLocation(city);
 }

@@ -17,6 +17,7 @@ find_package(Qt6 6.3 COMPONENTS Core REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Network REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED)
+find_package(Qt6 6.3 COMPONENTS Location REQUIRED)
 
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
@@ -66,6 +67,7 @@ target_include_directories(${PROJECT} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/components/weatherForecast
     ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network
     ${CMAKE_CURRENT_SOURCE_DIR}/components/config
+    ${CMAKE_CURRENT_SOURCE_DIR}/components/position
     ${CMAKE_CURRENT_SOURCE_DIR}/mainApp
 )
 
@@ -77,6 +79,7 @@ target_link_libraries(${PROJECT}
     Qt6::Positioning
     Qt6::Network
     Qt6::Mqtt
+    Qt6::Location
 )
 
 install(TARGETS ${PROJECT}
