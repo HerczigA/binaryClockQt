@@ -1,4 +1,5 @@
 #include "position.h"
+#include "moc_position.cpp"
 
 const int getPosPeriod = 5000;
 

@@ -1,5 +1,5 @@
 #include "binaryClock.h"
-
+#include "moc_binaryClock.cpp"
 const int lastIndex = 7;
 
 BinaryClock::BinaryClock(QObject *parent)

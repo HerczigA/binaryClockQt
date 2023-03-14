@@ -1,4 +1,5 @@
 #include "mainApp.h"
+#include "moc_mainApp.cpp"
 
 MainApp::MainApp(QObject *parent)
     :QObject(parent)

@@ -1,5 +1,5 @@
 #include "network.h"
-
+#include "moc_network.cpp"
 
 Network::Network(QObject *parent)
     : QNetworkAccessManager{parent}

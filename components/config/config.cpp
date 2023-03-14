@@ -1,5 +1,6 @@
 #include "config.h"
 #include <QGuiApplication>
+#include "moc_config.cpp"
 
 Config::Config(QObject *parent )
     : QSettings{SystemScope, "MainApp","mainApp", parent}
