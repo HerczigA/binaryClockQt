@@ -16,7 +16,7 @@ WeatherForecast::WeatherForecast(const WeatherForecast &other)
 
 WeatherForecast::~WeatherForecast()
 {
-    for(auto con : mConnections)
+    for(auto &con : mConnections)
         disconnect(con);
 }
 

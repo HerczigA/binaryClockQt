@@ -3,30 +3,36 @@
 
 
 struct WeatherProps{
-    QString url;
-    QString city;
-    QString apiKey;
-    QString airQuality;
-    QString days;
-    QString alert;
-    int requestType;
+    QString mUrl;
+    QString mCity;
+    QString mApiKey;
+    QString mAirQuality;
+    QString mDays;
+    QString mAlert;
+    MainAppComponents::Operation  mRequestType;
 
     WeatherProps()
-        : url("https://api.weatherapi.com/v1/current.json?")
-        , city("&q=Budapest")
-        , apiKey("key=")
-        , airQuality("&aqi=no")
-        , days("&days=5")
-        , alert("&alerts=yes")
-        , requestType(2) //get for http
+        : mUrl("https://api.weatherapi.com/v1/current.json?")
+        , mCity("&q=Budapest")
+        , mApiKey("key=")
+        , mAirQuality("&aqi=no")
+        , mDays("&days=5")
+        , mAlert("&alerts=yes")
+        , mRequestType(MainAppComponents::Operation::GET) //get for http
     {
 
     }
-    void setCity(QString city){this->city = "&q="+ city ;}
-    void setDays(QString days){this->days= "&days="+ days ;}
-    void setApiKey(QString key){this->apiKey = "key="+ key ;}
-    void setAlert(QString alertOn){this->alert = "&alerts="+ alertOn;}
-    void setRequestType(int &type){this->requestType = type;}
+    void setCity(QString city){mCity = "&q="+ city ;}
+    void setDays(QString days){mDays= "&days="+ days ;}
+    void setApiKey(QString key){mApiKey = "key="+ key ;}
+    void setAlert(QString alertOn){mAlert = "&alerts="+ alertOn;}
+    void setRequestType(MainAppComponents::Operation &type){mRequestType = type;}
+    const QString getCity(){return mCity;}
+    const QString getDays(){return mDays;}
+    const QString getApiKey(){return mApiKey;}
+    const QString getAlert(){return mAlert;}
+    const MainAppComponents::Operation  getRequestType(){return mRequestType;}
+    const QString getRawUrl(){ return mUrl + mApiKey + mCity + mAirQuality; }
 };
 
 class WeatherForecast : public QObject

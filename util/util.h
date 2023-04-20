@@ -28,4 +28,16 @@ namespace MainAppComponents
         NEWS,
         ALL
     };
+    enum Operation
+    {
+        UNKNOWN_OPERATION,
+        HEAD,
+        GET,
+        PUT,
+        POST,
+        DELETE,
+        CUSTOM
+
+    };
+
 }
