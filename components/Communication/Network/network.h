@@ -58,7 +58,7 @@ private:
     QNetworkAccessManager::Operation mRequestType;
     QAuthenticator mAuth;
     QVector<QMetaObject::Connection> mConnections;
-    QSslConfiguration* mSslConf;
+    QSslConfiguration mSslConf;
 
 
 };

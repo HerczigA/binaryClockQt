@@ -10,11 +10,9 @@ Network::Network(QObject *parent)
     mConnections.push_back(connect(this,&QNetworkAccessManager::authenticationRequired, this, &Network::setAuth));
     mConnections.push_back(connect(this,&QNetworkAccessManager::sslErrors, this, &Network::sslErrorOccured));
     mConnections.push_back(connect(this,&QNetworkAccessManager::preSharedKeyAuthenticationRequired, this, &Network::preSharedKeyCallback));
-//    mConnections.push_back(connect(mReply ,&QNetworkReply::errorOccurred, this, &Network::replyErrorReceived));
+    mConnections.push_back(connect(mReply ,&QNetworkReply::errorOccurred, this, &Network::replyErrorReceived));
+    connectToHostEncrypted(weatherApiUrls);
 
-//    connectToHostEncrypted(weatherApiUrls);
-//    connectToHostEncrypted(weatherApiUrls);
-//    connectToHostEncrypted("https://www.jsontest.com");
 }
 
 Network::Network(AuthConf &conf, QObject *parent)
@@ -34,15 +32,15 @@ Network::~Network()
 
 void Network::newRequest(void* properties, int source)
 {
-    switch (source) {
+     switch (source) {
         case SourceTypes::Weather:
         {
             WeatherProps* prop = reinterpret_cast<WeatherProps*>(properties);
             if(prop)
             {
-                QString rawUrl = prop->url + prop->apiKey + prop->city + prop->airQuality;
+                QString rawUrl = prop->getRawUrl();
                 QUrl url = QUrl(rawUrl);
-                mRequestType = static_cast<QNetworkAccessManager::Operation>(prop->requestType);
+                mRequestType = static_cast<QNetworkAccessManager::Operation>(prop->getRequestType());
                 mRequest = QNetworkRequest(url);
             }
             else
