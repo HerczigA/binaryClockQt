@@ -67,7 +67,7 @@ Rectangle {
                 id :locationSection
                 height : parent.height
                 width : parent.width
-                anchors.centerIn: locationRectangle
+                anchors.centerIn: parent
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 text : qsTr(weather.location)
