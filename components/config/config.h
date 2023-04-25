@@ -13,6 +13,7 @@ public:
     void getValue(int&);
     void getValue(QString&);
     void readConfig();
+    bool configFileIsExist();
 
 
 signals:

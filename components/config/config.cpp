@@ -10,13 +10,22 @@ Config::Config(QObject *parent )
 
 void Config::readConfig()
 {
-    sync();
-    mAllKeys = this->allKeys();
-    if(mAllKeys .empty())
-        emit configEmpty();
+    if(configFileIsExist())
+    {
+        sync();
+        mAllKeys = allKeys();
+        if(mAllKeys .empty())
+            emit configEmpty();
 
-    QStringList subGroups = childGroups();
-    digDeeper(subGroups);
+        QStringList subGroups = childGroups();
+        digDeeper(subGroups);
+    }
+
+}
+
+bool Config::configFileIsExist()
+{
+    return QFile::exists(fileName());
 }
 
 void Config::writeConfig(MainAppComponents::Types type, SettingMap  props)
