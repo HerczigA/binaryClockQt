@@ -4,7 +4,8 @@
 Config::Config(QObject *parent )
     : QSettings{SystemScope, "MainApp","mainApp", parent}
 {
-    mConfigParts.insert(MainAppComponents::Types::WEATHERFORECAST, "WeatherForecast");
+    mConfigParts.insert("WeatherForecast", MainAppComponents::Types::WEATHERFORECAST);
+    mConfigParts.insert("Position", MainAppComponents::Types::POSITION);
     qDebug()<< this->fileName();
 }
 
@@ -14,13 +15,16 @@ void Config::readConfig()
     {
         sync();
         mAllKeys = allKeys();
-        if(mAllKeys .empty())
-            emit configEmpty();
-
+        if(mAllKeys.empty())
+            return;
         QStringList subGroups = childGroups();
-        digDeeper(subGroups);
+        getSubGroups(subGroups);
     }
-
+//    else
+//    {
+//        exit in case there will be fatal error
+//        for mandatory function
+//    }
 }
 
 bool Config::configFileIsExist()
@@ -28,29 +32,32 @@ bool Config::configFileIsExist()
     return QFile::exists(fileName());
 }
 
-void Config::writeConfig(MainAppComponents::Types type, SettingMap  props)
+void Config::writeConfig()
 {
-    beginGroup(mConfigParts.value(type));
-    for(const auto &key: props.keys())
-        setValue(key, props.value(key));
-    endGroup();
-    sync();
+    for(auto& key : mConfigParts.keys())
+    {
+        beginGroup(key);
+        for(const auto &confKey: mConfig.keys())
+            setValue(confKey, mConfig.value(confKey));
+        endGroup();
+        sync();
+    }
 }
 
-void Config::digDeeper(QStringList &groups)
+void Config::getSubGroups(QStringList &groups)
 {
-
+    SettingMap  settings;
     for(auto& group : groups)
     {
         beginGroup(group);
-        QStringList subGroups = childGroups();
-        if(subGroups.size() != 0)
-            digDeeper(subGroups);
         QStringList keys = childKeys();
         for(auto &key : keys)
-            mSettings.insert(key, value(key));
+            settings.insert( key, value(key));
 
         endGroup();
-        emit sendData(mConfigParts.key(group), mSettings);
+
+        mConfig.insert(group, settings);
+        emit sendData(mConfigParts[group], settings);
+        settings.clear();
     }
 }

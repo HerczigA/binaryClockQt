@@ -9,22 +9,17 @@ class Config : public QSettings
 public:
     explicit Config(QObject *parent = nullptr);
 
-
-    void getValue(int&);
-    void getValue(QString&);
     void readConfig();
     bool configFileIsExist();
 
-
 signals:
-    void configEmpty();
     void sendData(MainAppComponents::Types type, SettingMap  data);
 public slots:
-    void writeConfig(MainAppComponents::Types type, SettingMap  props);
+    void writeConfig();
 private:
-    void digDeeper(QStringList &groups);
+    void getSubGroups(QStringList &groups);
     QStringList mAllKeys;
-    SettingMap  mSettings;
-    QMap<MainAppComponents::Types, QString> mConfigParts;
+    QMap<QString, SettingMap> mConfig;
+    QMap<QString, MainAppComponents::Types> mConfigParts;
 };
 

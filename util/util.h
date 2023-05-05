@@ -11,12 +11,12 @@
 #include <QJsonDocument>
 #include <QStringList>
 #include <QMap>
+#include <QFile>
 
 
 using namespace std;
 using SettingMap = QMap<QString, QVariant>;
 
-const QString weatherApiUrl = QString("http://weatherapi.com");
 const QString weatherApiUrls = QString("https://weatherapi.com");
 
 namespace MainAppComponents
@@ -24,6 +24,7 @@ namespace MainAppComponents
     enum Types{
         UNKNOWN,
         WEATHERFORECAST,
+        POSITION,
         NEWS,
         ALL
     };
