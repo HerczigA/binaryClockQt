@@ -3,6 +3,18 @@
 
 
 struct WeatherProps{
+    enum Attributes
+    {
+        Unknown = 0,
+        Url,
+        City,
+        Apikey,
+        AirQuality,
+        Days,
+        Alert,
+        Error = -1
+    };
+
     QString mUrl;
     QString mCity;
     QString mApiKey;
@@ -22,10 +34,12 @@ struct WeatherProps{
     {
 
     }
+    void setUrl(QString url){mUrl = url;}
     void setCity(QString city){mCity = "&q="+ city ;}
     void setDays(QString days){mDays= "&days="+ days ;}
     void setApiKey(QString key){mApiKey = "key="+ key ;}
     void setAlert(QString alertOn){mAlert = "&alerts="+ alertOn;}
+    void setAirQuality(QString airQuality){mAirQuality= "&aqi="+ airQuality;}
     void setRequestType(MainAppComponents::Operation &type){mRequestType = type;}
     const QString getCity(){return mCity;}
     const QString getDays(){return mDays;}
@@ -84,7 +98,14 @@ private:
     QString mDayOfTheWeek;
     QString mWeatherIcon;
 
-
+    QMap<int, QString> mPropMap = {
+        {WeatherProps::Attributes::Url, "url"},
+        {WeatherProps::Attributes::City, "city"},
+        {WeatherProps::Attributes::Apikey, "apikey"},
+        {WeatherProps::Attributes::AirQuality, "airQuality"},
+        {WeatherProps::Attributes::Days, "days"},
+        {WeatherProps::Attributes::Alert, "alerts"}
+    };
 
     QDate mDate;
     WeatherProps mProps;

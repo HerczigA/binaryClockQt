@@ -29,6 +29,9 @@ public:
     const int width() const;
     const int height() const;
 
+public slots:
+    void receivedConfig(MainAppComponents::Types type, SettingMap setting);
+
 private:
     int mWidth;
     int mHeight;

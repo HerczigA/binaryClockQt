@@ -143,8 +143,34 @@ void WeatherForecast::receivedConfig(MainAppComponents::Types type, SettingMap  
 {
     if(type == MainAppComponents::Types::WEATHERFORECAST)
     {
-        QVariant key = settings.value("apiKey", "");
-        mProps.setApiKey(key.toString());
+        QString data;
+        for(auto key : mPropMap.keys())
+        {
+            data = settings.value(mPropMap.value(key), "").toString();
+            switch (key) {
+                case WeatherProps::Attributes::Url:
+                    mProps.setUrl(data);
+                    break;
+                case WeatherProps::Attributes::City:
+                    mProps.setCity(data);
+                    break;
+                case WeatherProps::Attributes::Apikey:
+                    mProps.setApiKey(data);
+                    break;
+                case WeatherProps::Attributes::AirQuality:
+                    mProps.setAirQuality(data);
+                    break;
+                case WeatherProps::Attributes::Days:
+                    mProps.setDays(data);
+                    break;
+                case WeatherProps::Attributes::Alert:
+                    mProps.setAlert(data);
+                    break;
+
+            default:
+                break;
+            }
+        }
         emit requestSignal(&mProps, MainAppComponents::Types::WEATHERFORECAST);
     }
 }
