@@ -5,9 +5,11 @@
 #include <QNetworkReply>
 #include <QMqttClient>
 #include <QAuthenticator>
-
+//#include <QHostInfo>
+#include <QNetworkInterface>
+#include <QHostAddress>
 #include <weatherforecast.h>
-
+#include <position.h>
 class Credentials : public QAuthenticator
 {
     public:
@@ -21,11 +23,6 @@ class Credentials : public QAuthenticator
 class Network : public QNetworkAccessManager
 {
     Q_OBJECT
-    enum SourceTypes
-    {
-        Unknow,
-        Weather
-    };
 
 public:
     explicit Network(QObject *parent = nullptr);
@@ -38,6 +35,8 @@ signals:
 public slots:
     void newRequest(void* properties, int source);
     void requestReplied(QNetworkReply*);
+
+
     void sharedKeyRequired(QNetworkReply*, QSslPreSharedKeyAuthenticator*);
     void sslErrorOccured(QNetworkReply*, const QList<QSslError>&);
     void setAuth(QNetworkReply*, QAuthenticator*);
@@ -51,6 +50,7 @@ private slots:
 
 private:
     void createRequest(Operation op, const QNetworkRequest & req);
+    void setIPv6();
 
     QNetworkRequest mRequest;
     QNetworkReply *mReply;
@@ -59,6 +59,8 @@ private:
     QAuthenticator mAuth;
     QVector<QMetaObject::Connection> mConnections;
     QSslConfiguration mSslConf;
+    QHostAddress mLocalAddress;
+    QString mIPv6;
 
 
 };

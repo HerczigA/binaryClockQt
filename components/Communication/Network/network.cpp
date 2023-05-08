@@ -5,7 +5,7 @@ Network::Network(QObject *parent)
     : QNetworkAccessManager{parent}
     , mRequestType(UnknownOperation)
 {
-
+    setIPv6();
     mConnections.push_back(connect(this,&QNetworkAccessManager::finished, this, &Network::requestReplied));
     mConnections.push_back(connect(this,&QNetworkAccessManager::authenticationRequired, this, &Network::setAuth));
     mConnections.push_back(connect(this,&QNetworkAccessManager::sslErrors, this, &Network::sslErrorOccured));
@@ -33,19 +33,41 @@ Network::~Network()
 void Network::newRequest(void* properties, int source)
 {
      switch (source) {
-        case SourceTypes::Weather:
+        case MainAppComponents::Types::WeatherForecast:
         {
-            WeatherProps* prop = reinterpret_cast<WeatherProps*>(properties);
+            WeatherForecast::WeatherProps* prop = reinterpret_cast<WeatherForecast::WeatherProps*>(properties);
             if(prop)
             {
+                if(prop->getCity() == "")
+                    return;
                 QString rawUrl = prop->getRawUrl();
                 QUrl url = QUrl(rawUrl);
                 mRequestType = static_cast<QNetworkAccessManager::Operation>(prop->getRequestType());
                 mRequest = QNetworkRequest(url);
+//                "https://api.weatherapi.com/v1/current.json?key=d9af10fd8f83457ea2184652232302&q=&aqi=no"
             }
             else
+            {
                 mRequestType = UnknownOperation;
+            }
+
             break;
+        }
+        case MainAppComponents::Types::Position:
+        {
+            Position::PositionProps* prop = reinterpret_cast<Position::PositionProps*>(properties);
+            if(prop)
+            {
+                QString rawUrl = prop->getRawlUrl() + mIPv6;
+                QUrl url = QUrl(rawUrl);
+//                "https://positionstack.com/v1/reverse?a8fc06c3426b2a8c0a039656d7162403&query=2a02:ab88:5984:9100:d874:4303:c231:a3f8"
+                mRequestType = static_cast<QNetworkAccessManager::Operation>(prop->getRequestType());
+                mRequest = QNetworkRequest(url);
+            }
+            else
+            {
+                mRequestType = UnknownOperation;
+            }
         }
         default:
             break;
@@ -71,7 +93,7 @@ void Network::requestReplied(QNetworkReply* reply)
     {
         qDebug()<< "Logged error occurred : "  << mReply->errorString();
     }
-    emit sendData(MainAppComponents::Types::WEATHERFORECAST, rawData);
+    emit sendData(MainAppComponents::Types::WeatherForecast, rawData);
 
 }
 
@@ -117,5 +139,19 @@ void Network::createRequest(Operation op, const QNetworkRequest &req)
         }
         default:
             break;
+        }
+}
+
+void Network::setIPv6()
+{
+    mLocalAddress = QHostAddress(QHostAddress::LocalHost);
+    for (const QHostAddress &address: QNetworkInterface::allAddresses()) {
+        if (address.protocol() == QAbstractSocket::IPv6Protocol
+                && address != mLocalAddress
+                && address.scopeId() == "")
+        {
+            if(address.toString() != "::1")
+                mIPv6 = address.toString();
+        }
     }
 }

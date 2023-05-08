@@ -23,8 +23,8 @@ namespace MainAppComponents
 {
     enum Types{
         UNKNOWN,
-        WEATHERFORECAST,
-        POSITION,
+        WeatherForecast,
+        Position,
         NEWS,
         ALL
     };

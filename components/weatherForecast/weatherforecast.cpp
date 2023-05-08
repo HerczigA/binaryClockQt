@@ -22,7 +22,7 @@ WeatherForecast::~WeatherForecast()
 
 void WeatherForecast::updateLocation()
 {
-    emit requestSignal(mProps.getCity(), MainAppComponents::Types::WeatherForecast );
+    emit requestLocation();
 }
 
 void WeatherForecast::sendRequestWeatherData()
@@ -75,9 +75,9 @@ void WeatherForecast::setLocation(const QString &value)
 //    }
     if(mProps.getCity() != value)
     {
-        qInfo()<< "mCityLocation before" << mCityLocation;
+        qInfo()<< "mCityLocation before" << mProps.getCity();
         mProps.setCity(value);
-        qInfo()<< "mCityLocation after"<< mCityLocation;
+        qInfo()<< "mCityLocation after"<< mProps.getCity();
         emit dataChanged();
     }
 }

@@ -5,9 +5,9 @@ const int getPosPeriod = 5000;
 
 Position::Position(QObject *parent)
     : QObject{parent}
-    , mServiceProvider("osm")
 {
-    mGeoManager = mServiceProvider.geocodingManager();
+    mServiceProvider = make_unique<QGeoServiceProvider>("osm");
+    mGeoManager = mServiceProvider->geocodingManager();
     if(mGeoManager)
     {
         qInfo() << QGeoPositionInfoSource::availableSources();
@@ -29,8 +29,15 @@ Position::Position(QObject *parent)
             qInfo()<< "No goemanager";
     }
     else
-        qInfo()<<"Failed create goe Manager" << mServiceProvider.errorString();
+        qInfo()<<"Failed create goe Manager" << mServiceProvider->errorString();
 
+}
+
+Position::Position(QString url, QString apikey, QObject *parent)
+    : QObject{parent}
+{
+    mProps = make_unique<PositionProps>(url, apikey);
+    emit requestLocation(mProps.get(), MainAppComponents::Types::Position);
 }
 
 Position::~Position()
@@ -49,9 +56,38 @@ void Position::newPositionReceived(const QGeoPositionInfo &newPos)
         qInfo()<< newPos.coordinate();
 
         mGeoCodeReply = mGeoManager->reverseGeocode(newPos.coordinate());
-
-
     }
+}
+
+void Position::newOnlinePositionReceived(MainAppComponents::Types type, QByteArray rawData)
+{
+    if (type != MainAppComponents::Types::Position)
+        return;
+
+
+    QJsonParseError result;
+    QJsonValue value;
+    QJsonObject obj;
+    QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
+    if(result.error == QJsonParseError::NoError && !document.isEmpty())
+    {
+
+        if(document.isObject())
+            obj = document.object();
+        else{
+            qDebug()<< "error at json parsing object side";
+            return;
+        }
+        value = obj.value("data");
+        if(!value.isNull())
+        {
+            QString newValue= value[0]["locality"].toVariant().toString();
+            mProps->setLocation(newValue);
+            emit sendCity(mProps->getLocation());
+        }
+    }
+    else
+        requestedLocation();
 }
 
 void Position::getLocals(QGeoCodeReply *reply)
@@ -68,19 +104,21 @@ void Position::getLocals(QGeoCodeReply *reply)
         {
 
             auto newaddress = mLocation.address();
-            QString city = newaddress.city();
-            qInfo()<< city;
-            emit sendCity(city);
-
-
+            mProps->setLocation(newaddress.city());
+            qInfo()<< mProps->getLocation();
+            emit sendCity(mProps->getLocation());
         }
-
     }
 }
 
 void Position::localisationError(QGeoCodeReply::Error error, const QString &errorString)
 {
     qDebug()<< "error occured when tried to get localisation\n " << errorString;
+}
+
+void Position::requestedLocation()
+{
+    emit requestLocation(mProps.get(), MainAppComponents::Types::Position);
 }
 
 
