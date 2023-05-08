@@ -6,7 +6,7 @@ WeatherForecast::WeatherForecast(QObject *parent)
 {
 
     mDate = QDate::currentDate();
-
+    updateLocation();
 }
 
 WeatherForecast::WeatherForecast(const WeatherForecast &other)
@@ -22,12 +22,12 @@ WeatherForecast::~WeatherForecast()
 
 void WeatherForecast::updateLocation()
 {
-
+    emit requestSignal(mProps.getCity(), MainAppComponents::Types::WeatherForecast );
 }
 
 void WeatherForecast::sendRequestWeatherData()
 {
-    emit requestSignal(&mProps, MainAppComponents::Types::WEATHERFORECAST);
+    emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
 }
 
 QString WeatherForecast::date() const
@@ -37,7 +37,7 @@ QString WeatherForecast::date() const
 
 QString WeatherForecast::location() const
 {
-    return mCityLocation;
+    return mProps.getCity();
 }
 
 //QString WeatherForecast::weatherIcon() const
@@ -66,10 +66,17 @@ void WeatherForecast::setDate(const QString &value)
 
 void WeatherForecast::setLocation(const QString &value)
 {
-    if(mCityLocation != value)
+//    if(mCityLocation != value)
+//    {
+//        qInfo()<< "mCityLocation before" << mCityLocation;
+//        mCityLocation = value;
+//        qInfo()<< "mCityLocation after"<< mCityLocation;
+//        emit dataChanged();
+//    }
+    if(mProps.getCity() != value)
     {
         qInfo()<< "mCityLocation before" << mCityLocation;
-        mCityLocation = value;
+        mProps.setCity(value);
         qInfo()<< "mCityLocation after"<< mCityLocation;
         emit dataChanged();
     }
@@ -96,12 +103,12 @@ void WeatherForecast::setTemperature(const QString &value)
 
 void WeatherForecast::requestArrived()
 {
-    emit requestSignal(&mProps, MainAppComponents::Types::WEATHERFORECAST);
+    emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
 }
 
 void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray rawData)
 {
-    if (type != MainAppComponents::Types::WEATHERFORECAST)
+    if (type != MainAppComponents::Types::WeatherForecast)
         return;
 
 
@@ -141,7 +148,7 @@ void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray raw
 
 void WeatherForecast::receivedConfig(MainAppComponents::Types type, SettingMap  settings)
 {
-    if(type == MainAppComponents::Types::WEATHERFORECAST)
+    if(type == MainAppComponents::Types::WeatherForecast)
     {
         QString data;
         for(auto key : mPropMap.keys())
@@ -171,7 +178,7 @@ void WeatherForecast::receivedConfig(MainAppComponents::Types type, SettingMap  
                 break;
             }
         }
-        emit requestSignal(&mProps, MainAppComponents::Types::WEATHERFORECAST);
+        emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
     }
 }
 

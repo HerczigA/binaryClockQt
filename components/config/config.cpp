@@ -5,8 +5,8 @@
 Config::Config(QObject *parent )
     : QSettings{SystemScope, "MainApp","mainApp", parent}
 {
-    mConfigParts.insert("WeatherForecast", MainAppComponents::Types::WEATHERFORECAST);
-    mConfigParts.insert("Position", MainAppComponents::Types::POSITION);
+    mConfigParts.insert("WeatherForecast", MainAppComponents::Types::WeatherForecast);
+    mConfigParts.insert("Position", MainAppComponents::Types::Position);
     qInfo() << fileName() << "used as config";
 
 }
