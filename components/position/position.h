@@ -11,35 +11,26 @@ class Position : public QObject
 {
     Q_OBJECT
 public:
-    struct PositionProps
+    class PositionProps : public MainAppComponents::Props
     {
-        QString mUrl;
-        QString mApikey;
-        QString mLocation;
-        MainAppComponents::Operation  mRequestType;
-        PositionProps(QString url, QString apikey)
-        : mUrl(url)
-        , mApikey("access_key=" + apikey)
-        , mRequestType(MainAppComponents::Operation::GET)
-        {
+        public:
+            PositionProps(Properties props)
+                : Props()
+            {
+                mRequestType = MainAppComponents::Operation::GET;
+                setProps(props);
+            }
+            ~PositionProps();
+            const QString getRawUrl() override;
 
-        }
-        void setUrl(QString url){mUrl = url;}
-        void setLocation(QString location){mLocation = location;}
-        void setApiKey(QString key){mApikey = "access_key=" +key ;}
-        const QString getUrl() const {return mUrl;}
-        const QString getLocation () const {return mLocation;}
-        const QString getApiKey() const {return mApikey;}
-        const MainAppComponents::Operation getRequestType() const {return mRequestType;}
-        const QString getRawlUrl() const {return mUrl + mApikey + "&query=" ;}
-    };
+        };
     explicit Position(QObject *parent = nullptr);
-    Position(QString url, QString apikey, QObject *parent = nullptr);
+    Position(Properties props, QObject *parent = nullptr);
     ~Position();
 
 signals:
-    void sendCity(QString city);
-    void requestLocation(void* properties, int source);
+    void sendCity(QString);
+    void requestLocation(MainAppComponents::Props* properties, int source);
 public slots:
     void newPositionReceived(const QGeoPositionInfo &update);
     void newOnlinePositionReceived(MainAppComponents::Types compType, QByteArray rawData);

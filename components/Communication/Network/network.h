@@ -26,14 +26,14 @@ class Network : public QNetworkAccessManager
 
 public:
     explicit Network(QObject *parent = nullptr);
-    Network(struct AuthConf& conf, QObject *parent = nullptr);
+    Network(struct Credentials& conf, QObject *parent = nullptr);
     virtual ~Network();
 
 signals:
     void sendData(MainAppComponents::Types compType, QByteArray rawData);
 
 public slots:
-    void newRequest(void* properties, int source);
+    void newRequest(MainAppComponents::Props * properties, int source);
     void requestReplied(QNetworkReply*);
 
 
@@ -44,7 +44,6 @@ public slots:
 
 
 private slots:
-    void replyErrorReceived(QNetworkReply::NetworkError code);
     //for tls-ssl
 //    void encryptedSlot(QNetworkReply*);
 
@@ -61,6 +60,4 @@ private:
     QSslConfiguration mSslConf;
     QHostAddress mLocalAddress;
     QString mIPv6;
-
-
 };

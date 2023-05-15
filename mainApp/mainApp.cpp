@@ -23,12 +23,7 @@ MainApp::MainApp(const int& w, const int& h, QObject *parent)
     mConnections += connect(mConfig.get(), &Config::sendData, mWeatherForecast.get(), &WeatherForecast::receivedConfig);
     mConnections += connect(mConfig.get(), &Config::sendData, this, &MainApp::receivedConfig);
     mConnections += connect(mBinClock.get(), &BinaryClock::updateWeather, mWeatherForecast.get(), &WeatherForecast::requestArrived);
-
     mConfig->readConfig();
-    mWeatherForecast->sendRequestWeatherData();
-
-
-
 }
 
 MainApp::~MainApp()
@@ -61,20 +56,18 @@ const int MainApp::height() const
     return mHeight;
 }
 
-void MainApp::receivedConfig(MainAppComponents::Types type, SettingMap settings)
+void MainApp::receivedConfig(MainAppComponents::Types type, Properties props)
 {
     if(type == MainAppComponents::Types::Position)
     {
-        bool isOnline = settings.value("online").toBool();
+        bool isOnline = props.value("online").toBool();
         if(!isOnline)
         {
             mPos = make_unique<Position>();
         }
         else
         {
-            QString url = settings.value("url").toString();
-            QString apikey = settings.value("apikey").toString();
-            mPos = make_unique<Position>(url, apikey);
+            mPos = make_unique<Position>(props);
             mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation);
             mConnections += connect(mPos.get(), &Position::requestLocation, mNetwork.get(), &Network::newRequest);
             mConnections += connect(mNetwork.get(), &Network::sendData, mPos.get(), &Position::newOnlinePositionReceived);
@@ -82,4 +75,5 @@ void MainApp::receivedConfig(MainAppComponents::Types type, SettingMap settings)
         }
         mConnections += connect(mPos.get(), &Position::sendCity, mWeatherForecast.get(), &WeatherForecast::cityUpdated);
     }
+    mWeatherForecast->sendRequestWeatherData();
 }

@@ -30,7 +30,7 @@ public:
     const int height() const;
 
 public slots:
-    void receivedConfig(MainAppComponents::Types type, SettingMap setting);
+    void receivedConfig(MainAppComponents::Types type, Properties setting);
 
 private:
     int mWidth;

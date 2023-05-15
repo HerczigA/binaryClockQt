@@ -66,18 +66,10 @@ void WeatherForecast::setDate(const QString &value)
 
 void WeatherForecast::setLocation(const QString &value)
 {
-//    if(mCityLocation != value)
-//    {
-//        qInfo()<< "mCityLocation before" << mCityLocation;
-//        mCityLocation = value;
-//        qInfo()<< "mCityLocation after"<< mCityLocation;
-//        emit dataChanged();
-//    }
     if(mProps.getCity() != value)
     {
-        qInfo()<< "mCityLocation before" << mProps.getCity();
         mProps.setCity(value);
-        qInfo()<< "mCityLocation after"<< mProps.getCity();
+        emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
         emit dataChanged();
     }
 }
@@ -122,7 +114,7 @@ void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray raw
         if(document.isObject())
             obj = document.object();
         else{
-            qDebug()<< "error at json parsing object side";
+            qInfo()<< "error at json parsing object side";
             return;
         }
         value = obj.value("current");
@@ -137,8 +129,6 @@ void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray raw
                 newValue = newValue.right(newValue.size()-2);
                 setIcon(newValue);
             }
-
-
         }
     }
     else
@@ -146,43 +136,34 @@ void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray raw
 
 }
 
-void WeatherForecast::receivedConfig(MainAppComponents::Types type, SettingMap  settings)
+void WeatherForecast::receivedConfig(MainAppComponents::Types type, Properties settings)
 {
     if(type == MainAppComponents::Types::WeatherForecast)
     {
-        QString data;
-        for(auto key : mPropMap.keys())
-        {
-            data = settings.value(mPropMap.value(key), "").toString();
-            switch (key) {
-                case WeatherProps::Attributes::Url:
-                    mProps.setUrl(data);
-                    break;
-                case WeatherProps::Attributes::City:
-                    mProps.setCity(data);
-                    break;
-                case WeatherProps::Attributes::Apikey:
-                    mProps.setApiKey(data);
-                    break;
-                case WeatherProps::Attributes::AirQuality:
-                    mProps.setAirQuality(data);
-                    break;
-                case WeatherProps::Attributes::Days:
-                    mProps.setDays(data);
-                    break;
-                case WeatherProps::Attributes::Alert:
-                    mProps.setAlert(data);
-                    break;
-
-            default:
-                break;
-            }
-        }
+        mProps.setProps(settings);
         emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
     }
 }
 
-void WeatherForecast::cityUpdated(QString city)
+void WeatherForecast::cityUpdated(QString var)
 {
-    setLocation(city);
+    setLocation(var);
+}
+
+const QString WeatherForecast::WeatherProps::getRawUrl()
+{
+    QString url = mProps["url"].toString();
+    QString key = "key=" + mProps["apikey"].toString();
+    QString query = "&q=" + getCity() + "&aqi="+ mProps["airQuaility"].toString();
+    return url + key + query;
+}
+
+const QString WeatherForecast::WeatherProps::getCity() const
+{
+    return mProps["city"].toString();
+}
+
+void WeatherForecast::WeatherProps::setCity(QString newCity)
+{
+    mProps.insert("city", QVariant(newCity));
 }

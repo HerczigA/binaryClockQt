@@ -13,13 +13,13 @@ public:
     bool configFileIsExist();
 
 signals:
-    void sendData(MainAppComponents::Types type, SettingMap  data);
+    void sendData(MainAppComponents::Types type, Properties  data);
 public slots:
     void writeConfig();
 private:
     void getSubGroups(QStringList &groups);
     QStringList mAllKeys;
-    QMap<QString, SettingMap> mConfig;
+    QMap<QString, Properties> mConfig;
     QMap<QString, MainAppComponents::Types> mConfigParts;
 };
 

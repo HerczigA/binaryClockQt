@@ -15,9 +15,7 @@
 
 
 using namespace std;
-using SettingMap = QMap<QString, QVariant>;
-
-const QString weatherApiUrls = QString("https://weatherapi.com");
+using Properties = QMap<QString, QVariant>;
 
 namespace MainAppComponents
 {
@@ -25,8 +23,8 @@ namespace MainAppComponents
         UNKNOWN,
         WeatherForecast,
         Position,
-        NEWS,
-        ALL
+        News,
+        All
     };
     enum Operation
     {
@@ -39,5 +37,22 @@ namespace MainAppComponents
         CUSTOM
 
     };
+    class Props
+    {
+        public:
+            virtual ~Props(){}
+            virtual const QString getRawUrl() = 0;
+            void setProps(Properties& props){
+                mProps = props;
+            }
+            const MainAppComponents::Operation getRequestType() const
+            {
+                return mRequestType;
+            }
 
+        protected:
+            Properties mProps;
+            MainAppComponents::Operation  mRequestType;
+
+    };
 }

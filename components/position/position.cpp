@@ -33,10 +33,10 @@ Position::Position(QObject *parent)
 
 }
 
-Position::Position(QString url, QString apikey, QObject *parent)
+Position::Position(Properties props, QObject *parent)
     : QObject{parent}
 {
-    mProps = make_unique<PositionProps>(url, apikey);
+    mProps = make_unique<PositionProps>(props);
     emit requestLocation(mProps.get(), MainAppComponents::Types::Position);
 }
 
@@ -64,7 +64,6 @@ void Position::newOnlinePositionReceived(MainAppComponents::Types type, QByteArr
     if (type != MainAppComponents::Types::Position)
         return;
 
-
     QJsonParseError result;
     QJsonValue value;
     QJsonObject obj;
@@ -75,15 +74,14 @@ void Position::newOnlinePositionReceived(MainAppComponents::Types type, QByteArr
         if(document.isObject())
             obj = document.object();
         else{
-            qDebug()<< "error at json parsing object side";
+            qInfo()<< "error at json parsing object side";
             return;
         }
         value = obj.value("data");
         if(!value.isNull())
         {
-            QString newValue= value[0]["locality"].toVariant().toString();
-            mProps->setLocation(newValue);
-            emit sendCity(mProps->getLocation());
+            QString location = value[0]["locality"].toVariant().toString();
+            emit sendCity(location);
         }
     }
     else
@@ -104,16 +102,14 @@ void Position::getLocals(QGeoCodeReply *reply)
         {
 
             auto newaddress = mLocation.address();
-            mProps->setLocation(newaddress.city());
-            qInfo()<< mProps->getLocation();
-            emit sendCity(mProps->getLocation());
+            emit sendCity(newaddress.city());
         }
     }
 }
 
 void Position::localisationError(QGeoCodeReply::Error error, const QString &errorString)
 {
-    qDebug()<< "error occured when tried to get localisation\n " << errorString;
+    qInfo()<< "error occured when tried to get localisation\n " << errorString;
 }
 
 void Position::requestedLocation()
@@ -132,4 +128,17 @@ void Position::errorReceived(QGeoPositionInfoSource::Error error)
 void Position::errorGeoCodeManager()
 {
 
+}
+
+Position::PositionProps::~PositionProps()
+{
+
+}
+
+const QString Position::PositionProps::getRawUrl()
+{
+    QString url = mProps["url"].toString();
+    QString key = "access_key=" +mProps["apikey"].toString();
+    QString query = "&query=";
+    return url + key + query;
 }

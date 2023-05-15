@@ -48,18 +48,17 @@ void Config::writeConfig()
 
 void Config::getSubGroups(QStringList &groups)
 {
-    SettingMap  settings;
+    Properties props;
     for(auto& group : groups)
     {
         beginGroup(group);
         QStringList keys = childKeys();
         for(auto &key : keys)
-            settings.insert( key, value(key));
+            props.insert( key, value(key));
 
         endGroup();
-
-        mConfig.insert(group, settings);
-        emit sendData(mConfigParts[group], settings);
-        settings.clear();
+        mConfig.insert(group, props);
+        emit sendData(mConfigParts[group], props);
+        props.clear();
     }
 }
