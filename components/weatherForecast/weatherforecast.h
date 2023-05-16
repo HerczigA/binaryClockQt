@@ -5,11 +5,12 @@
 class WeatherForecast : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString date READ date WRITE setDate NOTIFY dataChanged)
+    Q_PROPERTY(QString date READ date NOTIFY dataChanged)
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY dataChanged)
     Q_PROPERTY(QString temperature READ temperature WRITE setTemperature NOTIFY dataChanged)
     Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY dataChanged)
     QML_ANONYMOUS
+
     public:
         class WeatherProps : public MainAppComponents::Props
         {
@@ -34,7 +35,7 @@ class WeatherForecast : public QObject
         QString icon() const;
         QString temperature() const;
 
-        void setDate(const QString &value);
+        void setDate(const QDate &value);
         void setLocation(const QString &value);
         void setIcon(const QString &value);
         void setTemperature(const QString &value);

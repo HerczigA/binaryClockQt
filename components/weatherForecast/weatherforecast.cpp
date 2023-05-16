@@ -40,11 +40,6 @@ QString WeatherForecast::location() const
     return mProps.getCity();
 }
 
-//QString WeatherForecast::weatherIcon() const
-//{
-
-//}
-
 QString WeatherForecast::icon() const
 {
     return mWeatherIcon;
@@ -55,11 +50,11 @@ QString WeatherForecast::temperature() const
     return mTemperature;
 }
 
-void WeatherForecast::setDate(const QString &value)
+void WeatherForecast::setDate(const QDate &value)
 {
-    if(value != mDayOfTheWeek)
+    if(mDate != value)
     {
-        mDayOfTheWeek=value;
+        mDate = value;
         emit dataChanged();
     }
 }
@@ -95,6 +90,7 @@ void WeatherForecast::setTemperature(const QString &value)
 
 void WeatherForecast::requestArrived()
 {
+    setDate(QDate::currentDate());
     emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
 }
 

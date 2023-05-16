@@ -40,7 +40,7 @@ Rectangle {
             width : root.width
             Text{
                 id :temperatureSection
-                height : parent.height
+                height : parent.height/5*3
                 width : parent.width
                 anchors.centerIn: temperatureRectangle
                 horizontalAlignment: Text.AlignHCenter
@@ -48,13 +48,17 @@ Rectangle {
                 text : qsTr(weather.temperature)
                 color : "white"
                 font{
-                    pixelSize : parent.height/5*3
+                    pixelSize : temperatureSection.height
                 }
             }
-//            Image {
-//                id: name
+            Rectangle {
+                id: iconRectangle
+                color : "transparent"
+                height : parent.height/5*2
+                width : parent.width
 //                source: weather.icon
-//            }
+
+            }
         }
 
         Rectangle
