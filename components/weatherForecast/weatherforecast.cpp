@@ -76,12 +76,8 @@ void WeatherForecast::setLocation(const QString &value)
 
 void WeatherForecast::setIcon(const QString &value)
 {
-    if(value != mWeatherIcon)
-    {
-        mWeatherIcon = value;
-        emit dataChanged();
-    }
-
+    mWeatherIcon = value;
+    emit dataChanged();
 }
 
 void WeatherForecast::setTemperature(const QString &value)
@@ -98,41 +94,24 @@ void WeatherForecast::requestArrived()
     emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
 }
 
-void WeatherForecast::receivedData(MainAppComponents::Types type, QByteArray rawData)
+void WeatherForecast::receivedData(MainAppComponents::PropertiesPacket packet)
 {
-    if (type != MainAppComponents::Types::WeatherForecast)
+    if (packet.type != MainAppComponents::Types::WeatherForecast)
         return;
-
-
-    QJsonParseError result;
-    QJsonValue value;
-    QJsonObject obj;
-    QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
-    if(result.error == QJsonParseError::NoError && !document.isEmpty())
+    QString newValue;
+    for(auto key : packet.props.keys())
     {
-
-        if(document.isObject())
-            obj = document.object();
-        else{
-            qInfo()<< "error at json parsing object side";
-            return;
-        }
-        value = obj.value("current");
-        if(!value.isNull())
+        newValue = packet.props.value(key).toString();
+        if(key == "temperature")
         {
-            QString newValue= value["temp_c"].toVariant().toString();
-            newValue += " °C";
             setTemperature(newValue);
-            newValue = value["condition"]["icon"].toVariant().toString();
-            if(!newValue.isEmpty() && newValue.contains("//"))
-            {
-                newValue = newValue.right(newValue.size()-2);
-                setIcon(newValue);
-            }
+        }
+        else if(key == "icon")
+        {
+            setIcon(newValue);
         }
     }
-    else
-        sendRequestWeatherData();
+    sendRequestWeatherData();
 
 }
 

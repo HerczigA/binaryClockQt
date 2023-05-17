@@ -45,16 +45,18 @@ Rectangle {
                 anchors.centerIn: temperatureRectangle
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                text : qsTr(weather.temperature)
+                text : qsTr(weather.temperature + " °C")
                 color : "white"
                 font{
                     pixelSize : parent.height/5*3
                 }
             }
-//            Image {
-//                id: name
-//                source: weather.icon
-//            }
+            Image {
+                id: weatherIcon
+                source: weather.icon
+                width: parent.width
+                height : parent.height/5*2
+            }
         }
 
         Rectangle

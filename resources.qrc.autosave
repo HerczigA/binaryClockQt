@@ -6,4 +6,5 @@
         <file>components/weatherForecast/WeatherForecast.qml</file>
         <file>img/icon.png</file>
     </qresource>
+    <qresource prefix="/new/prefix1"/>
 </RCC>

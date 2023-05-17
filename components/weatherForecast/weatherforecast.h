@@ -46,7 +46,7 @@ class WeatherForecast : public QObject
 
     public slots:
         void requestArrived();
-        void receivedData(MainAppComponents::Types type, QByteArray rawData);
+        void receivedData(MainAppComponents::PropertiesPacket packet);
         void receivedConfig(MainAppComponents::Types type, Properties data);
         void cityUpdated(QString var);
 

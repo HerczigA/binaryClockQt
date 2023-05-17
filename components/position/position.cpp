@@ -59,33 +59,20 @@ void Position::newPositionReceived(const QGeoPositionInfo &newPos)
     }
 }
 
-void Position::newOnlinePositionReceived(MainAppComponents::Types type, QByteArray rawData)
+void Position::newOnlinePositionReceived(MainAppComponents::PropertiesPacket packet)
 {
-    if (type != MainAppComponents::Types::Position)
+    if (packet.type != MainAppComponents::Types::Position)
         return;
 
-    QJsonParseError result;
-    QJsonValue value;
-    QJsonObject obj;
-    QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
-    if(result.error == QJsonParseError::NoError && !document.isEmpty())
+    QString newValue;
+    for(auto key : packet.props.keys())
     {
-
-        if(document.isObject())
-            obj = document.object();
-        else{
-            qInfo()<< "error at json parsing object side";
-            return;
-        }
-        value = obj.value("data");
-        if(!value.isNull())
+        newValue = packet.props.value(key).toString();
+        if(key == "city")
         {
-            QString location = value[0]["locality"].toVariant().toString();
-            emit sendCity(location);
+            emit sendCity(newValue);
         }
     }
-    else
-        requestedLocation();
 }
 
 void Position::getLocals(QGeoCodeReply *reply)

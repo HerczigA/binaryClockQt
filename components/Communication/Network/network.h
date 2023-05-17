@@ -5,11 +5,11 @@
 #include <QNetworkReply>
 #include <QMqttClient>
 #include <QAuthenticator>
-//#include <QHostInfo>
 #include <QNetworkInterface>
 #include <QHostAddress>
 #include <weatherforecast.h>
 #include <position.h>
+#include <jsonhandler.h>
 class Credentials : public QAuthenticator
 {
     public:
@@ -30,11 +30,12 @@ public:
     virtual ~Network();
 
 signals:
-    void sendData(MainAppComponents::Types compType, QByteArray rawData);
+    void sendData(MainAppComponents::PropertiesPacket packet);
 
 public slots:
     void newRequest(MainAppComponents::Props * properties, int source);
     void requestReplied(QNetworkReply*);
+    void getImages(const QUrl url);
 
 
     void sharedKeyRequired(QNetworkReply*, QSslPreSharedKeyAuthenticator*);
@@ -48,16 +49,17 @@ private slots:
 //    void encryptedSlot(QNetworkReply*);
 
 private:
-    void createRequest(Operation op, const QNetworkRequest & req);
+    void createRequest(Operation op, const QUrl &url);
     void setIPv6();
 
     QNetworkRequest mRequest;
     QNetworkReply *mReply;
     Credentials mCredentials;
     QNetworkAccessManager::Operation mRequestType;
-    QAuthenticator mAuth;
     QVector<QMetaObject::Connection> mConnections;
     QSslConfiguration mSslConf;
     QHostAddress mLocalAddress;
     QString mIPv6;
+    JsonHandler mJson;
+
 };

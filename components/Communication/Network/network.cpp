@@ -1,5 +1,8 @@
 #include "network.h"
 #include "moc_network.cpp"
+#include <QFileInfo>
+
+const QString weatherIconPath = "../img";
 
 Network::Network(QObject *parent)
     : QNetworkAccessManager{parent}
@@ -10,6 +13,7 @@ Network::Network(QObject *parent)
     mConnections.push_back(connect(this,&QNetworkAccessManager::authenticationRequired, this, &Network::setAuth));
     mConnections.push_back(connect(this,&QNetworkAccessManager::sslErrors, this, &Network::sslErrorOccured));
     mConnections.push_back(connect(this,&QNetworkAccessManager::preSharedKeyAuthenticationRequired, this, &Network::preSharedKeyCallback));
+    mConnections.push_back(connect(&mJson, &JsonHandler::requestImageDownloading, this, &Network::getImages));
 //    mConnections.push_back(connect(mReply ,&QNetworkReply::errorOccurred, this, &Network::replyErrorReceived));
 }
 
@@ -21,12 +25,15 @@ Network::Network(Credentials &conf, QObject *parent)
 
 Network::~Network()
 {
+
     if(mReply)
         delete mReply;
 
 
     for(auto& connection : mConnections)
         disconnect(connection);
+
+    deleteLater();
 }
 
 void Network::newRequest(MainAppComponents::Props* properties, int source)
@@ -55,34 +62,67 @@ void Network::newRequest(MainAppComponents::Props* properties, int source)
 
     QUrl url = QUrl(rawUrl);
     mRequestType = static_cast<QNetworkAccessManager::Operation>(properties->getRequestType());
-    mRequest = QNetworkRequest(url);
-
     if(mRequestType)
-        createRequest( mRequestType, mRequest);
+        createRequest( mRequestType, url);
 }
 
 void Network::requestReplied(QNetworkReply* reply)
 {
     QByteArray rawData;
-    MainAppComponents::Types type;
+    MainAppComponents::Types type = MainAppComponents::Types::Unknown;
+    MainAppComponents::PropertiesPacket packet;
     if(mReply != reply)
         mReply = reply;
 
     if(mReply->error() == QNetworkReply::NoError)
     {
         rawData = mReply->readAll();
+        if(mReply->url().host().contains("cdn"))
+        {
+            type = MainAppComponents::Types::WeatherForecast;
+//            QImage image = QImage::fromData(rawData, "png");
+            QFileInfo outputDir(weatherIconPath);
+            if ((!outputDir.exists()) || (!outputDir.isDir()) || (!outputDir.isWritable())) {
+                qInfo()<< outputDir.absoluteFilePath();
+            }
+            if(QFile::exists( weatherIconPath + "/icon.png"))
+                QFile::remove(weatherIconPath + "/icon.png");
+
+            QFile file(weatherIconPath + "/icon.png");
+            if(file.open(QIODevice::WriteOnly))
+            {
+                file.write(rawData);
+                file.close();
+                packet.type = type;
+                packet.props.insert("icon", QVariant(weatherIconPath+"/icon.png"));
+                qInfo()<< "image saved succesfully";
+            }
+            else
+            {
+                qInfo() <<  file.errorString();
+                qInfo()<< "image NOT saved succesfully";
+            }
+        }
+        else
+        {
+            type = mReply->url().host().contains("position")
+                ? MainAppComponents::Types::Position
+                : MainAppComponents::Types::WeatherForecast;
+
+            packet = mJson.processRawData(type, rawData);
+        }
     }
     else
     {
         qDebug()<< "Logged error occurred : "  << mReply->errorString();
+        qDebug()<< "Error Code : "  << mReply->error();
     }
+    emit sendData(packet);
+}
 
-    type = mReply->url().host().contains("position")
-        ? MainAppComponents::Types::Position
-        : MainAppComponents::Types::WeatherForecast;
-
-    emit sendData(type, rawData);
-
+void Network::getImages(const QUrl url)
+{
+    createRequest(QNetworkAccessManager::Operation::GetOperation, url);
 }
 
 void Network::sharedKeyRequired(QNetworkReply *reply, QSslPreSharedKeyAuthenticator *authenticator)
@@ -101,8 +141,8 @@ void Network::setAuth(QNetworkReply *reply, QAuthenticator *auth)
     auth->setUser(auth->user());
     auth->setPassword(auth->password());
     qDebug()<< "authentication is required";
-    if(mRequest.url() != QUrl("") && mRequestType != UnknownOperation)
-        createRequest(mRequestType, mRequest);
+//    if(mRequest.url() != QUrl("") && mRequestType != UnknownOperation)
+//        createRequest(mRequestType, mRequest);
 
 }
 
@@ -111,13 +151,13 @@ void Network::preSharedKeyCallback(QNetworkReply *reply, QSslPreSharedKeyAuthent
     qDebug()<< "preshared key required";
 }
 
-void Network::createRequest(Operation op, const QNetworkRequest &req)
+void Network::createRequest(Operation op, const QUrl &url)
 {
-
+    mRequest = QNetworkRequest(url);
     switch (op) {
         case GetOperation:
         {
-            mReply = get(req);
+            mReply = get(mRequest);
             break;
         }
         default:
