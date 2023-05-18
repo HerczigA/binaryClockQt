@@ -44,8 +44,9 @@ void JsonHandler::processWeatherComponents(QJsonObject &object, MainAppComponent
         {
             newValue = "http:" + newValue; //.right(newValue.size()-2);
 //            "//cdn.weatherapi.com/weather/64x64/day/296.png"
-            QUrl url(newValue);
-            emit requestImageDownloading(url);
+            packet.props.insert("icon", QVariant(newValue));
+//            QUrl url(newValue);
+//            emit requestImageDownloading(url);
         }
 
     }

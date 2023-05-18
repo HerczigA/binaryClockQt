@@ -36,7 +36,7 @@ Rectangle {
         {
             id: temperatureRectangle
             color : "transparent"
-            height : root.height /2
+            height : root.height/20*6
             width : root.width
             Text{
                 id :temperatureSection
@@ -48,17 +48,26 @@ Rectangle {
                 text : qsTr(weather.temperature + " °C")
                 color : "white"
                 font{
-                    pixelSize : parent.height/5*3
+                    pixelSize : parent.height /5 * 4
                 }
-            }
-            Image {
-                id: weatherIcon
-                source: weather.icon
-                width: parent.width
-                height : parent.height/5*2
             }
         }
 
+        Rectangle
+        {
+            id: iconRectangle
+            color : "transparent"
+            height : root.height/20*4
+            width : root.width
+
+            Image {
+                id: weatherIcon
+                anchors.centerIn: parent
+                source: weather.icon
+                height: parent.height
+            }
+
+        }
         Rectangle
         {
             id: locationRectangle

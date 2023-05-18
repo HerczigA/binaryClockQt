@@ -77,40 +77,14 @@ void Network::requestReplied(QNetworkReply* reply)
     if(mReply->error() == QNetworkReply::NoError)
     {
         rawData = mReply->readAll();
-        if(mReply->url().host().contains("cdn"))
-        {
-            type = MainAppComponents::Types::WeatherForecast;
-//            QImage image = QImage::fromData(rawData, "png");
-            QFileInfo outputDir(weatherIconPath);
-            if ((!outputDir.exists()) || (!outputDir.isDir()) || (!outputDir.isWritable())) {
-                qInfo()<< outputDir.absoluteFilePath();
-            }
-            if(QFile::exists( weatherIconPath + "/icon.png"))
-                QFile::remove(weatherIconPath + "/icon.png");
 
-            QFile file(weatherIconPath + "/icon.png");
-            if(file.open(QIODevice::WriteOnly))
-            {
-                file.write(rawData);
-                file.close();
-                packet.type = type;
-                packet.props.insert("icon", QVariant(weatherIconPath+"/icon.png"));
-                qInfo()<< "image saved succesfully";
-            }
-            else
-            {
-                qInfo() <<  file.errorString();
-                qInfo()<< "image NOT saved succesfully";
-            }
-        }
-        else
-        {
-            type = mReply->url().host().contains("position")
-                ? MainAppComponents::Types::Position
-                : MainAppComponents::Types::WeatherForecast;
+        type = mReply->url().host().contains("position")
+            ? MainAppComponents::Types::Position
+            : MainAppComponents::Types::WeatherForecast;
 
-            packet = mJson.processRawData(type, rawData);
-        }
+        packet = mJson.processRawData(type, rawData);
+        qInfo()<<"Package arrived and sent";
+
     }
     else
     {

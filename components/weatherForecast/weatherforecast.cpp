@@ -76,8 +76,11 @@ void WeatherForecast::setLocation(const QString &value)
 
 void WeatherForecast::setIcon(const QString &value)
 {
-    mWeatherIcon = value;
-    emit dataChanged();
+    if(mWeatherIcon != value)
+    {
+        mWeatherIcon = value;
+        emit dataChanged();
+    }
 }
 
 void WeatherForecast::setTemperature(const QString &value)
@@ -111,7 +114,7 @@ void WeatherForecast::receivedData(MainAppComponents::PropertiesPacket packet)
             setIcon(newValue);
         }
     }
-    sendRequestWeatherData();
+//    sendRequestWeatherData();
 
 }
 
