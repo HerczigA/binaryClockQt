@@ -6,6 +6,7 @@ WeatherForecast::WeatherForecast(QObject *parent)
 {
 
     mDate = QDate::currentDate();
+    setLocation("N/A");
     updateLocation();
 }
 
@@ -39,11 +40,6 @@ QString WeatherForecast::location() const
 {
     return mProps.getCity();
 }
-
-//QString WeatherForecast::weatherIcon() const
-//{
-
-//}
 
 QString WeatherForecast::icon() const
 {

@@ -45,7 +45,7 @@ Rectangle {
                 anchors.centerIn: temperatureRectangle
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                text : qsTr(weather.temperature + " °C")
+                text :  qsTr(weather.temperature) !== "" ?  qsTr(weather.temperature + " °C") : "N/A"
                 color : "white"
                 font{
                     pixelSize : parent.height /5 * 4
