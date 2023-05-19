@@ -13,17 +13,16 @@
 #include <QMap>
 #include <QFile>
 
-
 using namespace std;
 using Properties = QMap<QString, QVariant>;
 
 namespace MainAppComponents
 {
     enum Types{
-        UNKNOWN,
+        Unknown,
         WeatherForecast,
         Position,
-        News,
+        Icon,
         All
     };
     enum Operation
@@ -37,6 +36,14 @@ namespace MainAppComponents
         CUSTOM
 
     };
+
+    struct PropertiesPacket
+    {
+        Types type;
+        Properties props;
+        PropertiesPacket() : type(Types::Unknown){}
+    };
+
     class Props
     {
         public:

@@ -66,6 +66,7 @@ target_include_directories(${PROJECT} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/components/binaryClock
     ${CMAKE_CURRENT_SOURCE_DIR}/components/weatherForecast
     ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network
+    ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network/Extensions
     ${CMAKE_CURRENT_SOURCE_DIR}/components/config
     ${CMAKE_CURRENT_SOURCE_DIR}/components/position
     ${CMAKE_CURRENT_SOURCE_DIR}/mainApp

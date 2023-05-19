@@ -33,7 +33,7 @@ signals:
     void requestLocation(MainAppComponents::Props* properties, int source);
 public slots:
     void newPositionReceived(const QGeoPositionInfo &update);
-    void newOnlinePositionReceived(MainAppComponents::Types compType, QByteArray rawData);
+    void newOnlinePositionReceived(MainAppComponents::PropertiesPacket rawData);
     void errorReceived(QGeoPositionInfoSource::Error);
     void errorGeoCodeManager();
     void getLocals(QGeoCodeReply *reply);

@@ -36,7 +36,7 @@ Rectangle {
         {
             id: temperatureRectangle
             color : "transparent"
-            height : root.height /2
+            height : root.height/20*6
             width : root.width
             Text{
                 id :temperatureSection
@@ -45,22 +45,30 @@ Rectangle {
                 anchors.centerIn: temperatureRectangle
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                text : qsTr(weather.temperature)
+                text :  qsTr(weather.temperature) !== "" ?  qsTr(weather.temperature + " °C") : "N/A"
                 color : "white"
                 font{
-                    pixelSize : temperatureSection.height
+                    pixelSize : parent.height /5 * 4
                 }
             }
-            Rectangle {
-                id: iconRectangle
-                color : "transparent"
-                height : parent.height/5*2
-                width : parent.width
-//                source: weather.icon
 
-            }
         }
 
+        Rectangle
+        {
+            id: iconRectangle
+            color : "transparent"
+            height : root.height/20*4
+            width : root.width
+
+            Image {
+                id: weatherIcon
+                anchors.centerIn: parent
+                source: weather.icon
+                height: parent.height
+            }
+
+        }
         Rectangle
         {
             id: locationRectangle

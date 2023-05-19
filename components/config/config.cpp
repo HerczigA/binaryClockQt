@@ -7,7 +7,7 @@ Config::Config(QObject *parent )
 {
     mConfigParts.insert("WeatherForecast", MainAppComponents::Types::WeatherForecast);
     mConfigParts.insert("Position", MainAppComponents::Types::Position);
-    qInfo() << fileName() << "used as config";
+    qInfo() << "Look for config file at " << fileName();
 
 }
 
@@ -22,11 +22,10 @@ void Config::readConfig()
         QStringList subGroups = childGroups();
         getSubGroups(subGroups);
     }
-//    else
-//    {
-//        exit in case there will be fatal error
-//        for mandatory function
-//    }
+    else
+    {
+        qInfo() << "Config file not found or empty";
+    }
 }
 
 bool Config::configFileIsExist()
