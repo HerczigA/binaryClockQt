@@ -38,6 +38,14 @@ Rectangle {
             color : "transparent"
             height : root.height/20*6
             width : root.width
+            TapHandler
+            {
+                onDoubleTapped:
+                {
+                    weather.requestDataFromUI()
+                }
+            }
+
             Text{
                 id :temperatureSection
                 height : parent.height/5*3

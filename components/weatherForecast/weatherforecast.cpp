@@ -21,6 +21,12 @@ WeatherForecast::~WeatherForecast()
         disconnect(con);
 }
 
+void WeatherForecast::requestDataFromUI()
+{
+    updateLocation();
+    sendRequestWeatherData();
+}
+
 void WeatherForecast::updateLocation()
 {
     emit requestLocation();
