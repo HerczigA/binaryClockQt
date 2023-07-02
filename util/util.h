@@ -3,7 +3,9 @@
 #include <QObject>
 #include <QQuickItem>
 #include <QList>
-#include <QVector>
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
+    #include <QVector>
+#endif
 #include <QTimer>
 #include <QDebug>
 #include <QVariant>
@@ -12,6 +14,8 @@
 #include <QStringList>
 #include <QMap>
 #include <QFile>
+#include <QList>
+#include <QtGlobal>
 
 using namespace std;
 using Properties = QMap<QString, QVariant>;

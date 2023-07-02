@@ -1,15 +1,11 @@
-import QtQuick
-import QtQuick.Layouts
-import "./components/binaryClock"
-import "./components/weatherForecast"
+import QtQuick 2.15
+import "../components/binaryClock"
+import "../components/weatherForecast"
 
-Window {
-    id: mainWindow
-    width: mainApp.width
-    height: mainApp.height
-    visible: true
-    visibility: "FullScreen"
-    title: qsTr("Do It, YOU can do IT")
+Item {
+    property var mainAppData
+
+    id: firstPage
 
     Image {
         id: woodImg
@@ -24,13 +20,13 @@ Window {
         WeatherForecast{
             width: parent.width /2
             height: parent.height
-            weather: mainApp.weather
+            weather: mainAppData.weather
             color: "transparent"
         }
 
         BinaryClock
         {
-          clock: mainApp.binClock
+          clock: mainAppData.binClock
           width: parent.width /2
           height: parent.height
         }

@@ -24,11 +24,9 @@ set(CMAKE_USE_RELATIVE_PATHS ON)
 
 file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
 file(GLOB_RECURSE COMPONENT_HEADERS components/*.h)
+file(GLOB_RECURSE QML_COMPONENTS qml/*.qml)
 
-list(APPEND QML_COMPONENTS
-    components/binaryClock/BinaryClock.qml
-    components/weatherForecast/WeatherForecast.qml
-)
+message(QML_COMPONENTS ${QML_COMPONENTS})
 
 set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
 
@@ -46,9 +44,7 @@ qt_add_qml_module(${PROJECT}
     URI binaryClock
     VERSION 1.0
     QML_FILES
-    main.qml
     ${QML_COMPONENTS}
-
 )
 
 set_target_properties(${PROJECT} PROPERTIES
@@ -69,6 +65,7 @@ target_include_directories(${PROJECT} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network/Extensions
     ${CMAKE_CURRENT_SOURCE_DIR}/components/config
     ${CMAKE_CURRENT_SOURCE_DIR}/components/position
+    ${CMAKE_CURRENT_SOURCE_DIR}/components/storeObject
     ${CMAKE_CURRENT_SOURCE_DIR}/mainApp
 )
 

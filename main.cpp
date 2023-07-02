@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     const auto height = app.primaryScreen()->size().height();
     unique_ptr<MainApp>mainApp = make_unique<MainApp>(width, height);
 
-    const QUrl url(u"qrc:/binaryClock/main.qml"_qs);
+    const QUrl url(u"qrc:/qml/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)

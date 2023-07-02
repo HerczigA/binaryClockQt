@@ -17,7 +17,6 @@ Rectangle {
     property int blockWidthRate : 6
     property int blockHeightRate : 4
     property var clock
-    property var type
     property string colorBlue : "#1B3D81"
     property string colorHour : "#B33F40"
     property string colorMinute : "#E9740E"

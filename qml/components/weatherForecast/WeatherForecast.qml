@@ -40,10 +40,14 @@ Rectangle {
             width : root.width
             TapHandler
             {
-                onDoubleTapped:
-                {
-                    weather.requestDataFromUI()
-                }
+                onDoubleTapped : weather.requestDataFromUI()
+
+
+            }
+            MouseArea
+            {
+                id : clickHandler
+                onDoubleClicked : weather.requestDataFromUI()
             }
 
             Text{
