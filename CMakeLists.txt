@@ -4,6 +4,7 @@ set(PROJECT mainApp)
 
 project(${PROJECT} VERSION 0.1 LANGUAGES CXX)
 
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -19,7 +20,6 @@ find_package(Qt6 6.3 COMPONENTS Network REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED)
 find_package(Qt6 6.3 COMPONENTS Location REQUIRED)
 
-
 set(CMAKE_USE_RELATIVE_PATHS ON)
 
 file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
@@ -31,6 +31,17 @@ message(QML_COMPONENTS ${QML_COMPONENTS})
 set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
 
 set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS}  util/util.h)
+
+message(CMAKE_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+message(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+    add_compile_definitions(WIRINGPI_USAGE=1)
+    find_library(wiringPi_LIB wiringPi)
+    list(APPEND LinkLibraries ${wiringPi_LIB})
+else()
+    add_compile_definitions(WIRINGPI_USAGE=0)
+endif()
 
 qt_add_resources(COMPONENTS resources.qrc)
 
@@ -61,6 +72,7 @@ target_include_directories(${PROJECT} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/util
     ${CMAKE_CURRENT_SOURCE_DIR}/components/binaryClock
     ${CMAKE_CURRENT_SOURCE_DIR}/components/weatherForecast
+    ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/serial/i2c
     ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network
     ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network/Extensions
     ${CMAKE_CURRENT_SOURCE_DIR}/components/config
@@ -69,15 +81,18 @@ target_include_directories(${PROJECT} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/mainApp
 )
 
-target_link_libraries(${PROJECT}
-    PRIVATE
+list(APPEND LinkLibraries
     Qt6::Quick
     Qt6::Core
     Qt6::Gui
     Qt6::Positioning
     Qt6::Network
     Qt6::Mqtt
-    Qt6::Location
+    Qt6::Location)
+
+target_link_libraries(${PROJECT}
+    PRIVATE
+    ${LinkLibraries}
 )
 
 install(TARGETS ${PROJECT}

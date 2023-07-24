@@ -17,6 +17,7 @@ MainApp::MainApp(const int& w, const int& h, QObject *parent)
     mNetwork = make_unique<Network>();
     mBinClock = make_unique<BinaryClock>();
     mWeatherForecast = make_unique<WeatherForecast>();
+
     mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestSignal, mNetwork.get(), &Network::newRequest);
     mConnections += connect(mNetwork.get(), &Network::sendData, mWeatherForecast.get(), &WeatherForecast::receivedData);
     mConnections += connect(mConfig.get(), &Config::sendData, mWeatherForecast.get(), &WeatherForecast::receivedConfig);
@@ -29,11 +30,6 @@ MainApp::~MainApp()
 {
     for(auto& connection : mConnections)
         disconnect(connection);
-    mNetwork.reset();
-    mBinClock.reset();
-    mWeatherForecast.reset();
-    mConfig.reset();
-    mPos.reset();
 }
 
 BinaryClock *MainApp::binClock() const

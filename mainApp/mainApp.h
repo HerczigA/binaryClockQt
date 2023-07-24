@@ -9,9 +9,6 @@
 #include <QNetworkAccessManager>
 #include <QMqttClient>
 
-
-using namespace std;
-
 class MainApp : public QObject
 {
     Q_OBJECT
