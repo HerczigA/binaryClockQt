@@ -13,6 +13,8 @@ MainApp::MainApp(const int& w, const int& h, QObject *parent)
     , mWidth(w)
     , mHeight(h)
 {
+    wiringPiSetup();
+    wiringPiSetupGpio();
     mConfig = make_unique<Config>();
     mNetwork = make_unique<Network>();
     mBinClock = make_unique<BinaryClock>();

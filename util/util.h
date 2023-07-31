@@ -27,7 +27,8 @@ namespace MainAppComponents
         Unknown,
         WeatherForecast,
         Position,
-        Icon,
+        WateringSystem,
+
         All
     };
     enum Operation

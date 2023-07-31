@@ -18,6 +18,12 @@ class MainApp : public QObject
     Q_PROPERTY(int height READ height CONSTANT)
 
 public:
+    /*static MainApp& Get(const int& w, const int& h)
+    {
+        setHeight(h);
+        mHeight = h;
+        return mInstance;
+    }*/
     explicit MainApp(QObject *parent = nullptr);
     MainApp(const int& w, const int& h, QObject *parent = nullptr);
     ~MainApp();
@@ -25,11 +31,15 @@ public:
     WeatherForecast* weather() const;
     const int width() const;
     const int height() const;
+    void setHeight(const int& h) {mHeight = h;}
+    void setWidth(const int& w) {mWidth = w;}
 
 public slots:
     void receivedConfig(MainAppComponents::Types type, Properties setting);
 
 private:
+    //explicit MainApp(QObject *parent = nullptr);
+    //static MainApp mInstance;
     int mWidth;
     int mHeight;
     unique_ptr<Config> mConfig;

@@ -19,11 +19,13 @@ Window {
 
         FirstPage
         {
+            id: firstPageID
             mainAppData: mainApp
         }
 
-        Item {
-            id: secondPage
+        SecondPage {
+            id: secondPageID
+            mainAppData: mainApp
         }
         Item {
             id: thirdPage
