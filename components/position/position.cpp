@@ -6,7 +6,7 @@ const int getPosPeriod = 5000;
 Position::Position(QObject *parent)
     : QObject{parent}
 {
-    mServiceProvider = make_unique<QGeoServiceProvider>("osm");
+    mServiceProvider = std::make_unique<QGeoServiceProvider>("osm");
     mGeoManager = mServiceProvider->geocodingManager();
     if(mGeoManager)
     {
@@ -36,7 +36,7 @@ Position::Position(QObject *parent)
 Position::Position(Properties props, QObject *parent)
     : QObject{parent}
 {
-    mProps = make_unique<PositionProps>(props);
+    mProps = std::make_unique<PositionProps>(props);
     emit requestLocation(mProps.get(), MainAppComponents::Types::Position);
 }
 

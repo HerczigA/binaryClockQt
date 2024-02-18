@@ -10,7 +10,6 @@ Window {
     visible: true
     visibility: "FullScreen"
     title: qsTr("Do It, YOU can do IT")
-
     SwipeView {
         id: view
 

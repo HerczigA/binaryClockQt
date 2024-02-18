@@ -10,7 +10,7 @@ I2C::I2C(QObject *parent)
     initSerialLine();
 }
 
-I2C::I2C(char &i2cAddress, string &devPath, QObject *parent)
+I2C::I2C(char &i2cAddress, QString &devPath, QObject *parent)
     : SerialWiringPi(parent)
     , mI2CAddress(i2cAddress)
     , mDevicePath(devPath)

@@ -47,6 +47,6 @@ private:
     QGeoAddress mAddress;
     QGeoCodingManager * mGeoManager;
     QGeoCodeReply * mGeoCodeReply;
-    unique_ptr<QGeoServiceProvider> mServiceProvider;
-    unique_ptr<PositionProps> mProps;
+    std::unique_ptr<QGeoServiceProvider> mServiceProvider;
+    std::unique_ptr<PositionProps> mProps;
 };
