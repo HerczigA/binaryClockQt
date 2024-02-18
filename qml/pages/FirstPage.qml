@@ -4,9 +4,7 @@ import "../components/weatherForecast"
 
 Item {
     property var mainAppData
-
     id: firstPage
-
     Image {
         id: woodImg
         source: "/img/wood_surface.jpg"

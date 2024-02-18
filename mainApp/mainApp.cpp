@@ -1,11 +1,11 @@
 #include "mainApp.h"
 #include "moc_mainApp.cpp"
 
-MainApp::MainApp(QObject *parent)
+/*MainApp::MainApp(QObject *parent)
     :QObject(parent)
 {
-    mBinClock = make_unique<BinaryClock>();
-    mWeatherForecast = make_unique<WeatherForecast>();
+    mBinClock = std::make_unique<BinaryClock>();
+    mWeatherForecast = std::make_unique<WeatherForecast>();
 }
 
 MainApp::MainApp(const int& w, const int& h, QObject *parent)
@@ -13,10 +13,10 @@ MainApp::MainApp(const int& w, const int& h, QObject *parent)
     , mWidth(w)
     , mHeight(h)
 {
-    mConfig = make_unique<Config>();
-    mNetwork = make_unique<Network>();
-    mBinClock = make_unique<BinaryClock>();
-    mWeatherForecast = make_unique<WeatherForecast>();
+    mConfig = std::make_unique<Config>();
+    mNetwork = std::make_unique<Network>();
+    mBinClock = std::make_unique<BinaryClock>();
+    mWeatherForecast = std::make_unique<WeatherForecast>();
 
     mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestSignal, mNetwork.get(), &Network::newRequest);
     mConnections += connect(mNetwork.get(), &Network::sendData, mWeatherForecast.get(), &WeatherForecast::receivedData);
@@ -24,7 +24,7 @@ MainApp::MainApp(const int& w, const int& h, QObject *parent)
     mConnections += connect(mConfig.get(), &Config::sendData, this, &MainApp::receivedConfig);
     mConnections += connect(mBinClock.get(), &BinaryClock::updateWeather, mWeatherForecast.get(), &WeatherForecast::requestArrived);
     mConfig->readConfig();
-}
+}*/
 
 MainApp::~MainApp()
 {
@@ -59,11 +59,11 @@ void MainApp::receivedConfig(MainAppComponents::Types type, Properties props)
         bool isOnline = props.value("online").toBool();
         if(!isOnline)
         {
-            mPos = make_unique<Position>();
+            mPos = std::make_unique<Position>();
         }
         else
         {
-            mPos = make_unique<Position>(props);
+            mPos = std::make_unique<Position>(props);
             mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation);
             mConnections += connect(mPos.get(), &Position::requestLocation, mNetwork.get(), &Network::newRequest);
             mConnections += connect(mNetwork.get(), &Network::sendData, mPos.get(), &Position::newOnlinePositionReceived);

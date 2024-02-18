@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     const auto width = app.primaryScreen()->size().width();
     const auto height = app.primaryScreen()->size().height();
-    unique_ptr<MainApp>mainApp = make_unique<MainApp>(width, height);
+    MainApp* mainApp = MainApp::getInstance(width, height, &app);
 
     const QUrl url(u"qrc:/qml/main.qml"_qs);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
-    engine.rootContext()->setContextProperty("mainApp", mainApp.get());
+    engine.rootContext()->setContextProperty("mainApp", mainApp);
     engine.load(url);
 
 
