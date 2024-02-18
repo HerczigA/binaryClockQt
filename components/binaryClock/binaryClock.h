@@ -1,11 +1,7 @@
 #pragma once
 
-#include <QObject>
-#include <QQuickItem>
 #include <QDateTime>
-#include <QList>
-#include <QTimer>
-#include <QDebug>
+#include <util.h>
 
 class BinaryClock : public QObject
 {
@@ -24,6 +20,7 @@ class BinaryClock : public QObject
         void binaryHourChanged();
         void binaryMinuteChanged();
         void binarySecondChanged();
+        void updateWeather();
 
 
     private slots:
@@ -33,13 +30,13 @@ class BinaryClock : public QObject
         const QList<bool> binaryHour() const;
         const QList<bool> binaryMinute() const;
         const QList<bool> binarySecond() const;
+        int convertBCD(int& sec);
         void updateHour();
         void updateMinute();
         void updateSecond();
         void InitClock();
         QDateTime mDateTime;
         QTime mTime;
-        QDate mDate;
         QList<bool> mBinaryHour;
         QList<bool> mBinaryMinute;
         QList<bool> mBinarySecond;
@@ -48,6 +45,4 @@ class BinaryClock : public QObject
         int mSecond;
         QTimer mTimer;
 };
-
-
 
