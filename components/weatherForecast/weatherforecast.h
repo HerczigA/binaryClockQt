@@ -1,7 +1,6 @@
 #pragma once
 #include <util.h>
 
-
 class WeatherForecast : public QObject
 {
     Q_OBJECT
