@@ -13,14 +13,15 @@ Rectangle
     implicitHeight: 50
     radius: rootSlideButton.height
     color: colorOff
-    border.width: 5
+    border.width: 2
     Rectangle
     {
         id: circle
         implicitWidth: rootSlideButton.height
-        implicitHeight: rootSlideButton.height - 2
-        x: 1
-        y: 1
+        implicitHeight: rootSlideButton.height - 4
+        radius: rootSlideButton.height
+        x: 2
+        y: 2
     }
     onSwitchStateChanged:
     {
@@ -37,13 +38,13 @@ Rectangle
     states: [
         State{
             name: "ON"
-            PropertyChanges{ target: circle; x: rootSlideButton.width -implicitHeight -2}
-            PropertyChanges{ target: rootSlideButton; rootSlideButton.color: colorOn  }
+            PropertyChanges{ target: circle; x: rootSlideButton.width -implicitHeight -6}
+            PropertyChanges{ target: rootSlideButton; color: colorOn  }
         },
         State{
             name: "OFF"
-            PropertyChanges{ target: circle; x: 1}
-            PropertyChanges{ target: rootSlideButton; rootSlideButton.color: colorOff  }
+            PropertyChanges{ target: circle; x: 2}
+            PropertyChanges{ target: rootSlideButton; color: colorOff  }
         }
     ]
     transitions: Transition {
