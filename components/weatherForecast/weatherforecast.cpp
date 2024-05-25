@@ -1,5 +1,4 @@
 #include "weatherforecast.h"
-#include "moc_weatherforecast.cpp"
 
 WeatherForecast::WeatherForecast(QObject *parent)
     : QObject{parent}
