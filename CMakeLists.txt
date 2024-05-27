@@ -12,13 +12,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-find_package(Qt6 6.3 COMPONENTS Quick REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Gui REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Core REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Network REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Location REQUIRED)
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+    add_compile_definitions(WIRINGPI_USAGE=1)
+    find_library(wiringPi_LIB wiringPi)
+    list(APPEND LinkLibraries ${wiringPi_LIB})
+else()
+    add_compile_definitions(WIRINGPI_USAGE=0)
+endif()
+
+set(CMAKE_PREFIX_PATH "~/Qt6/qtHost/lib/cmake")
+message(${CMAKE_PREFIX_PATH})
+
+find_package(Qt6 6.3 COMPONENTS Quick REQUIRED PATHS )
+find_package(Qt6 6.3 COMPONENTS Gui REQUIRED PATHS /home/adam/Qt/6.3.2/gcc_64/lib)
+find_package(Qt6 6.3 COMPONENTS Core REQUIRED PATHS /home/adam/Qt/6.3.2/gcc_64/lib)
+find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED PATHS /home/adam/Qt/6.3.2/gcc_64/lib)
+find_package(Qt6 6.3 COMPONENTS Network REQUIRED PATHS /home/adam/Qt/6.3.2/gcc_64/lib)
+find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED PATHS /home/adam/Qt/6.3.2/gcc_64/lib)
+find_package(Qt6 6.3 COMPONENTS Location REQUIRED PATHS /home/adam/Qt/6.3.2/gcc_64/lib)
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
 
@@ -35,13 +46,6 @@ set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS}  util/util.h)
 message(CMAKE_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
 message(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
 
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
-    add_compile_definitions(WIRINGPI_USAGE=1)
-    find_library(wiringPi_LIB wiringPi)
-    list(APPEND LinkLibraries ${wiringPi_LIB})
-else()
-    add_compile_definitions(WIRINGPI_USAGE=0)
-endif()
 
 qt_add_resources(COMPONENTS resources.qrc)
 
