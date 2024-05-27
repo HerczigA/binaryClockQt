@@ -17,9 +17,8 @@
 #include <QList>
 #include <QtGlobal>
 
-using namespace std;
 using Properties = QMap<QString, QVariant>;
-const string i2cPath = "/dev/i2c-1";
+const QString i2cPath = "/dev/i2c-1";
 
 namespace MainAppComponents
 {

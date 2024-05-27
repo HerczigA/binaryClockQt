@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import "./pages"
+import "./utilities"
 
 Window {
     id: mainWindow
@@ -10,7 +11,6 @@ Window {
     visible: true
     visibility: "FullScreen"
     title: qsTr("Do It, YOU can do IT")
-
     SwipeView {
         id: view
 
@@ -23,9 +23,15 @@ Window {
             mainAppData: mainApp
         }
 
-        SecondPage {
-            id: secondPageID
-            mainAppData: mainApp
+        Item {
+            id: secondPage
+            SlideButton
+            {
+                x:10
+                y:10
+                anchors.centerIn: parent.Center
+                colorOff: "orange"
+            }
         }
         Item {
             id: thirdPage
