@@ -1,108 +1,72 @@
 import QtQuick 2.15
-
+import QtQuick.Layouts
 Rectangle {
-    id : root
+    id: weatherForecastRoot
     property var weather
-    Column
+    ColumnLayout
     {
-        width : root.width
-        height : root.height
-        Rectangle
-        {
-            id: dateRectangle
-            width : root.width
-            height : root.height /4
-            color : "transparent"
-            Text{
-
-                height : parent.height
-                id : dateSection
-                anchors.centerIn: parent
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text : weather.date
-                color : "white"
-                padding: parent.height/10
-                font{
-                    bold : true
-                    family : "Helvetica"
-                    pixelSize : dateRectangle.height/5*3
-                }
-
+        anchors.fill: weatherForecastRoot
+        Text{
+            id: dateText
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            text: weather && weather.date ? weather.date: "--"  
+            color: "white"
+            font{
+                bold: true
+                family: "Helvetica"
+                pixelSize: 100
             }
-
         }
         Rectangle
         {
             id: temperatureRectangle
-            color : "transparent"
-            height : root.height/20*6
-            width : root.width
+            color: "transparent"
+            Layout.preferredHeight: weatherForecastRoot.height/20*6
+            Layout.preferredWidth: weatherForecastRoot.width
             TapHandler
             {
-                onDoubleTapped : weather.requestDataFromUI()
-
-
+                onDoubleTapped: weather.requestDataFromUI()
             }
             MouseArea
             {
-                id : clickHandler
-                onDoubleClicked : weather.requestDataFromUI()
+                id: clickHandler
+                onDoubleClicked: weather.requestDataFromUI()
             }
-
             Text{
-                id :temperatureSection
-                height : parent.height/5*3
-                width : parent.width
+                id: temperatureSection
                 anchors.centerIn: temperatureRectangle
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                text :  qsTr(weather.temperature) !== "" ?  qsTr(weather.temperature + " °C") : "N/A"
-                color : "white"
+                text:  qsTr(weather.temperature) !== "" ?  qsTr(weather.temperature + " °C"): "N/A"
+                color: "white"
                 font{
-                    pixelSize : parent.height /5 * 4
+                    pixelSize: temperatureRectangle.height /5 * 4
                 }
             }
-
         }
-
         Rectangle
         {
-            id: iconRectangle
-            color : "transparent"
-            height : root.height/20*4
-            width : root.width
-
+            id: weatherIconRectangle
+            color: "transparent"
+            Layout.preferredHeight: weatherForecastRoot.height/20*4
+            Layout.preferredWidth: weatherForecastRoot.width
             Image {
                 id: weatherIcon
                 anchors.centerIn: parent
                 source: weather.icon
-                height: parent.height
+                height: weatherIconRectangle.height
+                width: weatherIconRectangle.height
             }
-
         }
-        Rectangle
-        {
-            id: locationRectangle
-            height : root.height /4
-            width : root.width
-            color : "transparent"
-            Text{
-                id :locationSection
-                height : parent.height
-                width : parent.width
-                anchors.centerIn: parent
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text : qsTr(weather.location)
-                color : "white"
-                font{
-                    bold : true
-                    pixelSize : parent.height/5*2
-                }
+        Text{
+            id:locationSection
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            text: qsTr(weather.location)
+            color: "white"
+            font{
+                bold: true
+                pixelSize: 70
             }
         }
     }
-
-
 }
