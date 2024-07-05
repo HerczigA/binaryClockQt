@@ -1,4 +1,4 @@
-    #pragma once
+#pragma once
 
 #include <util.h>
 #include <binaryClock.h>
@@ -22,13 +22,15 @@ public:
     void init();
     static MainApp* getInstance(const int& width, const int& height, QObject *parent = nullptr)
     {
-        static MainApp m_mainAppInstance(width, height, parent);
-        return &m_mainAppInstance;
+        if(s_mainApp == nullptr)
+        {
+           s_mainApp = new MainApp(width, height, parent);
+        }
+        return  s_mainApp;
     }
 
     ~MainApp();
     MainApp(const MainApp& mainapp) = delete;
-    MainApp operator=(const MainApp& mainapp) = delete;
     BinaryClock* binClock() const;
     WeatherForecast* weather() const;
     const int width() const;
@@ -47,7 +49,6 @@ private:
         mNetwork = std::make_unique<Network>();
         mBinClock = std::make_unique<BinaryClock>();
         mWeatherForecast = std::make_unique<WeatherForecast>();
-
         mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestSignal, mNetwork.get(), &Network::newRequest);
         mConnections += connect(mNetwork.get(), &Network::sendData, mWeatherForecast.get(), &WeatherForecast::receivedData);
         mConnections += connect(mConfig.get(), &Config::sendData, mWeatherForecast.get(), &WeatherForecast::receivedConfig);
@@ -57,6 +58,8 @@ private:
     }
     int mWidth;
     int mHeight;
+
+    static MainApp* s_mainApp;
 
     std::unique_ptr<Config> mConfig;
     std::unique_ptr<BinaryClock> mBinClock;
