@@ -147,13 +147,17 @@ void WateringSystem::startWatering()
     if(mWateringSystemState != WaterinSystemState::WaterLevelUnderMin)
     {
         mTimer.start();
+#ifdef WIRINGPI_USAGE
         digitalWrite(mPumpPin, HIGH);
+#endif
     }
 }
 
 void WateringSystem::stopWatering()
 {
+#ifdef WIRINGPI_USAGE
     digitalWrite(mPumpPin, LOW);
+#endif
 }
 
 void WateringSystem::receivedConfig(MainAppComponents::Types type, Properties settings)
@@ -182,8 +186,10 @@ void WateringSystem::receivedConfig(MainAppComponents::Types type, Properties se
             mPumpPin = -1;
         else
         {
+#ifdef WIRINGPI_USAGE
             pinMode(mPumpPin, OUTPUT);
             digitalWrite(mPumpPin, LOW);
+#endif
         }
 
     }
