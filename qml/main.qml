@@ -40,7 +40,6 @@ Window {
                 mainApp.weather.requestDataFromUI()
         }
     }
-
     PageIndicator {
         id: indicator
 
@@ -50,6 +49,4 @@ Window {
         anchors.bottom: view.bottom
         anchors.horizontalCenter: parent.horizontalCenter
     }
-
-
 }
