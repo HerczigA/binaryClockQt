@@ -30,6 +30,7 @@ class BinaryClock : public QObject
         const QList<bool> binaryMinute() const;
         const QList<bool> binarySecond() const;
         int convertBCD(int& sec);
+        // void updateBinaryUnit();
         void updateHour();
         void updateMinute();
         void updateSecond();

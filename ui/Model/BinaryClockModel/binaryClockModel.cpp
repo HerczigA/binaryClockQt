@@ -1,4 +1,5 @@
-#include "binaryClock.h"
+#include "binaryClockModel.h"
+
 const int lastIndex = 7;
 
 BinaryClock::BinaryClock(QObject *parent)

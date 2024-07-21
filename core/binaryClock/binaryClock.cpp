@@ -11,13 +11,9 @@ BinaryClock::BinaryClock(QObject *parent)
     mDateTime = QDateTime::currentDateTime();
     mTime = mDateTime.time();
 
-    mBinaryHour = QList<bool>(8, false);
-    mBinaryMinute = QList<bool>(8, false);
-    mBinarySecond = QList<bool>(8, false);
-
     connect(&mTimer, &QTimer::timeout, this, &BinaryClock::timeChanged);
     mTimer.setInterval(1000);
-    mTimer.start(1000);
+    mTimer.start();
     InitClock();
 }
 
@@ -94,7 +90,6 @@ void BinaryClock::updateSecond()
 
 void BinaryClock::InitClock()
 {
-
     updateHour();
     updateMinute();
     updateSecond();

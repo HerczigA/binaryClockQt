@@ -85,7 +85,7 @@ set_target_properties(${PROJECT} PROPERTIES
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
     BUILD_WITH_INSTALL_RPATH FALSE
-    # LINK_FLAGS "-Wl,-rpath,$ORIGIN/lib"
+    LINK_FLAGS "-Wl,-rpath,$ORIGIN/lib"
 )
 
 # target_include_directories(${PROJECT} PUBLIC

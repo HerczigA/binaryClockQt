@@ -22,7 +22,6 @@ class BinaryClock : public QObject
         void binarySecondChanged();
         void updateWeather();
 
-
     private slots:
         void timeChanged();
 
@@ -35,14 +34,9 @@ class BinaryClock : public QObject
         void updateMinute();
         void updateSecond();
         void InitClock();
-        QDateTime mDateTime;
-        QTime mTime;
         QList<bool> mBinaryHour;
         QList<bool> mBinaryMinute;
         QList<bool> mBinarySecond;
-        int mHour;
-        int mMinute;
-        int mSecond;
-        QTimer mTimer;
+        
 };
 

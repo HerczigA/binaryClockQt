@@ -1,0 +1,2 @@
+add_subdirectory(BinaryClockModel)
+add_subdirectory(WeatherForecastModel)
