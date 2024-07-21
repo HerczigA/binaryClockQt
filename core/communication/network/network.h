@@ -3,13 +3,13 @@
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QMqttClient>
+// #include <QMqttClient>
 #include <QAuthenticator>
 #include <QNetworkInterface>
 #include <QHostAddress>
-#include <weatherforecast.h>
-#include <position.h>
-#include <jsonhandler.h>
+#include <core/weatherForecast/weatherforecast.h>
+// #include <core/position/position.h>
+#include <core/communication/network/extensions/jsonhandler.h>
 class Credentials : public QAuthenticator
 {
     public:

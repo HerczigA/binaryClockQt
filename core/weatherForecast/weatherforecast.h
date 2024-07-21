@@ -1,5 +1,6 @@
 #pragma once
-#include <util.h>
+
+#include <core/util/util.h>
 
 class WeatherForecast : public QObject
 {
@@ -8,7 +9,6 @@ class WeatherForecast : public QObject
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY dataChanged)
     Q_PROPERTY(QString temperature READ temperature WRITE setTemperature NOTIFY dataChanged)
     Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY dataChanged)
-    QML_ANONYMOUS
 
     public:
         class WeatherProps : public MainAppComponents::Props

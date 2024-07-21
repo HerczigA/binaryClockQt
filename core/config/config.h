@@ -1,6 +1,6 @@
 #pragma once
 
-#include <util.h>
+#include <core/util/util.h>
 #include <QSettings>
 
 class Config : public QSettings
@@ -22,4 +22,3 @@ private:
     QMap<QString, Properties> mConfig;
     QMap<QString, MainAppComponents::Types> mConfigParts;
 };
-

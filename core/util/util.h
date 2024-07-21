@@ -1,11 +1,8 @@
 #pragma once
 #include <memory>
 #include <QObject>
-#include <QQuickItem>
+// #include <QQuickItem>
 #include <QList>
-#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
-    #include <QVector>
-#endif
 #include <QTimer>
 #include <QDebug>
 #include <QVariant>
@@ -53,14 +50,8 @@ namespace MainAppComponents
         public:
             virtual ~Props(){}
             virtual const QString getRawUrl() = 0;
-            void setProps(Properties& props){
-                mProps = props;
-            }
-            const MainAppComponents::Operation getRequestType() const
-            {
-                return mRequestType;
-            }
-
+            void setProps(const Properties& props);
+            const MainAppComponents::Operation getRequestType() const;
         protected:
             Properties mProps;
             MainAppComponents::Operation  mRequestType;
