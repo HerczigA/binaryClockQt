@@ -1,7 +1,9 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/img">
         <file>img/wood_surface.jpg</file>
         <file>img/wood-grain.jpg</file>
+    </qresource>
+    <qresource prefix="/qml">
         <file>qml/pages/FirstPage.qml</file>
         <file>qml/components/binaryClock/BinaryClock.qml</file>
         <file>qml/components/weatherForecast/WeatherForecast.qml</file>

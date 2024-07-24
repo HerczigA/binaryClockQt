@@ -1,5 +1,5 @@
 #pragma once
-#include <util.h>
+#include <core/util/util.h>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -8,8 +8,8 @@
 #include <QNetworkInterface>
 #include <QHostAddress>
 #include <core/weatherForecast/weatherforecast.h>
-// #include <core/position/position.h>
 #include <core/communication/network/extensions/jsonhandler.h>
+
 class Credentials : public QAuthenticator
 {
     public:

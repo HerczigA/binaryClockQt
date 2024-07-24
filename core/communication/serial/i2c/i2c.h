@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QObject>
-#include <util.h>
+#include <core/util/util.h>
 #include "../serial.h"
 
 class I2C : public SerialWiringPi

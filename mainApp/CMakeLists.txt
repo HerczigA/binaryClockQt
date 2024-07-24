@@ -10,12 +10,5 @@ target_include_directories(mainAppLib PUBLIC
 
 target_link_libraries(mainAppLib PUBLIC 
     Qt6::Core 
-    # coreLib
-    binaryClockLib
-    weatherForecastLib
-    utilLib
-    configLib
-    positionLib
-    serialLib
-    networkLib
+    coreLib
 )

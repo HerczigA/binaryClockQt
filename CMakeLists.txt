@@ -62,14 +62,15 @@ message(QML_COMPONENTS ${QML_COMPONENTS})
 message("CMAKE_SYSTEM_NAME " ${CMAKE_SYSTEM_NAME})
 message("CMAKE_SYSTEM_PROCESSOR " ${CMAKE_SYSTEM_PROCESSOR})
 
-qt_add_resources(COMPONENTS resources.qrc)
 
-qt_add_executable(${PROJECT}
-    # ${COMPONENTS}
-    # ${MAIN_APP}
-    main.cpp
-    resources.qrc
+qt_add_resources(${PROJECT} resources.qrc
 )
+qt_add_executable(${PROJECT}
+# ${COMPONENTS}
+# ${MAIN_APP}
+main.cpp
+)
+
 
 qt_add_qml_module(${PROJECT}
     URI binaryClock
