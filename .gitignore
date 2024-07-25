@@ -33,3 +33,4 @@ img*
 *.ini
 *.conf
 *.json
+*.xml

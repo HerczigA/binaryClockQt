@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import "./pages"
-import "./utilities"
+
 
 Window {
     id: mainWindow

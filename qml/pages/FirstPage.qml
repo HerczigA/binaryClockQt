@@ -1,7 +1,5 @@
 import QtQuick 2.15
 import QtQuick.Layouts
-import "../components/binaryClock"
-import "../components/weatherForecast"
 
 Item {
     id: firstPage
