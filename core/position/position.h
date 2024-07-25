@@ -1,12 +1,12 @@
 #pragma once
 
 #include <core/util/util.h>
-#include <QGeoPositionInfoSource>
-#include <QGeoLocation>
-#include <QGeoAddress>
-#include <QGeoCodingManager>
-#include <QGeoCodeReply>
-#include <QGeoServiceProvider>
+#include <QtPositioning/QGeoPositionInfoSource>
+#include <QtPositioning/QGeoLocation>
+#include <QtPositioning/QGeoAddress>
+#include <QtLocation/QGeoCodingManager>
+#include <QtLocation/QGeoCodeReply>
+#include <QtLocation/QGeoServiceProvider>
 
 class Position : public QObject
 {

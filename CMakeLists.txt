@@ -51,8 +51,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 file(GLOB_RECURSE QML_COMPONENTS qml/*.qml)
 
-message(QML_COMPONENTS ${QML_COMPONENTS})
-
+message(STATUS "QML_COMPONENTS: ${QML_COMPONENTS}")
 
 # set(COMPONENT_SOURCES ${COMPONENT_SOURCES} threadModul/threadModul.cpp)
 # set(COMPONENT_HEADERS ${COMPONENT_HEADERS} threadModul/threadModul.h)
@@ -62,9 +61,10 @@ message(QML_COMPONENTS ${QML_COMPONENTS})
 message("CMAKE_SYSTEM_NAME " ${CMAKE_SYSTEM_NAME})
 message("CMAKE_SYSTEM_PROCESSOR " ${CMAKE_SYSTEM_PROCESSOR})
 
+qt_add_resources(${PROJECT} resources.qrc)
 
-qt_add_resources(${PROJECT} resources.qrc
-)
+message(STATUS "Resource file included: resources.qrc")
+
 qt_add_executable(${PROJECT}
 # ${COMPONENTS}
 # ${MAIN_APP}
@@ -89,19 +89,10 @@ set_target_properties(${PROJECT} PROPERTIES
     LINK_FLAGS "-Wl,-rpath,$ORIGIN/lib"
 )
 
-# target_include_directories(${PROJECT} PUBLIC
-#     ${CMAKE_CURRENT_SOURCE_DIR}/util
-#     # ${CMAKE_CURRENT_SOURCE_DIR}/components/binaryClock
-#     # ${CMAKE_CURRENT_SOURCE_DIR}/components/weatherForecast
-#     ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/serial/i2c
-#     ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network
-#     ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network/Extensions
-#     # ${CMAKE_CURRENT_SOURCE_DIR}/components/config
-#     ${CMAKE_CURRENT_SOURCE_DIR}/components/position
-#     ${CMAKE_CURRENT_SOURCE_DIR}/components/storeObject
-#     ${CMAKE_CURRENT_SOURCE_DIR}/mainApp
-#     # ${CMAKE_CURRENT_SOURCE_DIR}/threadModul
-# )
+target_include_directories(${PROJECT} PRIVATE
+    ${Qt6Positioning_INCLUDE_DIRS}
+    ${Qt6Location_INCLUDE_DIRS}
+)
 
 target_link_libraries(${PROJECT}
     PRIVATE
@@ -112,7 +103,6 @@ target_link_libraries(${PROJECT}
     Qt6::Network
     Qt6::Mqtt
     Qt6::Location
-    # coreLib
     mainAppLib
 )
 

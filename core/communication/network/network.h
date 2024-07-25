@@ -1,12 +1,12 @@
 #pragma once
 #include <core/util/util.h>
-#include <QNetworkRequest>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
 // #include <QMqttClient>
-#include <QAuthenticator>
-#include <QNetworkInterface>
-#include <QHostAddress>
+#include <QtNetwork/QAuthenticator>
+#include <QtNetwork/QNetworkInterface>
+#include <QtNetwork/QHostAddress>
 #include <core/weatherForecast/weatherforecast.h>
 #include <core/communication/network/extensions/jsonhandler.h>
 
