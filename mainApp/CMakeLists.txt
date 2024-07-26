@@ -1,14 +1,13 @@
-add_library(mainAppLib STATIC 
-    mainApp.cpp 
-    mainApp.h
+set(ALL_SOURCES 
+    ${ALL_SOURCES} 
+    ${CMAKE_CURRENT_SOURCE_DIR}/mainApp.cpp
+    PARENT_SCOPE
 )
 
-target_include_directories(mainAppLib PUBLIC 
+set(ALL_INCLUDE_DIRS
+    ${ALL_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${PROJECT_SOURCE_DIR}
+    PARENT_SCOPE
 )
-
-target_link_libraries(mainAppLib PUBLIC 
-    Qt6::Core 
-    coreLib
-)
+    
+set(NEEDED_LIBS ${NEEDED_LIBS} Qt6::Core PARENT_SCOPE)

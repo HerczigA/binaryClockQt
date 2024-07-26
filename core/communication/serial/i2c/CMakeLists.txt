@@ -1,15 +1,20 @@
-add_library(i2c OBJECT 
-    i2c.cpp 
+set(ALL_SOURCES 
+    ${ALL_SOURCES} 
+    ${CMAKE_CURRENT_SOURCE_DIR}/i2c.cpp
+    PARENT_SCOPE
 )
 
-target_include_directories(i2c PUBLIC 
-    ${CMAKE_CURRENT_SOURCE_DIR} 
-    ${PROJECT_SOURCE_DIR}
+set(ALL_INCLUDE_DIRS
+    ${ALL_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    PARENT_SCOPE
 )
 
-target_link_libraries(i2c PUBLIC 
-    Qt6::Core
-)
+# Add the header to a list of interface headers (optional, for documentation)
+# set(INTERFACE_HEADERS
+#     ${INTERFACE_HEADERS}
+#     ${CMAKE_CURRENT_SOURCE_DIR}/i2c.h
+#     PARENT_SCOPE
+# )
 
-set(ALL_OBJECT_FILES ${ALL_OBJECT_FILES} $<TARGET_OBJECTS:i2c> PARENT_SCOPE)
-set(ALL_INCLUDE_DIRS ${ALL_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
+set(NEEDED_LIBS ${NEEDED_LIBS} Qt6::Core PARENT_SCOPE)

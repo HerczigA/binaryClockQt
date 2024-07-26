@@ -29,7 +29,6 @@ void checkResources() {
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-
     QQmlApplicationEngine engine;
     checkResources();
     const auto width = app.primaryScreen()->size().width();
@@ -44,7 +43,7 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
-    // engine.rootContext()->setContextProperty("mainApp", mainApp);
+    engine.rootContext()->setContextProperty("mainApp", mainApp);
     engine.load(url);
 
 

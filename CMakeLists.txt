@@ -10,7 +10,6 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
     add_compile_definitions(WIRINGPI_USAGE=1)
@@ -19,9 +18,9 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
 else()
     add_compile_definitions(WIRINGPI_USAGE=0)
 endif()
-
+    
 set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt6/qtHost/lib/cmake)
-# set(QTHOST_PATH $ENV{HOME}/Qt6/QtHost/lib/cmake)
+
 message(${CMAKE_PREFIX_PATH})
 
 find_package(Qt6 6.3 COMPONENTS Quick REQUIRED PATHS ${CMAKE_PREFIX_PATH})
@@ -33,13 +32,18 @@ find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Location REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
+    
+    # if(make_static)
+    
+    # else()
+    # file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
+    # file(GLOB_RECURSE COMPONENT_HEADERS components/*.h)
 
-# if(make_static)
+set(ALL_SOURCES "")
+set(ALL_INCLUDE_DIRS "")
+set(NEEDED_LIBS "")
 
-# else()
-# file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
-# file(GLOB_RECURSE COMPONENT_HEADERS components/*.h)
-# set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
+set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
 
 # endif()
 
@@ -63,12 +67,10 @@ message("CMAKE_SYSTEM_PROCESSOR " ${CMAKE_SYSTEM_PROCESSOR})
 
 qt_add_resources(${PROJECT} resources.qrc)
 
-message(STATUS "Resource file included: resources.qrc")
-
 qt_add_executable(${PROJECT}
-# ${COMPONENTS}
-# ${MAIN_APP}
-main.cpp
+    ${ALL_SOURCES}
+    main.cpp
+    resources.qrc
 )
 
 
@@ -92,6 +94,7 @@ set_target_properties(${PROJECT} PROPERTIES
 target_include_directories(${PROJECT} PRIVATE
     ${Qt6Positioning_INCLUDE_DIRS}
     ${Qt6Location_INCLUDE_DIRS}
+    ${ALL_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT}
@@ -103,7 +106,6 @@ target_link_libraries(${PROJECT}
     Qt6::Network
     Qt6::Mqtt
     Qt6::Location
-    mainAppLib
 )
 
 install(TARGETS ${PROJECT}
