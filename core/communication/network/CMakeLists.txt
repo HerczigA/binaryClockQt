@@ -1,8 +1,12 @@
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.h)
+
 add_subdirectory(extensions)
 
 set(ALL_SOURCES 
     ${ALL_SOURCES} 
-    ${CMAKE_CURRENT_SOURCE_DIR}/network.cpp
+    ${SOURCES}
+    ${HEADERS}
     PARENT_SCOPE
 )
 

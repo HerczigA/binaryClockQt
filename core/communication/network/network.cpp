@@ -1,5 +1,4 @@
 #include "network.h"
-#include "moc_network.cpp"
 #include <QFileInfo>
 
 Network::Network(QObject *parent)

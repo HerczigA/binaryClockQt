@@ -9,7 +9,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
     add_compile_definitions(WIRINGPI_USAGE=1)
@@ -36,41 +36,32 @@ set(CMAKE_USE_RELATIVE_PATHS ON)
     # if(make_static)
     
     # else()
-    # file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
-    # file(GLOB_RECURSE COMPONENT_HEADERS components/*.h)
 
 set(ALL_SOURCES "")
 set(ALL_INCLUDE_DIRS "")
 set(NEEDED_LIBS "")
 
-set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
-
 # endif()
 
 
-add_subdirectory(mainApp)
 add_subdirectory(core)
-
-include_directories(${CMAKE_SOURCE_DIR})
+add_subdirectory(mainApp)
 
 file(GLOB_RECURSE QML_COMPONENTS qml/*.qml)
 
 message(STATUS "QML_COMPONENTS: ${QML_COMPONENTS}")
 
-# set(COMPONENT_SOURCES ${COMPONENT_SOURCES} threadModul/threadModul.cpp)
-# set(COMPONENT_HEADERS ${COMPONENT_HEADERS} threadModul/threadModul.h)
-
-# set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS} )
-
 message("CMAKE_SYSTEM_NAME " ${CMAKE_SYSTEM_NAME})
 message("CMAKE_SYSTEM_PROCESSOR " ${CMAKE_SYSTEM_PROCESSOR})
 
-qt_add_resources(${PROJECT} resources.qrc)
+qt_add_resources(RESOURCE resources.qrc)
+
+message(STATUS "ALL SOURCES: ${ALL_SOURCES}")
 
 qt_add_executable(${PROJECT}
+    ${RESOURCE}
     ${ALL_SOURCES}
     main.cpp
-    resources.qrc
 )
 
 
@@ -92,8 +83,6 @@ set_target_properties(${PROJECT} PROPERTIES
 )
 
 target_include_directories(${PROJECT} PRIVATE
-    ${Qt6Positioning_INCLUDE_DIRS}
-    ${Qt6Location_INCLUDE_DIRS}
     ${ALL_INCLUDE_DIRS}
 )
 

@@ -1,10 +1,10 @@
 add_subdirectory(i2c)
 
-# set(INTERFACE_HEADERS
-#     ${INTERFACE_HEADERS}
-#     ${CMAKE_CURRENT_SOURCE_DIR}/serial.h
-#     PARENT_SCOPE
-# )
+set(ALL_SOURCES 
+    ${ALL_SOURCES} 
+    ${CMAKE_CURRENT_SOURCE_DIR}/serial.h
+    PARENT_SCOPE
+)
 
 set(ALL_INCLUDE_DIRS
     ${ALL_INCLUDE_DIRS}
@@ -12,4 +12,3 @@ set(ALL_INCLUDE_DIRS
     PARENT_SCOPE
 )
     
-set(NEEDED_LIBS ${NEEDED_LIBS} Qt6::Core PARENT_SCOPE)

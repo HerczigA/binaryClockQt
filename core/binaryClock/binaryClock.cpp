@@ -61,7 +61,6 @@ void BinaryClock::updateHour()
         emit binaryHourChanged();
         emit updateWeather();
     }
-
 }
 
 void BinaryClock::updateMinute()
@@ -84,7 +83,6 @@ void BinaryClock::updateSecond()
     {
         mBinarySecond[lastIndex-i] = 0x01 & (second >> i);
     }
-
     emit binarySecondChanged();
 }
 

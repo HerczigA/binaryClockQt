@@ -3,7 +3,6 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
-// #include <QMqttClient>
 #include <QtNetwork/QAuthenticator>
 #include <QtNetwork/QNetworkInterface>
 #include <QtNetwork/QHostAddress>

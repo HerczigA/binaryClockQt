@@ -1,6 +1,10 @@
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.h)
+
 set(ALL_SOURCES 
     ${ALL_SOURCES} 
-    ${CMAKE_CURRENT_SOURCE_DIR}/config.cpp
+    ${SOURCES}
+    ${HEADERS}
     PARENT_SCOPE
 )
 
@@ -10,4 +14,3 @@ set(ALL_INCLUDE_DIRS
     PARENT_SCOPE
 )
     
-set(NEEDED_LIBS ${NEEDED_LIBS} Qt6::Core PARENT_SCOPE)
