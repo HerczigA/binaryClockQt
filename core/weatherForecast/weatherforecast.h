@@ -24,7 +24,6 @@ class WeatherForecast : public QObject
         };
 
         explicit WeatherForecast(QObject *parent = nullptr);
-        WeatherForecast(const WeatherForecast &other);
         ~WeatherForecast();
         Q_INVOKABLE void requestDataFromUI();
         void updateLocation();

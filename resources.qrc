@@ -1,13 +1,13 @@
 <RCC>
-    <qresource prefix="/img">
-        <file>img/wood_surface.jpg</file>
-        <file>img/wood-grain.jpg</file>
-    </qresource>
     <qresource prefix="/qml">
-        <file>qml/pages/FirstPage.qml</file>
-        <file>qml/components/binaryClock/BinaryClock.qml</file>
-        <file>qml/components/weatherForecast/WeatherForecast.qml</file>
-        <file>qml/main.qml</file>
-        <file>qml/utilities/SlideButton.qml</file>
+        <file alias="Components/BinaryClock.qml">ui/qml/components/binaryClock/BinaryClock.qml</file>
+        <file alias="Components/WeatherForecast.qml">ui/qml/components/weatherForecast/WeatherForecast.qml</file>
+        <file alias="Pages/FirstPage.qml">ui/qml/pages/FirstPage.qml</file>
+        <file alias="main.qml">ui/qml/main.qml</file>
+        <file alias="Utilities/SlideButton.qml">ui/qml/utilities/SlideButton.qml</file>
+    </qresource>
+    <qresource prefix="/img">
+        <file alias="wood_cranny.jpg">ui/img/wood_surface_cranny_208139_1280x720.jpg</file>
+        <file alias="wood-grain.jpg">ui/img/wood-grain-texture-wood-material-preview.jpg</file>
     </qresource>
 </RCC>

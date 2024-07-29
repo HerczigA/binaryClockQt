@@ -7,10 +7,11 @@ project(${PROJECT} VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(QML_IMPORT_PATH ${CMAKE_SOURCE_DIR}/ui/qml CACHE STRING "" FORCE)
+
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
     add_compile_definitions(WIRINGPI_USAGE=1)
@@ -19,9 +20,9 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
 else()
     add_compile_definitions(WIRINGPI_USAGE=0)
 endif()
-
+    
 set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt6/qtHost/lib/cmake)
-# set(QTHOST_PATH $ENV{HOME}/Qt6/QtHost/lib/cmake)
+
 message(${CMAKE_PREFIX_PATH})
 
 find_package(Qt6 6.3 COMPONENTS Quick REQUIRED PATHS ${CMAKE_PREFIX_PATH})
@@ -33,42 +34,36 @@ find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Location REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
+    
+    # if(make_static)
+    
+    # else()
 
-# if(make_static)
-
-# else()
-# file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
-# file(GLOB_RECURSE COMPONENT_HEADERS components/*.h)
-# set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
+set(ALL_SOURCES "")
+set(ALL_INCLUDE_DIRS "")
+set(NEEDED_LIBS "")
 
 # endif()
 
 
-add_subdirectory(mainApp)
 add_subdirectory(core)
-
-include_directories(${CMAKE_SOURCE_DIR})
+add_subdirectory(mainApp)
 
 file(GLOB_RECURSE QML_COMPONENTS qml/*.qml)
 
 message(STATUS "QML_COMPONENTS: ${QML_COMPONENTS}")
 
-# set(COMPONENT_SOURCES ${COMPONENT_SOURCES} threadModul/threadModul.cpp)
-# set(COMPONENT_HEADERS ${COMPONENT_HEADERS} threadModul/threadModul.h)
-
-# set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS} )
-
 message("CMAKE_SYSTEM_NAME " ${CMAKE_SYSTEM_NAME})
 message("CMAKE_SYSTEM_PROCESSOR " ${CMAKE_SYSTEM_PROCESSOR})
 
-qt_add_resources(${PROJECT} resources.qrc)
+qt_add_resources(RESOURCE resources.qrc)
 
-message(STATUS "Resource file included: resources.qrc")
+message(STATUS "ALL SOURCES: ${ALL_SOURCES}")
 
 qt_add_executable(${PROJECT}
-# ${COMPONENTS}
-# ${MAIN_APP}
-main.cpp
+    ${RESOURCE}
+    ${ALL_SOURCES}
+    main.cpp
 )
 
 
@@ -90,8 +85,7 @@ set_target_properties(${PROJECT} PROPERTIES
 )
 
 target_include_directories(${PROJECT} PRIVATE
-    ${Qt6Positioning_INCLUDE_DIRS}
-    ${Qt6Location_INCLUDE_DIRS}
+    ${ALL_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT}
@@ -103,7 +97,6 @@ target_link_libraries(${PROJECT}
     Qt6::Network
     Qt6::Mqtt
     Qt6::Location
-    mainAppLib
 )
 
 install(TARGETS ${PROJECT}

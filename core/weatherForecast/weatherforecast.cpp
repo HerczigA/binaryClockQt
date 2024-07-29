@@ -9,11 +9,6 @@ WeatherForecast::WeatherForecast(QObject *parent)
     updateLocation();
 }
 
-WeatherForecast::WeatherForecast(const WeatherForecast &other)
-{
-
-}
-
 WeatherForecast::~WeatherForecast()
 {
     for(auto &con : mConnections)

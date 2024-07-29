@@ -1,14 +1,16 @@
-add_library(mainAppLib STATIC 
-    mainApp.cpp 
-    mainApp.h
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.h)
+
+set(ALL_SOURCES 
+    ${ALL_SOURCES} 
+    ${SOURCES}
+    ${HEADERS}
+    PARENT_SCOPE
 )
 
-target_include_directories(mainAppLib PUBLIC 
+set(ALL_INCLUDE_DIRS
+    ${ALL_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${PROJECT_SOURCE_DIR}
+    PARENT_SCOPE
 )
-
-target_link_libraries(mainAppLib PUBLIC 
-    Qt6::Core 
-    coreLib
-)
+    
