@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-//import "./qml/pages" as Pages
-//import "./utilities"
+import "qrc:/qml/Pages" as Pages
+import "qrc:/qml/Utilities" as Utilities
 
 Window {
     id: mainWindow
@@ -17,14 +17,14 @@ Window {
         currentIndex: 0
         anchors.fill: parent
 
-        FirstPage
+        Pages.FirstPage
         {
             mainAppData: mainApp
         }
 
         Item {
             id: secondPage
-            SlideButton
+            Utilities.SlideButton
             {
                 x:10
                 y:10

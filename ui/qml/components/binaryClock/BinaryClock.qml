@@ -19,8 +19,6 @@ Rectangle {
     property string colorMinute: "#E9740E"
     property string colorSecond: "#4ABA31"
     property int spaceSize: 5
-
-    color: "transparent"
     GridLayout
     {
         id: grid
@@ -90,4 +88,5 @@ Rectangle {
             }
         }
     }
+
 }

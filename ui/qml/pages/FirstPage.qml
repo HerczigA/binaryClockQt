@@ -1,31 +1,31 @@
 import QtQuick 2.15
 import QtQuick.Layouts
-//import "../components/binaryClock"
-//import "../components/weatherForecast"
+import "qrc:/qml/Components/" as Components
 
 Item {
     id: firstPage
     property var mainAppData
     Image {
         id: woodImg
-        source: "/img/wood_surface.jpg"
+        source: "qrc:/img/wood_cranny.jpg"
         width: parent.width
         height : parent.height
     }
     RowLayout
     {
         anchors.fill: parent
-        WeatherForecast{
+        Components.WeatherForecast{
             Layout.fillWidth: true
             Layout.fillHeight: true
             weather: mainAppData.weather
             color: "transparent"
         }
-        BinaryClock
+        Components.BinaryClock
         {
           clock: mainAppData.binClock
           Layout.preferredWidth: parent.width /2
           Layout.fillHeight: true
+          color: "transparent"
         }
     }
 }

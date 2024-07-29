@@ -8,36 +8,16 @@
 #include <QDir>
 #include <mainApp/mainApp.h>
 
-void checkResources() {
-    QStringList resourceFiles = {
-        ":/qml/main.qml",
-        ":/qml/pages/FirstPage.qml",
-        ":/qml/components/binaryClock/BinaryClock.qml",
-        // Add other paths as needed
-    };
-
-    for (const QString &filePath : resourceFiles) {
-        QFile file(filePath);
-        if (!file.exists()) {
-            qDebug() << "Resource not found:" << filePath;
-        } else {
-            qDebug() << "Resource found:" << filePath;
-        }
-    }
-}
-
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    checkResources();
     const auto width = app.primaryScreen()->size().width();
     const auto height = app.primaryScreen()->size().height();
     MainApp* mainApp = MainApp::getInstance(width, height, &app);
-
     const QUrl url(u"qrc:/qml/main.qml"_qs);
-    qDebug() << "Current path:" << QDir::currentPath();
-    qDebug() << "Trying to load:" << QUrl(QStringLiteral("qrc:/qml/main.qml")).toString();
+    engine.addImportPath("qrc:/ui/qml");
+    engine.addImportPath("qrc:/ui/img");
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
