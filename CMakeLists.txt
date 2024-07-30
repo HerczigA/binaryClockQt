@@ -48,8 +48,9 @@ set(NEEDED_LIBS "")
 
 add_subdirectory(core)
 add_subdirectory(mainApp)
+add_subdirectory(ui)
 
-file(GLOB_RECURSE QML_COMPONENTS qml/*.qml)
+file(GLOB_RECURSE QML_COMPONENTS ui/qml/*.qml)
 
 message(STATUS "QML_COMPONENTS: ${QML_COMPONENTS}")
 

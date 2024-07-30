@@ -34,3 +34,5 @@ img*
 *.conf
 *.json
 *.xml
+
+.cache/

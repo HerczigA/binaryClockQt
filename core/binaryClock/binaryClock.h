@@ -5,41 +5,33 @@
 class BinaryClock : public QObject
 {
     Q_OBJECT
-    //CONSTANT only without write and notify
-
-    Q_PROPERTY(QList<bool> binaryHour READ  binaryHour NOTIFY binaryHourChanged)
-    Q_PROPERTY(QList<bool> binaryMinute READ binaryMinute NOTIFY binaryMinuteChanged)
-    Q_PROPERTY(QList<bool> binarySecond READ binarySecond NOTIFY binarySecondChanged)
-
     public:
+        enum class BinaryClockUnit
+        {
+            Hour,
+            Minute,
+            Second
+        };
+        Q_ENUM(BinaryClockUnit);
+
+        // BinaryClockUnit& operator++(BinaryClockUnit& unit) {
+        //     unit = static_cast<BinaryClockUnit>(static_cast<std::underlying_type_t<BinaryClockUnit>>(unit) + 1);
+        //     return c;
+        // }
+
         explicit BinaryClock (QObject *parent = nullptr);
         ~BinaryClock ();
 
     signals:
-        void binaryHourChanged();
-        void binaryMinuteChanged();
-        void binarySecondChanged();
-        void updateWeather();
-
+        void timeUnitChanged(const BinaryClockUnit unit, const QList<bool> result);
 
     private slots:
         void timeChanged();
 
     private:
-        const QList<bool> binaryHour() const;
-        const QList<bool> binaryMinute() const;
-        const QList<bool> binarySecond() const;
         int convertBCD(int& sec);
-        // void updateBinaryUnit();
-        void updateHour();
-        void updateMinute();
-        void updateSecond();
-        void InitClock();
-        QDateTime mDateTime;
-        QTime mTime;
-        QList<bool> mBinaryHour;
-        QList<bool> mBinaryMinute;
-        QList<bool> mBinarySecond;
+        int getActualTimeUnit(BinaryClockUnit unit);
+        void updateTimeUnits();
         int mHour;
         int mMinute;
         int mSecond;

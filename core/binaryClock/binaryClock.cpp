@@ -1,23 +1,16 @@
 #include "binaryClock.h"
 
-const int lastIndex = 7;
+const int binaryTimeUnit = 7;
 
 BinaryClock::BinaryClock(QObject *parent)
     : QObject{parent}
     , mHour(0)
     , mMinute(0)
     , mSecond(0)
-    , mBinaryHour(8,false)
-    , mBinaryMinute(8,false)
-    , mBinarySecond(8,false)
 {
-    mDateTime = QDateTime::currentDateTime();
-    mTime = mDateTime.time();
-
     connect(&mTimer, &QTimer::timeout, this, &BinaryClock::timeChanged);
     mTimer.setInterval(1000);
     mTimer.start();
-    InitClock();
 }
 
 BinaryClock::~BinaryClock()
@@ -27,25 +20,7 @@ BinaryClock::~BinaryClock()
 
 void BinaryClock::timeChanged()
 {
-    mTime = QTime::currentTime();
-    updateHour();
-    updateMinute();
-    updateSecond();
-}
-
-const QList<bool> BinaryClock::binaryHour() const
-{
-    return mBinaryHour;
-}
-
-const QList<bool> BinaryClock::binaryMinute() const
-{
-    return mBinaryMinute;
-}
-
-const QList<bool> BinaryClock::binarySecond() const
-{
-    return mBinarySecond;
+    updateTimeUnits();
 }
 
 int BinaryClock::convertBCD(int &timeUnit)
@@ -53,45 +28,32 @@ int BinaryClock::convertBCD(int &timeUnit)
     return ((timeUnit/10*16) + timeUnit %10);
 }
 
-void BinaryClock::updateHour()
+int BinaryClock::getActualTimeUnit(BinaryClockUnit unit)
 {
-    if(mHour != mTime.hour())
+    QTime time = QTime::currentTime();
+    switch (unit)
     {
-        mHour = mTime.hour();
-        int hour = convertBCD(mHour);
-        for(int i = 0; i < mBinaryHour.size(); i++)
-            mBinaryHour[lastIndex-i] = 0x01 & (hour >> i);
-        emit binaryHourChanged();
-        emit updateWeather();
+        case BinaryClockUnit::Hour:
+            return time.hour();
+        case BinaryClockUnit::Minute:
+            return time.minute();
+        case BinaryClockUnit::Second:
+            return time.second();
+        default:
+            return 0;
     }
 }
 
-void BinaryClock::updateMinute()
+void BinaryClock::updateTimeUnits()
 {
-    if(mMinute != mTime.minute())
+    for(int unit = 0; unit <= static_cast<int>(BinaryClockUnit::Second); unit++)
     {
-        mMinute = mTime.minute();
-        int minute = convertBCD(mMinute);
-        for(int i = 0; i < mBinaryMinute.size(); i++)
-            mBinaryMinute[lastIndex-i] = 0x01 & (minute >> i);
-        emit binaryMinuteChanged();
+        QList<bool> result(8,false);
+        int timeUnit = getActualTimeUnit(static_cast<BinaryClockUnit>(unit));
+        int time = convertBCD(timeUnit);
+        for(int i = 0; i <= binaryTimeUnit; i++)
+            result[binaryTimeUnit-i] = 0x01 & (time >> i);
+        emit timeUnitChanged(static_cast<BinaryClockUnit>(unit), result);
     }
 }
 
-void BinaryClock::updateSecond()
-{
-    int second = mTime.second();
-    second = convertBCD(second);
-    for(int i = 0; i < mBinarySecond.size(); i++)
-    {
-        mBinarySecond[lastIndex-i] = 0x01 & (second >> i);
-    }
-    emit binarySecondChanged();
-}
-
-void BinaryClock::InitClock()
-{
-    updateHour();
-    updateMinute();
-    updateSecond();
-}

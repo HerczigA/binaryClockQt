@@ -1,14 +1,15 @@
-add_library(binaryClockModelLib STATIC 
-    binaryClockModel.cpp 
-    binaryClockModel.h
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.h)
+
+set(ALL_SOURCES 
+    ${ALL_SOURCES} 
+    ${SOURCES}
+    ${HEADERS}
+    PARENT_SCOPE
 )
 
-target_include_directories(binaryClockModelLib PUBLIC 
+set(ALL_INCLUDE_DIRS
+    ${ALL_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${PROJECT_SOURCE_DIR}
-    )
-
-target_link_libraries(binaryClockModelLib PUBLIC 
-    Qt6::Core 
-    utilLib
+    PARENT_SCOPE
 )

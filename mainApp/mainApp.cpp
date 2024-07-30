@@ -8,9 +8,9 @@ MainApp::~MainApp()
         disconnect(connection);
 }
 
-BinaryClock *MainApp::binClock() const
+qml::BinaryClockModel *MainApp::binClock() const
 {
-    return mBinClock.get();
+    return mBinaryClockModel.get();
 }
 
 WeatherForecast *MainApp::weather() const
