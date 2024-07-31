@@ -2,17 +2,12 @@
 
 WeatherForecast::WeatherForecast(QObject *parent)
     : QObject{parent}
+    , mNetwork(std::make_unique<Network>())
 {
-
-    mDate = QDate::currentDate();
-    setLocation("N/A");
-    updateLocation();
 }
 
 WeatherForecast::~WeatherForecast()
 {
-    for(auto &con : mConnections)
-        disconnect(con);
 }
 
 void WeatherForecast::requestDataFromUI()
@@ -28,70 +23,12 @@ void WeatherForecast::updateLocation()
 
 void WeatherForecast::sendRequestWeatherData()
 {
-    emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
-}
-
-QString WeatherForecast::date() const
-{
-    return mDate.toString("yyyy.MM.dd");
-}
-
-QString WeatherForecast::location() const
-{
-    return mProps.getCity();
-}
-
-QString WeatherForecast::icon() const
-{
-    return mWeatherIcon;
-}
-
-QString WeatherForecast::temperature() const
-{
-    return mTemperature;
-}
-
-void WeatherForecast::setDate(const QDate &value)
-{
-    if(mDate != value)
-    {
-        mDate = value;
-        emit dataChanged();
-    }
-}
-
-void WeatherForecast::setLocation(const QString &value)
-{
-    if(mProps.getCity() != value)
-    {
-        mProps.setCity(value);
-        emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
-        emit dataChanged();
-    }
-}
-
-void WeatherForecast::setIcon(const QString &value)
-{
-    if(mWeatherIcon != value)
-    {
-        mWeatherIcon = value;
-        emit dataChanged();
-    }
-}
-
-void WeatherForecast::setTemperature(const QString &value)
-{
-    if(value != mTemperature)
-    {
-        mTemperature=value;
-        emit dataChanged();
-    }
+    mNetwork->newRequest();
 }
 
 void WeatherForecast::requestArrived()
 {
-    setDate(QDate::currentDate());
-    emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
+    sendRequestWeatherData()
 }
 
 void WeatherForecast::receivedData(MainAppComponents::PropertiesPacket packet)
@@ -104,42 +41,40 @@ void WeatherForecast::receivedData(MainAppComponents::PropertiesPacket packet)
         newValue = packet.props.value(key).toString();
         if(key == "temperature")
         {
-            setTemperature(newValue);
+            emit sendTemperature(newValue);
         }
         else if(key == "icon")
         {
-            setIcon(newValue);
+            emit sendIcon(newValue);
         }
     }
-//    sendRequestWeatherData();
-
 }
 
-void WeatherForecast::receivedConfig(MainAppComponents::Types type, Properties settings)
+void WeatherForecast::receivedConfig(MainAppComponents::Types type, Setting settings)
 {
     if(type == MainAppComponents::Types::WeatherForecast)
     {
-        mProps.setProps(settings);
-        emit requestSignal(&mProps, MainAppComponents::Types::WeatherForecast);
+        mProps.mSetting = settings;
+        mProps.createUrl();
     }
 }
 
-void WeatherForecast::cityUpdated(QString var)
-{
-    setLocation(var);
-}
-
-const QString WeatherForecast::WeatherProps::getRawUrl()
+void WeatherForecast::WeatherProps::createUrl()
 {
     QString url = mProps["url"].toString();
     QString key = "key=" + mProps["apikey"].toString();
     QString query = "&q=" + getCity() + "&aqi="+ mProps["airQuaility"].toString();
-    return url + key + query;
+    mUrl = QUrl(url+key+query);
+}
+
+const QUrl WeatherForecast::WeatherProps::getUrl()
+{
+    return mUrl;
 }
 
 const QString WeatherForecast::WeatherProps::getCity() const
 {
-    return mProps["city"].toString();
+    return mCity; //mProps["city"].toString();
 }
 
 void WeatherForecast::WeatherProps::setCity(QString newCity)

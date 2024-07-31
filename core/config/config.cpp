@@ -1,12 +1,28 @@
 #include "config.h"
 
+#include <QFile>
+#include <QMetaEnum>
+#include <QDebug>
+
+Config::ConfigPacket::ConfigPacket()
+{
+}
+
+Config::ConfigPacket::ConfigPacket(const ConfigPacket &ConfigPacket)
+{
+    *this = ConfigPacket;
+}
+
+Config::ConfigPacket::ConfigPacket(const Config::Types &opType, const ConfigMap &configMap)
+    : mConfigMap(configMap)
+    , mConfigType(opType)
+{
+}
+
 Config::Config(QObject *parent )
     : QSettings{SystemScope, "MainApp","mainApp", parent}
 {
-    mConfigParts.insert("WeatherForecast", MainAppComponents::Types::WeatherForecast);
-    mConfigParts.insert("Position", MainAppComponents::Types::Position);
     qInfo() << "Look for config file at " << fileName();
-
 }
 
 void Config::readConfig()
@@ -33,11 +49,19 @@ bool Config::configFileIsExist()
 
 void Config::writeConfig()
 {
-    for(auto& key : mConfigParts.keys())
+    for(auto& packet : mConfigPackets)
     {
+        auto getEnumString= [&](Types t){
+            QMetaEnum metaEnum = QMetaEnum::fromType<Config::Types>();
+            const char* enumString = metaEnum.valueToKey(static_cast<int>(t));
+            return QString(enumString);
+        };
+        QString key = getEnumString(packet->mConfigType);
         beginGroup(key);
-        for(const auto &confKey: mConfig.keys())
-            setValue(confKey, mConfig.value(confKey));
+        for(const auto &confKey: packet->mConfigMap.keys())
+        {
+            setValue(confKey, packet->mConfigMap.value(confKey));
+        }
         endGroup();
         sync();
     }
@@ -45,17 +69,39 @@ void Config::writeConfig()
 
 void Config::getSubGroups(QStringList &groups)
 {
-    Properties props;
+    ConfigMap setting;
+    
+    
     for(auto& group : groups)
     {
         beginGroup(group);
         QStringList keys = childKeys();
         for(auto &key : keys)
-            props.insert( key, value(key));
-
+            setting.insert( key, value(key));
         endGroup();
-        mConfig.insert(group, props);
-        emit sendData(mConfigParts[group], props);
-        props.clear();
+        std::shared_ptr<Config::ConfigPacket> packet = createPacket(group, setting);
+        if(packet)
+        {
+            mConfigPackets.append(packet);
+            emit sendConfigProps(packet);
+        }
+        setting.clear();
+    }
+}
+
+std::shared_ptr<Config::ConfigPacket> Config::createPacket(const QString& enumString,const ConfigMap& setting)
+{
+    std::shared_ptr<Config::ConfigPacket> packetPtr;
+    bool ok = false;
+    QMetaEnum metaEnum = QMetaEnum::fromType<Config::Types>();
+    int enumValue = metaEnum.keyToValue(enumString.toStdString().c_str(), &ok);
+    if(ok)
+    {
+        return std::make_shared<ConfigPacket>(static_cast<Config::Types>(enumValue), setting);
+    }
+    else
+    {
+        qDebug()<< "meta system could not realize to enum type or to enum's key";
+        return nullptr;
     }
 }

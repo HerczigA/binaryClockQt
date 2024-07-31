@@ -1,26 +1,25 @@
 #pragma once
 
-#include <core/util/util.h>
+#include <core/communication/network/network.h>
+
+#include <memory>
 
 class WeatherForecast : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString date READ date NOTIFY dataChanged)
-    Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY dataChanged)
-    Q_PROPERTY(QString temperature READ temperature WRITE setTemperature NOTIFY dataChanged)
-    Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY dataChanged)
 
     public:
         class WeatherProps : public MainAppComponents::Props
         {
             public:
-                WeatherProps()
-                {
-                    mRequestType=MainAppComponents::Operation::GET;
-                }
-                const QString getRawUrl() override;
+                WeatherProps();
+                void createUrl();
+                const QUrl getUrl();
                 const QString getCity() const;
                 void setCity(QString newCity);
+            private:
+                QUrl mUrl;
+                QString mCity;
         };
 
         explicit WeatherForecast(QObject *parent = nullptr);
@@ -29,36 +28,26 @@ class WeatherForecast : public QObject
         void updateLocation();
         void sendRequestWeatherData();
 
-        QString date() const;
-        QString location() const;
-        QString icon() const;
-        QString temperature() const;
-
-        void setDate(const QDate &value);
-        void setLocation(const QString &value);
-        void setIcon(const QString &value);
-        void setTemperature(const QString &value);
-
     signals:
-        void dataChanged();
-        void requestSignal(MainAppComponents::Props * props, int sourceType);
+        // void requestSignal(MainAppComponents::Props * props, int sourceType);
         void requestLocation();
+        void sendTemperature(const QString& temperature);
+        void sendIcon(const QString& icon);
 
     public slots:
         void requestArrived();
         void receivedData(MainAppComponents::PropertiesPacket packet);
-        void receivedConfig(MainAppComponents::Types type, Properties data);
+        void receivedConfig(MainAppComponents::Types type, Setting setting);
         void cityUpdated(QString var);
 
     private:
-
-        QVector<QMetaObject::Connection> mConnections;
-
         QString mTemperature;
         QString mDayOfTheWeek;
         QString mWeatherIcon;
 
         QDate mDate;
         WeatherProps mProps;
+        std::unique_ptr<Network> mNetwork;
+        
 };
 

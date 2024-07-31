@@ -4,13 +4,17 @@
 #include <QString>
 #include <QDate>
 
+namespace qml
+{
+
+
 class WeatherForecastModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString date READ date NOTIFY dataChanged)
+    // Q_PROPERTY(QString date READ date NOTIFY dataChanged)
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY dataChanged)
     Q_PROPERTY(QString temperature READ temperature WRITE setTemperature NOTIFY dataChanged)
-    Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY dataChanged)
+    // Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY dataChanged)
 
     public:
         
@@ -32,9 +36,10 @@ class WeatherForecastModel : public QObject
         void requestData();
 
     public slots:
-        void onDateReceived(const QString& date);
+        void onDateReceived(const QDate& date);
         void onTemperatureReceived(const QString& temperature);
         void onLocationReceived(const QString& location);
+        void onIconReceived(const QString& icon);
 
     private:
 
@@ -44,3 +49,4 @@ class WeatherForecastModel : public QObject
         QDate mDate;
 };
 
+}

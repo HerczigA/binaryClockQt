@@ -1,8 +1,9 @@
 #pragma once
 
 #include <QObject>
-#include <core/util/util.h>
 #include "../serial.h"
+
+constexpr QString i2cPath = "/dev/i2c-1";
 
 class I2C : public SerialWiringPi
 {

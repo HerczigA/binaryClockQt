@@ -1,5 +1,5 @@
 #pragma once
-#include <core/util/util.h>
+
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -19,14 +19,15 @@ class Credentials : public QAuthenticator
         QString mApiKey;
 };
 
-class Network : public QNetworkAccessManager
+
+class Network : public QObject
 {
     Q_OBJECT
 
-public:
+public
     explicit Network(QObject *parent = nullptr);
     Network(struct Credentials& conf, QObject *parent = nullptr);
-    virtual ~Network();
+    ~Network();
 
 signals:
     void sendData(MainAppComponents::PropertiesPacket packet);
@@ -46,7 +47,7 @@ private slots:
 //    void encryptedSlot(QNetworkReply*);
 
 private:
-    void createRequest(Operation op, const QUrl &url);
+    void getRequest(Operation op, const QUrl &url);
     void setIPv6();
 
     QNetworkRequest mRequest;
@@ -57,6 +58,7 @@ private:
     QSslConfiguration mSslConf;
     QHostAddress mLocalAddress;
     QString mIPv6;
+    std::unique_ptr<QNetworkAccessManager> mNetworkAccessManager; 
     JsonHandler mJson;
 
 };

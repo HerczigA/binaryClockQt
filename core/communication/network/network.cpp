@@ -3,7 +3,7 @@
 
 Network::Network(QObject *parent)
     : QNetworkAccessManager{parent}
-    , mRequestType(UnknownOperation)
+    
 {
     setIPv6();
     mConnections.push_back(connect(this,&QNetworkAccessManager::finished, this, &Network::requestReplied));
@@ -21,45 +21,36 @@ Network::Network(Credentials &conf, QObject *parent)
 
 Network::~Network()
 {
-
-    if(mReply)
-        delete mReply;
-
-
-    for(auto& connection : mConnections)
-        disconnect(connection);
-
-    deleteLater();
+    // deleteLater();
 }
 
-void Network::newRequest(MainAppComponents::Props* properties, int source)
+void Network::newRequest(MainAppComponents::Props* properties)
 {
-    mRequestType = UnknownOperation;
-    QString rawUrl = properties->getRawUrl();
-    switch (source) {
-        case MainAppComponents::Types::WeatherForecast:
-        {
-            WeatherForecast::WeatherProps * prop = reinterpret_cast<WeatherForecast::WeatherProps*>(properties);
-            if(prop)
-            {
-                if(prop->getCity() == "")
-                    return;
-            }
-            break;
-        }
-        case MainAppComponents::Types::Position:
-        {
-            rawUrl += mIPv6;
-            break;
-        }
-        default:
-            break;
-        }
+    QUrl url = properties->getUrl();
+    if(url.isEmpty())
+        return;
 
-    QUrl url = QUrl(rawUrl);
-    mRequestType = static_cast<QNetworkAccessManager::Operation>(properties->getRequestType());
-    if(mRequestType)
-        createRequest( mRequestType, url);
+    // switch (source) {
+    //     case MainAppComponents::Types::WeatherForecast:
+    //     {
+    //         WeatherForecast::WeatherProps * prop = reinterpret_cast<WeatherForecast::WeatherProps*>(properties);
+    //         if(prop)
+    //         {
+    //             if(prop->getCity() == "")
+    //                 return;
+    //         }
+    //         break;
+    //     }
+    //     case MainAppComponents::Types::Position:
+    //     {
+    //         rawUrl += mIPv6;
+    //         break;
+    //     }
+    //     default:
+    //         break;
+    //     }
+
+    getRequest(op, url);
 }
 
 void Network::requestReplied(QNetworkReply* reply)
@@ -113,13 +104,15 @@ void Network::preSharedKeyCallback(QNetworkReply *reply, QSslPreSharedKeyAuthent
     qDebug()<< "preshared key required";
 }
 
-void Network::createRequest(Operation op, const QUrl &url)
+void Network::getRequest(Operation op, const QUrl &url)
 {
+    auto reply = mNetworkAccessManager->get(mRequest);
+    
     mRequest = QNetworkRequest(url);
     switch (op) {
-        case GetOperation:
+        case NetworkAccessManager::Operation::GetOperation:
         {
-            mReply = get(mRequest);
+            mReply = mNetworkAccessManager->get(mRequest);
             break;
         }
         default:

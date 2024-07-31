@@ -1,6 +1,9 @@
 #pragma once
 
-#include <core/util/util.h>
+#include <QObject>
+#include <QList>
+#include <QTimer>
+
 
 class BinaryClock : public QObject
 {
@@ -26,12 +29,11 @@ class BinaryClock : public QObject
         void timeUnitChanged(const BinaryClockUnit unit, const QList<bool> result);
 
     private slots:
-        void timeChanged();
+        void updateTimeUnits();
 
     private:
         int convertBCD(int& sec);
         int getActualTimeUnit(BinaryClockUnit unit);
-        void updateTimeUnits();
         int mHour;
         int mMinute;
         int mSecond;

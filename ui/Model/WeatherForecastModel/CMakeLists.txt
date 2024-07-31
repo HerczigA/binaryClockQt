@@ -1,13 +1,15 @@
-add_library(weatherForecastModelLib STATIC 
-    weatherForecastModel.cpp 
-    weatherForecastModel.h
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.h)
+
+set(ALL_SOURCES 
+    ${ALL_SOURCES} 
+    ${SOURCES}
+    ${HEADERS}
+    PARENT_SCOPE
 )
 
-target_include_directories(weatherForecastModelLib PUBLIC 
+set(ALL_INCLUDE_DIRS
+    ${ALL_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${PROJECT_SOURCE_DIR}
-    )
-
-target_link_libraries(weatherForecastModelLib PUBLIC 
-    Qt6::Core 
+    PARENT_SCOPE
 )

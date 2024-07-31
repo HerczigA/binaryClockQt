@@ -1,6 +1,5 @@
 #pragma once
 
-#include <core/util/util.h>
 #include <QtPositioning/QGeoPositionInfoSource>
 #include <QtPositioning/QGeoLocation>
 #include <QtPositioning/QGeoAddress>

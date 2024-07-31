@@ -1,5 +1,7 @@
 #include "binaryClock.h"
 
+#include <QTime>
+
 const int binaryTimeUnit = 7;
 
 BinaryClock::BinaryClock(QObject *parent)
@@ -8,19 +10,14 @@ BinaryClock::BinaryClock(QObject *parent)
     , mMinute(0)
     , mSecond(0)
 {
-    connect(&mTimer, &QTimer::timeout, this, &BinaryClock::timeChanged);
+    connect(&mTimer, &QTimer::timeout, this, &BinaryClock::updateTimeUnits);
     mTimer.setInterval(1000);
     mTimer.start();
 }
 
 BinaryClock::~BinaryClock()
 {
-    disconnect(&mTimer, &QTimer::timeout, this, &BinaryClock::timeChanged);
-}
-
-void BinaryClock::timeChanged()
-{
-    updateTimeUnits();
+    disconnect(&mTimer, &QTimer::timeout, this, &BinaryClock::updateTimeUnits);
 }
 
 int BinaryClock::convertBCD(int &timeUnit)
