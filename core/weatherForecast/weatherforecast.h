@@ -1,26 +1,38 @@
 #pragma once
 
 #include <core/communication/network/network.h>
-
+#include <core/config/config.h>
 #include <memory>
+
+class WeatherForecastRequestPackage : public NetworkRequestPackage
+{
+    Q_OBJECT
+    public:
+        WeatherForecastRequestPackage();
+        ~WeatherForecastRequestPackage();
+        virtual void createUrl(const QSharedPointer<QVariant> data) override;
+        QString getCity() const;
+        void setCity(const QString& city);
+    private:
+        QString mCity;
+};
 
 class WeatherForecast : public QObject
 {
     Q_OBJECT
 
     public:
-        class WeatherProps : public MainAppComponents::Props
-        {
-            public:
-                WeatherProps();
-                void createUrl();
-                const QUrl getUrl();
-                const QString getCity() const;
-                void setCity(QString newCity);
-            private:
-                QUrl mUrl;
-                QString mCity;
-        };
+        // to do maybe a pure virtual class from network to creating url
+        // struct WeatherProperty
+        // {
+        //     public:
+        //         void createUrl(const ConfigMap& configMap);
+        //         const QUrl getUrl();
+        //         const QString getCity() const;
+        //     private:
+        //         QUrl mUrl;
+
+        // };
 
         explicit WeatherForecast(QObject *parent = nullptr);
         ~WeatherForecast();
@@ -29,16 +41,16 @@ class WeatherForecast : public QObject
         void sendRequestWeatherData();
 
     signals:
-        // void requestSignal(MainAppComponents::Props * props, int sourceType);
+        void requestPackage(QSharedPointer<NetworkRequestPackage> package);
         void requestLocation();
         void sendTemperature(const QString& temperature);
         void sendIcon(const QString& icon);
 
     public slots:
         void requestArrived();
-        void receivedData(MainAppComponents::PropertiesPacket packet);
-        void receivedConfig(MainAppComponents::Types type, Setting setting);
-        void cityUpdated(QString var);
+        void receivedData(QSharedPointer<QVariant> data);
+        void receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet);
+        void cityReceived(QSharedPointer<QString> city);
 
     private:
         QString mTemperature;
@@ -46,8 +58,7 @@ class WeatherForecast : public QObject
         QString mWeatherIcon;
 
         QDate mDate;
-        WeatherProps mProps;
-        std::unique_ptr<Network> mNetwork;
-        
+        // WeatherProperty mProps;
+        QSharedPointer<WeatherForecastRequestPackage> mWeatherForecastRequestPackage;       
 };
 

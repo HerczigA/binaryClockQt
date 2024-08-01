@@ -24,31 +24,12 @@ Network::~Network()
     // deleteLater();
 }
 
-void Network::newRequest(MainAppComponents::Props* properties)
+void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> requestPackage)
 {
-    QUrl url = properties->getUrl();
-    if(url.isEmpty())
+    if(requestPackage->getUrl().isEmpty())
         return;
+    
 
-    // switch (source) {
-    //     case MainAppComponents::Types::WeatherForecast:
-    //     {
-    //         WeatherForecast::WeatherProps * prop = reinterpret_cast<WeatherForecast::WeatherProps*>(properties);
-    //         if(prop)
-    //         {
-    //             if(prop->getCity() == "")
-    //                 return;
-    //         }
-    //         break;
-    //     }
-    //     case MainAppComponents::Types::Position:
-    //     {
-    //         rawUrl += mIPv6;
-    //         break;
-    //     }
-    //     default:
-    //         break;
-    //     }
 
     getRequest(op, url);
 }
@@ -106,8 +87,38 @@ void Network::preSharedKeyCallback(QNetworkReply *reply, QSslPreSharedKeyAuthent
 
 void Network::getRequest(Operation op, const QUrl &url)
 {
-    auto reply = mNetworkAccessManager->get(mRequest);
-    
+    QNetworkReply* reply;
+    connect(reply,&QNetworkReply::finished, this, &Network::requestReplied);
+    connect(this,&QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);
+    connect(reply,&QNetworkReply::errorOccured, this, [&](QNetworkReply::NetworkError code) {
+        qDebug() << "error occured. Reason: " << code;
+    });
+    // connect(this,&QNetworkAccessManager::authenticationRequired, this, &Network::setAuth);
+    // connect(this,&QNetworkAccessManager::sslErrors, this, &Network::sslErrorOccured);
+    // connect(this,&QNetworkAccessManager::preSharedKeyAuthenticationRequired, this, &Network::preSharedKeyCallback);
+    reply = get(url);
+
+    QByteArray rawData;
+    MainAppComponents::Types type = MainAppComponents::Types::Unknown;
+    MainAppComponents::PropertiesPacket packet;
+    if(mReply != reply)
+        mReply = reply;
+
+    if(mReply->error() == QNetworkReply::NoError)
+    {
+        rawData = mReply->readAll();
+
+        type = mReply->url().host().contains("position")
+            ? MainAppComponents::Types::Position
+            : MainAppComponents::Types::WeatherForecast;
+
+        packet = mJson.processRawData(type, rawData);
+        qInfo()<<"Package arrived and sent";
+
+    }
+
+
+
     mRequest = QNetworkRequest(url);
     switch (op) {
         case NetworkAccessManager::Operation::GetOperation:
@@ -138,4 +149,24 @@ void Network::setIPv6()
 
         }
     }
+}
+
+NetworkRequestPackage::~NetworkRequestPackage()
+{
+
+}
+
+void NetworkRequestPackage::setUrl(const QUrl &url)
+{
+    mUrl = url;
+}
+
+const QUrl NetworkRequestPackage::getUrl() const
+{
+    return mUrl;
+}
+
+void NetworkRequestPackage::setOperationType(const QNetworkAccessManager::Operation opType)
+{
+    mOperationType = opType;
 }

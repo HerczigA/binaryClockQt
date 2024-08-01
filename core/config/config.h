@@ -8,7 +8,6 @@
 
 using ConfigMap = QMap<QString, QVariant>;
 
-
 class Config : public QSettings
 {
     Q_OBJECT
@@ -28,13 +27,11 @@ public:
             ConfigPacket();
             ConfigPacket(const ConfigPacket& configPacket);
             ConfigPacket(const Config::Types& opType, const ConfigMap& configMap);
-            ~ConfigPacket(){}
-        
+            ~ConfigPacket(){}  
             ConfigMap mConfigMap;
             Config::Types  mConfigType;
 
     };
-
 
     void readConfig();
     bool configFileIsExist();

@@ -37,7 +37,7 @@ Rectangle {
                 anchors.centerIn: temperatureRectangle
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                text:  qsTr(weather.temperature) !== "" ?  qsTr(weather.temperature + " °C"): "N/A"
+                text:  weather && weather.temperature && qsTr(weather.temperature) !== "" ?  qsTr(weather.temperature + " °C"): "N/A"
                 color: "white"
                 font{
                     pixelSize: temperatureRectangle.height /5 * 4
@@ -53,7 +53,7 @@ Rectangle {
             Image {
                 id: weatherIcon
                 anchors.centerIn: parent
-                source: weather.icon
+                source: weather && weather.icon ? weather.icon : ""
                 height: weatherIconRectangle.height
                 width: weatherIconRectangle.height
             }
@@ -61,7 +61,7 @@ Rectangle {
         Text{
             id:locationSection
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            text: qsTr(weather.location)
+            text: weather && weather.location ? weather.location : ""
             color: "white"
             font{
                 bold: true
