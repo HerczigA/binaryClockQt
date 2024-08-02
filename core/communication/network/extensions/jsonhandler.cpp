@@ -10,13 +10,12 @@ MainAppComponents::PropertiesPacket JsonHandler::processRawData(MainAppComponent
 {
     MainAppComponents::PropertiesPacket packet;
     QJsonParseError result;
-    QJsonObject obj;
     QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
     if(result.error == QJsonParseError::NoError && !document.isEmpty())
     {
         if(document.isObject())
         {
-            obj = document.object();
+            QJsonObject obj = document.object();
             if(type == MainAppComponents::Types::Position)
                 processPositionComponents(obj, packet);
             else

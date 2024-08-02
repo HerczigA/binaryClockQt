@@ -6,10 +6,11 @@ void MainApp::init()
 {
     qRegisterMetaType<std::shared_ptr<Config::ConfigPacket>>("std::shared_ptr<Config::ConfigPacket>");
     mConfig = std::make_unique<Config>(this);
-    // mNetwork = std::make_unique<Network>();
+    mNetwork = std::make_unique<Network>();
     mBinClock = std::make_unique<BinaryClock>(this);
     mBinaryClockModel = std::make_unique<qml::BinaryClockModel>(this);
     mWeatherForecast = std::make_unique<WeatherForecast>(this);
+    mWeatherForecastModel = std::make_unique<qml::WeatherForecastModel>(this);
     
 }
 
@@ -53,9 +54,9 @@ void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
         else
         {
             // mPos = std::make_unique<Position>(props);
-            // mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation);
-            // mConnections += connect(mPos.get(), &Position::requestLocation, mNetwork.get(), &Network::newRequest);
-            // mConnections += connect(mNetwork.get(), &Network::sendData, mPos.get(), &Position::newOnlinePositionReceived);
+            // mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation, Qt::QueuedConnection);
+            // mConnections += connect(mPos.get(), &Position::requestLocation, mNetwork.get(), &Network::newRequest, Qt::QueuedConnection);
+            // mConnections += connect(mNetwork.get(), &Network::sendData, mPos.get(), &Position::newOnlinePositionReceived, Qt::QueuedConnection);
             // emit mPos->requestedLocation();
             qDebug() << "online";
         }

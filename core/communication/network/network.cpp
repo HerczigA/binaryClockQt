@@ -1,16 +1,32 @@
 #include "network.h"
 #include <QFileInfo>
 
+
+void NetworkRequestPackage::setUrl(const QUrl &url)
+{
+    mUrl = url;
+}
+
+const QUrl NetworkRequestPackage::getUrl() const
+{
+    return mUrl;
+}
+
+void NetworkRequestPackage::setOperationType(const QNetworkAccessManager::Operation opType)
+{
+    mOperationType = opType;
+}
+
+const QNetworkAccessManager::Operation NetworkRequestPackage::getOperationType() const
+{
+    return mOperationType;
+}
+
 Network::Network(QObject *parent)
     : QNetworkAccessManager{parent}
     
 {
     setIPv6();
-    mConnections.push_back(connect(this,&QNetworkAccessManager::finished, this, &Network::requestReplied));
-    mConnections.push_back(connect(this,&QNetworkAccessManager::authenticationRequired, this, &Network::setAuth));
-    mConnections.push_back(connect(this,&QNetworkAccessManager::sslErrors, this, &Network::sslErrorOccured));
-    mConnections.push_back(connect(this,&QNetworkAccessManager::preSharedKeyAuthenticationRequired, this, &Network::preSharedKeyCallback));
-//    mConnections.push_back(connect(mReply ,&QNetworkReply::errorOccurred, this, &Network::replyErrorReceived));
 }
 
 Network::Network(Credentials &conf, QObject *parent)
@@ -21,7 +37,7 @@ Network::Network(Credentials &conf, QObject *parent)
 
 Network::~Network()
 {
-    // deleteLater();
+
 }
 
 void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> requestPackage)
@@ -29,37 +45,27 @@ void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> req
     if(requestPackage->getUrl().isEmpty())
         return;
     
-
-
-    getRequest(op, url);
+    QNetworkReply* reply = createRequest(requestPackage->getOperationType(),QNetworkRequest(requestPackage->getUrl()));
+    connect(reply, &QNetworkReply::finished, this, &Network::requestReplied);
+    connect(this, &QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);
+    connect(reply ,&QNetworkReply::errorOccurred, this, [reply](QNetworkReply::NetworkError code) {
+        qDebug() << "error occured. Reason code: " << code << "Reason : " << Config::parseEnumKey<QNetworkReply::NetworkError>(code);
+        qDebug() << reply->errorString();
+        reply->deleteLater();
+    });
 }
 
-void Network::requestReplied(QNetworkReply* reply)
+void Network::requestReplied()
 {
-    QByteArray rawData;
-    MainAppComponents::Types type = MainAppComponents::Types::Unknown;
-    MainAppComponents::PropertiesPacket packet;
-    if(mReply != reply)
-        mReply = reply;
-
-    if(mReply->error() == QNetworkReply::NoError)
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+    
+    if(reply)
     {
-        rawData = mReply->readAll();
-
-        type = mReply->url().host().contains("position")
-            ? MainAppComponents::Types::Position
-            : MainAppComponents::Types::WeatherForecast;
-
-        packet = mJson.processRawData(type, rawData);
-        qInfo()<<"Package arrived and sent";
-
+        QByteArray rawData;
+        rawData = reply->readAll();
+        qInfo()<<"Package arrived and sent " << rawData;
+        emit sendRequestResult(rawData);
     }
-    else
-    {
-        qDebug()<< "Logged error occurred : "  << mReply->errorString();
-        qDebug()<< "Error Code : "  << mReply->error();
-    }
-    emit sendData(packet);
 }
 
 void Network::sharedKeyRequired(QNetworkReply *reply, QSslPreSharedKeyAuthenticator *authenticator)
@@ -85,52 +91,6 @@ void Network::preSharedKeyCallback(QNetworkReply *reply, QSslPreSharedKeyAuthent
     qDebug()<< "preshared key required";
 }
 
-void Network::getRequest(Operation op, const QUrl &url)
-{
-    QNetworkReply* reply;
-    connect(reply,&QNetworkReply::finished, this, &Network::requestReplied);
-    connect(this,&QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);
-    connect(reply,&QNetworkReply::errorOccured, this, [&](QNetworkReply::NetworkError code) {
-        qDebug() << "error occured. Reason: " << code;
-    });
-    // connect(this,&QNetworkAccessManager::authenticationRequired, this, &Network::setAuth);
-    // connect(this,&QNetworkAccessManager::sslErrors, this, &Network::sslErrorOccured);
-    // connect(this,&QNetworkAccessManager::preSharedKeyAuthenticationRequired, this, &Network::preSharedKeyCallback);
-    reply = get(url);
-
-    QByteArray rawData;
-    MainAppComponents::Types type = MainAppComponents::Types::Unknown;
-    MainAppComponents::PropertiesPacket packet;
-    if(mReply != reply)
-        mReply = reply;
-
-    if(mReply->error() == QNetworkReply::NoError)
-    {
-        rawData = mReply->readAll();
-
-        type = mReply->url().host().contains("position")
-            ? MainAppComponents::Types::Position
-            : MainAppComponents::Types::WeatherForecast;
-
-        packet = mJson.processRawData(type, rawData);
-        qInfo()<<"Package arrived and sent";
-
-    }
-
-
-
-    mRequest = QNetworkRequest(url);
-    switch (op) {
-        case NetworkAccessManager::Operation::GetOperation:
-        {
-            mReply = mNetworkAccessManager->get(mRequest);
-            break;
-        }
-        default:
-            break;
-        }
-}
-
 void Network::setIPv6()
 {
     mLocalAddress = QHostAddress(QHostAddress::LocalHost);
@@ -151,22 +111,12 @@ void Network::setIPv6()
     }
 }
 
+NetworkRequestPackage::NetworkRequestPackage(QObject *parent)
+    :QObject(parent)
+{
+}
+
 NetworkRequestPackage::~NetworkRequestPackage()
 {
 
-}
-
-void NetworkRequestPackage::setUrl(const QUrl &url)
-{
-    mUrl = url;
-}
-
-const QUrl NetworkRequestPackage::getUrl() const
-{
-    return mUrl;
-}
-
-void NetworkRequestPackage::setOperationType(const QNetworkAccessManager::Operation opType)
-{
-    mOperationType = opType;
 }

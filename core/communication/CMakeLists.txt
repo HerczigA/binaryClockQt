@@ -1,5 +1,5 @@
-# add_subdirectory(network)
-add_subdirectory(serial)
+add_subdirectory(network)
+# add_subdirectory(serial)
 
 set(ALL_SOURCES
     ${ALL_SOURCES}

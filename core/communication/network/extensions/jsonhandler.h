@@ -1,5 +1,5 @@
 #pragma once
-
+#include <QObject>
 
 class JsonHandler : public QObject
 {

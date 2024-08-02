@@ -1,8 +1,8 @@
 #pragma once
 
-#include <core/communication/network/extensions/jsonhandler.h>
+// #include <core/communication/network/extensions/jsonhandler.h>
 #include <core/config/config.h>
-#include <core/weatherForecast/weatherforecast.h>
+// #include <core/weatherForecast/weatherforecast.h>
 
 #include <QSharedPointer>
 #include <QVariant>
@@ -25,23 +25,25 @@ class Credentials : public QAuthenticator
         QString mApiKey;
 };
 
-class NetworkRequestPackage : public QNetworkAccessManager
+class NetworkRequestPackage : public QObject
 {
     Q_OBJECT
     public:
         // NetworkRequestPackage(Config::Types sourceType);
+        explicit NetworkRequestPackage(QObject* parent);
         virtual ~NetworkRequestPackage();
         virtual void createUrl(const QSharedPointer<QVariant> data) = 0;
         void setUrl(const QUrl& url);
         void setOperationType(const QNetworkAccessManager::Operation opType);
         const QUrl getUrl() const;
+        const QNetworkAccessManager::Operation getOperationType() const;
     private:
         QUrl mUrl;
         // Config::Types mSourceType;
         QNetworkAccessManager::Operation mOperationType = QNetworkAccessManager::Operation::UnknownOperation;
 };
 
-class Network : public QObject
+class Network : public QNetworkAccessManager
 {
     Q_OBJECT
 
@@ -51,11 +53,11 @@ class Network : public QObject
         ~Network();
 
     signals:
-        void sendData(Config::ConfigPacket packet);
+        void sendRequestResult(QByteArray &rawData);
 
     public slots:
         void onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> requestPackage);
-        void requestReplied(QNetworkReply*);
+        void requestReplied();
 
         void sharedKeyRequired(QNetworkReply*, QSslPreSharedKeyAuthenticator*);
         void sslErrorOccured(QNetworkReply*, const QList<QSslError>&);
@@ -69,16 +71,14 @@ class Network : public QObject
     //    void encryptedSlot(QNetworkReply*);
 
     private:
-        void getRequest(QNetworkAccessManager::Operation op, const QUrl &url);
         void setIPv6();
 
         QNetworkRequest mRequest;
-        QNetworkReply *mReply;
         Credentials mCredentials;
         QVector<QMetaObject::Connection> mConnections;
         QSslConfiguration mSslConf;
         QHostAddress mLocalAddress;
         QString mIPv6;
-        JsonHandler mJson;
+        // JsonHandler mJson;
 
 };

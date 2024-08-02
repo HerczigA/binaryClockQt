@@ -3,8 +3,8 @@
 #include <QObject>
 #include <QMap>
 #include <QSettings>
-#include <QtNetwork/QNetworkAccessManager>
 #include <QMetaType>
+#include <QMetaEnum>
 
 using ConfigMap = QMap<QString, QVariant>;
 
@@ -35,11 +35,19 @@ public:
 
     void readConfig();
     bool configFileIsExist();
+    template<typename T>
+    static const QString parseEnumKey(T metaEnumKey)
+    {
+        QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+        const char* enumString = metaEnum.valueToKey(static_cast<int>(metaEnumKey));
+        return QString(enumString);
+    }
 
 signals:
     void sendConfigProps(const std::shared_ptr<Config::ConfigPacket> settingData);
 public slots:
     void writeConfig();
+
 private:
     void getSubGroups(QStringList &groups);
     std::shared_ptr<Config::ConfigPacket> createPacket(const QString& enumString,const ConfigMap& setting);

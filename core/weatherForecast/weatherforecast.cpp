@@ -1,4 +1,7 @@
 #include "weatherforecast.h"
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
 
 WeatherForecast::WeatherForecast(QObject *parent)
     : QObject{parent}
@@ -38,25 +41,35 @@ void WeatherForecast::requestArrived()
     sendRequestWeatherData();
 }
 
-void WeatherForecast::receivedData(QSharedPointer<QVariant> data)
+void WeatherForecast::receivedRequestResult(QByteArray& rawData)
 {
-    if(data->canConvert<QVariantMap>())
+    if(rawData.contains("weatherapi"))
     {
-        QString newValue;
-        QMap<QString, QVariant> package = data->toMap();
-        for(auto key : package.keys())
+        QJsonParseError result;
+        QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
+        if(result.error == QJsonParseError::NoError && !document.isEmpty())
         {
-            newValue = package.value(key).toString();
-            if(key == "temperature")
+            if(document.isObject())
             {
-                emit sendTemperature(newValue);
-            }
-            else if(key == "icon")
-            {
-                emit sendIcon(newValue);
+                QJsonObject object;
+                object = document.object();
+                if(!object.isEmpty())
+                {
+                    QJsonValue value = object.value("current");
+                    if(!value.isNull())
+                    {
+                        emit sendTemperature(value["temp_c"].toVariant().toString());
+                        QString iconPath = "http:" + value["condition"]["icon"].toString();
+                        emit sendIcon(iconPath);
+                    }
+                }
             }
         }
-    }
+        else
+        {
+            qInfo()<< "Error at json parsing object side";
+        }
+    }    
 }
 
 void WeatherForecast::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
@@ -77,8 +90,25 @@ void WeatherForecast::cityReceived(QSharedPointer<QString> city)
     mWeatherForecastRequestPackage->setCity(*city);
 }
 
+WeatherForecastRequestPackage::WeatherForecastRequestPackage(QObject *parent)
+    : NetworkRequestPackage(parent)
+{
+}
+
+WeatherForecastRequestPackage::~WeatherForecastRequestPackage()
+{
+
+}
+
 void WeatherForecastRequestPackage::createUrl(const QSharedPointer<QVariant> data)
 {
+#if !TESTNETWORK
+        QMap configMap = data->toMap();
+        QString url = configMap["url"].toString();
+        QString key = "key=" + configMap["apikey"].toString();
+        QString query = "&q=Budapest&aqi=" + configMap["airQuaility"].toString();
+        setUrl(QUrl(url+key+query));
+#else
     if(!getCity().isEmpty())
     {
         QMap configMap = data->toMap();
@@ -87,6 +117,8 @@ void WeatherForecastRequestPackage::createUrl(const QSharedPointer<QVariant> dat
         QString query = "&q=" + getCity() + "&aqi="+ configMap["airQuaility"].toString();
         setUrl(QUrl(url+key+query));
     }
+
+#endif
 }
 
 QString WeatherForecastRequestPackage::getCity() const

@@ -1,7 +1,6 @@
 #include "config.h"
 
 #include <QFile>
-#include <QMetaEnum>
 #include <QDebug>
 
 Config::ConfigPacket::ConfigPacket()
@@ -70,8 +69,6 @@ void Config::writeConfig()
 void Config::getSubGroups(QStringList &groups)
 {
     ConfigMap setting;
-    
-    
     for(auto& group : groups)
     {
         beginGroup(group);
@@ -105,3 +102,11 @@ std::shared_ptr<Config::ConfigPacket> Config::createPacket(const QString& enumSt
         return nullptr;
     }
 }
+
+// template <typename T>
+// const QString Config::parseEnumKey(T metaEnumKey)
+// {
+//     QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+//     const char* enumString = metaEnum.valueToKey(static_cast<int>(metaEnumKey));
+//     return QString(enumString);
+// }

@@ -2,7 +2,7 @@ add_subdirectory(binaryClock)
 add_subdirectory(weatherForecast)
 add_subdirectory(config)
 # add_subdirectory(position)
-# add_subdirectory(communication)
+add_subdirectory(communication)
 
 set(ALL_SOURCES
     ${ALL_SOURCES}
