@@ -2,9 +2,9 @@
 
 #include <core/binaryClock/binaryClock.h>
 #include <core/weatherForecast/weatherforecast.h>
-// #include <core/communication/network/network.h>
+#include <core/communication/network/network.h>
 #include <core/config/config.h>
-// #include <core/position/position.h>
+#include <core/position/position.h>
 #include <ui/Model/BinaryClockModel/binaryClockModel.h>
 #include <ui/Model/WeatherForecastModel/weatherForecastModel.h>
 
@@ -55,7 +55,7 @@ private:
         mConnections += connect(mBinClock.get(), &BinaryClock::timeUnitChanged, mBinaryClockModel.get(), &qml::BinaryClockModel::receivedTimeUnits, Qt::QueuedConnection);
         mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendTemperature, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onTemperatureReceived, Qt::QueuedConnection);
         mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendIcon, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onIconReceived, Qt::QueuedConnection);
-        // mConnections += connect(mWeatherForecastModel.get(), &qml::WeatherForecastModel::requestData, mWeatherForecast.get(), &WeatherForecast::requestArrived, Qt::QueuedConnection);
+        mConnections += connect(mWeatherForecastModel.get(), &qml::WeatherForecastModel::requestData, mWeatherForecast.get(), &WeatherForecast::requestArrived, Qt::QueuedConnection);
         mConfig->readConfig();
     }
     int mWidth;
@@ -67,7 +67,7 @@ private:
     std::unique_ptr<BinaryClock> mBinClock;
     std::unique_ptr<WeatherForecast> mWeatherForecast;
     std::unique_ptr<Network> mNetwork;
-    // std::unique_ptr<Position> mPos;
+    std::unique_ptr<Position> mPos;
     std::unique_ptr<qml::BinaryClockModel> mBinaryClockModel;
     std::unique_ptr<qml::WeatherForecastModel> mWeatherForecastModel;
     QList<QMetaObject::Connection> mConnections;

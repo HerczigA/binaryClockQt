@@ -96,17 +96,15 @@ void Network::setIPv6()
     mLocalAddress = QHostAddress(QHostAddress::LocalHost);
     for (const QHostAddress &address: QNetworkInterface::allAddresses())
     {
-
-            if (address.protocol() == QAbstractSocket::IPv6Protocol
-                && address != mLocalAddress
-                && address.scopeId() == "")
+        if (address.protocol() == QAbstractSocket::IPv6Protocol
+            && address != mLocalAddress
+            && address.scopeId() == "")
         {
             if(address.toString() != "::1")
             {
                 mIPv6 = address.toString();
                 break;
             }
-
         }
     }
 }

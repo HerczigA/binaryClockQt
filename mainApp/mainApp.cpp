@@ -53,11 +53,10 @@ void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
         }
         else
         {
-            // mPos = std::make_unique<Position>(props);
-            // mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation, Qt::QueuedConnection);
-            // mConnections += connect(mPos.get(), &Position::requestLocation, mNetwork.get(), &Network::newRequest, Qt::QueuedConnection);
-            // mConnections += connect(mNetwork.get(), &Network::sendData, mPos.get(), &Position::newOnlinePositionReceived, Qt::QueuedConnection);
-            // emit mPos->requestedLocation();
+            mPos = std::make_unique<Position>(packet->mConfigMap);
+            mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation, Qt::QueuedConnection);
+            mConnections += connect(mPos.get(), &Position::requestPackage, mNetwork.get(), &Network::onRequestPackageReceived, Qt::QueuedConnection);
+            mConnections += connect(mNetwork.get(), &Network::sendRequestResult, mPos.get(), &Position::newOnlinePositionReceived, Qt::QueuedConnection);
             qDebug() << "online";
         }
         // mConnections += connect(mPos.get(), &Position::sendCity, mWeatherForecast.get(), &WeatherForecast::cityReceived);

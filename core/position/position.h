@@ -1,39 +1,39 @@
 #pragma once
 
+#include <core/communication/network/network.h>
+#include <core/config/config.h>
+
 #include <QtPositioning/QGeoPositionInfoSource>
 #include <QtPositioning/QGeoLocation>
 #include <QtPositioning/QGeoAddress>
 #include <QtLocation/QGeoCodingManager>
 #include <QtLocation/QGeoCodeReply>
 #include <QtLocation/QGeoServiceProvider>
+#include <QVariant>
+
+class PositionRequestPackage : public NetworkRequestPackage
+{
+    public:
+        PositionRequestPackage(QObject *parent = nullptr);
+        ~PositionRequestPackage();
+        void createUrl(const QSharedPointer<QVariant> data) override;
+
+};
 
 class Position : public QObject
 {
     Q_OBJECT
 public:
-    class PositionProps : public MainAppComponents::Props
-    {
-        public:
-            PositionProps(Properties props)
-                : Props()
-            {
-                mRequestType = MainAppComponents::Operation::GET;
-                setProps(props);
-            }
-            ~PositionProps();
-            const QString getRawUrl() override;
-
-        };
     explicit Position(QObject *parent = nullptr);
-    Position(Properties props, QObject *parent = nullptr);
+    Position(const ConfigMap& configMap);
     ~Position();
 
 signals:
     void sendCity(QString);
-    void requestLocation(MainAppComponents::Props* properties, int source);
+    void requestPackage(QSharedPointer<NetworkRequestPackage> requestPackage);
 public slots:
     void newPositionReceived(const QGeoPositionInfo &update);
-    void newOnlinePositionReceived(MainAppComponents::PropertiesPacket rawData);
+    void newOnlinePositionReceived(const QByteArray& rawData);
     void errorReceived(QGeoPositionInfoSource::Error);
     void errorGeoCodeManager();
     void getLocals(QGeoCodeReply *reply);
@@ -48,5 +48,5 @@ private:
     QGeoCodingManager * mGeoManager;
     QGeoCodeReply * mGeoCodeReply;
     std::unique_ptr<QGeoServiceProvider> mServiceProvider;
-    std::unique_ptr<PositionProps> mProps;
+    QSharedPointer<PositionRequestPackage> mPositionRequestPackage;
 };

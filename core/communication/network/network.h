@@ -29,7 +29,6 @@ class NetworkRequestPackage : public QObject
 {
     Q_OBJECT
     public:
-        // NetworkRequestPackage(Config::Types sourceType);
         explicit NetworkRequestPackage(QObject* parent);
         virtual ~NetworkRequestPackage();
         virtual void createUrl(const QSharedPointer<QVariant> data) = 0;
@@ -39,7 +38,6 @@ class NetworkRequestPackage : public QObject
         const QNetworkAccessManager::Operation getOperationType() const;
     private:
         QUrl mUrl;
-        // Config::Types mSourceType;
         QNetworkAccessManager::Operation mOperationType = QNetworkAccessManager::Operation::UnknownOperation;
 };
 

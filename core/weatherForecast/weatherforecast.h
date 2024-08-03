@@ -44,6 +44,6 @@ class WeatherForecast : public QObject
     private:
         QString mTemperature;
         QString mWeatherIcon;
-        QSharedPointer<WeatherForecastRequestPackage> mWeatherForecastRequestPackage;       
+        QSharedPointer<WeatherForecastRequestPackage> mWeatherForecastRequestPackage;
 };
 

@@ -103,7 +103,7 @@ WeatherForecastRequestPackage::~WeatherForecastRequestPackage()
 void WeatherForecastRequestPackage::createUrl(const QSharedPointer<QVariant> data)
 {
 #if !TESTNETWORK
-        QMap configMap = data->toMap();
+        ConfigMap configMap = data->toMap();
         QString url = configMap["url"].toString();
         QString key = "key=" + configMap["apikey"].toString();
         QString query = "&q=Budapest&aqi=" + configMap["airQuaility"].toString();
@@ -111,7 +111,7 @@ void WeatherForecastRequestPackage::createUrl(const QSharedPointer<QVariant> dat
 #else
     if(!getCity().isEmpty())
     {
-        QMap configMap = data->toMap();
+        ConfigMap configMap = data->toMap();
         QString url = configMap["url"].toString();
         QString key = "key=" + configMap["apikey"].toString();
         QString query = "&q=" + getCity() + "&aqi="+ configMap["airQuaility"].toString();

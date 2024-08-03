@@ -1,7 +1,33 @@
 #include "position.h"
-#include "moc_position.cpp"
+
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
 
 const int getPosPeriod = 5000;
+
+PositionRequestPackage::PositionRequestPackage(QObject *parent)
+    :NetworkRequestPackage(parent)
+{
+
+}
+
+PositionRequestPackage::~PositionRequestPackage()
+{
+}
+
+void PositionRequestPackage::createUrl(const QSharedPointer<QVariant> data)
+{
+
+    if(data->canConvert<ConfigMap>())
+    {
+        ConfigMap configMap = data->toMap();
+        QString url = configMap["url"].toString();
+        QString key = "access_key=" +configMap["apikey"].toString();
+        QString query = "&query=";
+        setUrl(QUrl(url+key+query));
+    }
+}
 
 Position::Position(QObject *parent)
     : QObject{parent}
@@ -31,13 +57,16 @@ Position::Position(QObject *parent)
     else
         qInfo()<<"Failed create goe Manager" << mServiceProvider->errorString();
 
+
+//    emit requestLocation(mProps.get(), MainAppComponents::Types::Position);
 }
 
-Position::Position(Properties props, QObject *parent)
-    : QObject{parent}
+Position::Position(const ConfigMap &configMap)
 {
-    mProps = std::make_unique<PositionProps>(props);
-    emit requestLocation(mProps.get(), MainAppComponents::Types::Position);
+    mPositionRequestPackage = QSharedPointer<PositionRequestPackage>::create();
+    mPositionRequestPackage->createUrl(QSharedPointer<QVariant>::create(QVariant(configMap)));
+    mPositionRequestPackage->setOperationType(std::move(QNetworkAccessManager::Operation::GetOperation));
+    emit requestPackage(mPositionRequestPackage);
 }
 
 Position::~Position()
@@ -59,18 +88,32 @@ void Position::newPositionReceived(const QGeoPositionInfo &newPos)
     }
 }
 
-void Position::newOnlinePositionReceived(MainAppComponents::PropertiesPacket packet)
+void Position::newOnlinePositionReceived(const QByteArray& rawData)
 {
-    if (packet.type != MainAppComponents::Types::Position)
-        return;
-
-    QString newValue;
-    for(auto key : packet.props.keys())
+    if(rawData.contains("position"))
     {
-        newValue = packet.props.value(key).toString();
-        if(key == "city")
+        QJsonParseError result;
+        QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
+        if(result.error == QJsonParseError::NoError && !document.isEmpty())
         {
-            emit sendCity(newValue);
+            if(document.isObject())
+            {
+                QJsonObject object;
+                object = document.object();
+                if(!object.isEmpty())
+                {
+                    QJsonValue value = object.value("current");
+                    if(!value.isNull())
+                    {
+                        emit sendCity(value["city"].toVariant().toString());
+                        
+                    }
+                }
+            }
+        }
+        else
+        {
+            qInfo()<< "Error at json parsing object side";
         }
     }
 }
@@ -101,9 +144,8 @@ void Position::localisationError(QGeoCodeReply::Error error, const QString &erro
 
 void Position::requestedLocation()
 {
-    emit requestLocation(mProps.get(), MainAppComponents::Types::Position);
+    emit requestPackage(mPositionRequestPackage);
 }
-
 
 
 void Position::errorReceived(QGeoPositionInfoSource::Error error)
@@ -117,15 +159,4 @@ void Position::errorGeoCodeManager()
 
 }
 
-Position::PositionProps::~PositionProps()
-{
 
-}
-
-const QString Position::PositionProps::getRawUrl()
-{
-    QString url = mProps["url"].toString();
-    QString key = "access_key=" +mProps["apikey"].toString();
-    QString query = "&query=";
-    return url + key + query;
-}
