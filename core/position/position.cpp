@@ -24,8 +24,8 @@ void PositionRequestPackage::createUrl(const QSharedPointer<QVariant> data)
         ConfigMap configMap = data->toMap();
         QString url = configMap["url"].toString();
         QString key = "access_key=" +configMap["apikey"].toString();
-        QString query = "&query=";
-        setUrl(QUrl(url+key+query));
+        QString query = "&query="+ Network::parseIPv6();
+        setRawUrl(url+key+query);
     }
 }
 
@@ -90,7 +90,7 @@ void Position::newPositionReceived(const QGeoPositionInfo &newPos)
 
 void Position::newOnlinePositionReceived(const QByteArray& rawData)
 {
-    if(rawData.contains("position"))
+    if(rawData.contains("locality"))
     {
         QJsonParseError result;
         QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
@@ -102,10 +102,10 @@ void Position::newOnlinePositionReceived(const QByteArray& rawData)
                 object = document.object();
                 if(!object.isEmpty())
                 {
-                    QJsonValue value = object.value("current");
+                    QJsonValue value = object.value("data");
                     if(!value.isNull())
                     {
-                        emit sendCity(value["city"].toVariant().toString());
+                        emit sendLocation(value[0]["locality"].toVariant().toString());
                         
                     }
                 }
@@ -132,7 +132,7 @@ void Position::getLocals(QGeoCodeReply *reply)
         {
 
             auto newaddress = mLocation.address();
-            emit sendCity(newaddress.city());
+            emit sendLocation(newaddress.city());
         }
     }
 }

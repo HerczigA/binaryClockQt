@@ -9,13 +9,14 @@ class WeatherForecastRequestPackage : public NetworkRequestPackage
 {
     Q_OBJECT
     public:
-        explicit WeatherForecastRequestPackage(QObject *parent = nullptr);
+        explicit WeatherForecastRequestPackage(QObject *parent=nullptr);
         ~WeatherForecastRequestPackage();
-        void createUrl(const QSharedPointer<QVariant> data) override;
-        QString getCity() const;
-        void setCity(const QString& city);
+        void createUrl(const QSharedPointer<QVariant> data = nullptr) override;
+        void updateUrl(const QString& location);
+        QString getLocation() const;
+        void setLocation(const QString& location);
     private:
-        QString mCity;
+        QString mLocation;
 };
 
 class WeatherForecast : public QObject
@@ -25,7 +26,6 @@ class WeatherForecast : public QObject
     public:
         explicit WeatherForecast(QObject *parent = nullptr);
         ~WeatherForecast();
-        Q_INVOKABLE void requestDataFromUI();
         void updateLocation();
         void sendRequestWeatherData();
 
@@ -34,12 +34,13 @@ class WeatherForecast : public QObject
         void requestLocation();
         void sendTemperature(const QString& temperature);
         void sendIcon(const QString& icon);
+        void sendLocation(const QString& location);
 
     public slots:
         void requestArrived();
         void receivedRequestResult(QByteArray& result);
         void receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet);
-        void cityReceived(QSharedPointer<QString> city);
+        void locationReceived(const QString& city);
 
     private:
         QString mTemperature;

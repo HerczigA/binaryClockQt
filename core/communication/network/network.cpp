@@ -2,14 +2,14 @@
 #include <QFileInfo>
 
 
-void NetworkRequestPackage::setUrl(const QUrl &url)
+void NetworkRequestPackage::setRawUrl(const QString &url)
 {
-    mUrl = url;
+    mRawUrl = url;
 }
 
-const QUrl NetworkRequestPackage::getUrl() const
+const QString NetworkRequestPackage::getRawUrl() const
 {
-    return mUrl;
+    return mRawUrl;
 }
 
 void NetworkRequestPackage::setOperationType(const QNetworkAccessManager::Operation opType)
@@ -40,12 +40,32 @@ Network::~Network()
 
 }
 
+const QString Network::parseIPv6()
+{
+    QHostAddress mLocalAddress(QHostAddress::LocalHost);
+    for (const QHostAddress &address: QNetworkInterface::allAddresses())
+    {
+        if (address.protocol() == QAbstractSocket::IPv6Protocol
+            && address != mLocalAddress
+            && address.scopeId() == "")
+        {
+            if(address.toString() != "::1")
+            {
+                return address.toString();
+            }
+        }
+    }
+    return QString();
+}
+
 void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> requestPackage)
 {
-    if(requestPackage->getUrl().isEmpty())
+    if(requestPackage->getRawUrl().isEmpty())
         return;
     
-    QNetworkReply* reply = createRequest(requestPackage->getOperationType(),QNetworkRequest(requestPackage->getUrl()));
+    qDebug() << requestPackage->getRawUrl();
+
+    QNetworkReply* reply = createRequest(requestPackage->getOperationType(),QNetworkRequest(QUrl(requestPackage->getRawUrl())));
     connect(reply, &QNetworkReply::finished, this, &Network::requestReplied);
     connect(this, &QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);
     connect(reply ,&QNetworkReply::errorOccurred, this, [reply](QNetworkReply::NetworkError code) {
@@ -63,7 +83,6 @@ void Network::requestReplied()
     {
         QByteArray rawData;
         rawData = reply->readAll();
-        qInfo()<<"Package arrived and sent " << rawData;
         emit sendRequestResult(rawData);
     }
 }
@@ -93,20 +112,7 @@ void Network::preSharedKeyCallback(QNetworkReply *reply, QSslPreSharedKeyAuthent
 
 void Network::setIPv6()
 {
-    mLocalAddress = QHostAddress(QHostAddress::LocalHost);
-    for (const QHostAddress &address: QNetworkInterface::allAddresses())
-    {
-        if (address.protocol() == QAbstractSocket::IPv6Protocol
-            && address != mLocalAddress
-            && address.scopeId() == "")
-        {
-            if(address.toString() != "::1")
-            {
-                mIPv6 = address.toString();
-                break;
-            }
-        }
-    }
+    mIPv6 = Network::parseIPv6();
 }
 
 NetworkRequestPackage::NetworkRequestPackage(QObject *parent)

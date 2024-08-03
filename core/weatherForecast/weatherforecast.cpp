@@ -12,33 +12,23 @@ WeatherForecast::~WeatherForecast()
 {
 }
 
-void WeatherForecast::requestDataFromUI()
-{
-    // either send request to position or network manager
-    updateLocation();
-    sendRequestWeatherData();
-}
-
 void WeatherForecast::updateLocation()
 {
-    emit requestLocation();
+    if(mWeatherForecastRequestPackage->getLocation().isEmpty())
+    {
+        emit requestLocation();
+    }
 }
 
 void WeatherForecast::sendRequestWeatherData()
 {
-    if(mWeatherForecastRequestPackage->getCity().isEmpty())
-    {
-        emit requestLocation();
-    }
-    else
-    {
-        emit requestPackage(mWeatherForecastRequestPackage);
-    }
+    
+    emit requestPackage(mWeatherForecastRequestPackage);
 }
 
 void WeatherForecast::requestArrived()
 {
-    sendRequestWeatherData();
+    updateLocation();
 }
 
 void WeatherForecast::receivedRequestResult(QByteArray& rawData)
@@ -77,17 +67,22 @@ void WeatherForecast::receivedConfig(const std::shared_ptr<Config::ConfigPacket>
     if(packet->mConfigType == Config::Types::WeatherForecast)
     { 
         mWeatherForecastRequestPackage.reset();
-        mWeatherForecastRequestPackage = QSharedPointer<WeatherForecastRequestPackage>::create();
+        mWeatherForecastRequestPackage = QSharedPointer<WeatherForecastRequestPackage>::create(this);
         mWeatherForecastRequestPackage->createUrl(QSharedPointer<QVariant>::create(QVariant(packet->mConfigMap)));
         mWeatherForecastRequestPackage->setOperationType(std::move(QNetworkAccessManager::Operation::GetOperation));
-        // &QObject::deleteLater
-        emit requestPackage(mWeatherForecastRequestPackage); 
+        if(!mWeatherForecastRequestPackage->getLocation().isEmpty())
+        {
+            emit requestPackage(mWeatherForecastRequestPackage);
+        }
     }
 }
 
-void WeatherForecast::cityReceived(QSharedPointer<QString> city)
+void WeatherForecast::locationReceived(const QString& location)
 {
-    mWeatherForecastRequestPackage->setCity(*city);
+    mWeatherForecastRequestPackage->setLocation(location);
+    mWeatherForecastRequestPackage->updateUrl(location);
+    sendRequestWeatherData();
+    emit sendLocation(mWeatherForecastRequestPackage->getLocation());
 }
 
 WeatherForecastRequestPackage::WeatherForecastRequestPackage(QObject *parent)
@@ -102,31 +97,33 @@ WeatherForecastRequestPackage::~WeatherForecastRequestPackage()
 
 void WeatherForecastRequestPackage::createUrl(const QSharedPointer<QVariant> data)
 {
-#if !TESTNETWORK
-        ConfigMap configMap = data->toMap();
-        QString url = configMap["url"].toString();
-        QString key = "key=" + configMap["apikey"].toString();
-        QString query = "&q=Budapest&aqi=" + configMap["airQuaility"].toString();
-        setUrl(QUrl(url+key+query));
-#else
-    if(!getCity().isEmpty())
+    QString rawUrl;
+    if(data)
     {
         ConfigMap configMap = data->toMap();
         QString url = configMap["url"].toString();
         QString key = "key=" + configMap["apikey"].toString();
-        QString query = "&q=" + getCity() + "&aqi="+ configMap["airQuaility"].toString();
-        setUrl(QUrl(url+key+query));
+        QString query = "&q=%1&aqi="+ configMap["airQuaility"].toString();
+        rawUrl = url + key+ query;
+        setRawUrl(rawUrl);
     }
-
-#endif
 }
 
-QString WeatherForecastRequestPackage::getCity() const
+void WeatherForecastRequestPackage::updateUrl(const QString &location)
 {
-    return mCity;
+    QString rawUrl = getRawUrl().arg(location);
+    setRawUrl(rawUrl);
 }
 
-void WeatherForecastRequestPackage::setCity(const QString &city)
+QString WeatherForecastRequestPackage::getLocation() const
 {
-    mCity = city;
+    return mLocation;
+}
+
+void WeatherForecastRequestPackage::setLocation(const QString &location)
+{
+    if(mLocation != location)
+    {
+        mLocation = location;
+    }
 }

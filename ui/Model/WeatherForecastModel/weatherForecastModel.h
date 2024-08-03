@@ -14,7 +14,7 @@ class WeatherForecastModel : public QObject
     // Q_PROPERTY(QString date READ date NOTIFY dataChanged)
     Q_PROPERTY(QString icon READ icon WRITE setIcon NOTIFY dataChanged)
     Q_PROPERTY(QString temperature READ temperature WRITE setTemperature NOTIFY dataChanged)
-    // Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY dataChanged)
+    Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY dataChanged)
 
     public:
         

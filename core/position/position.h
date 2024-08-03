@@ -29,7 +29,7 @@ public:
     ~Position();
 
 signals:
-    void sendCity(QString);
+    void sendLocation(const QString& location);
     void requestPackage(QSharedPointer<NetworkRequestPackage> requestPackage);
 public slots:
     void newPositionReceived(const QGeoPositionInfo &update);

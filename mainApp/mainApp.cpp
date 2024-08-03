@@ -11,7 +11,6 @@ void MainApp::init()
     mBinaryClockModel = std::make_unique<qml::BinaryClockModel>(this);
     mWeatherForecast = std::make_unique<WeatherForecast>(this);
     mWeatherForecastModel = std::make_unique<qml::WeatherForecastModel>(this);
-    
 }
 
 MainApp::~MainApp()
@@ -59,7 +58,8 @@ void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
             mConnections += connect(mNetwork.get(), &Network::sendRequestResult, mPos.get(), &Position::newOnlinePositionReceived, Qt::QueuedConnection);
             qDebug() << "online";
         }
-        // mConnections += connect(mPos.get(), &Position::sendCity, mWeatherForecast.get(), &WeatherForecast::cityReceived);
+        mConnections += connect(mPos.get(), &Position::sendLocation, mWeatherForecast.get(), &WeatherForecast::locationReceived);
+        mPos->requestedLocation();
     }
     // mWeatherForecast->sendRequestWeatherData();
 }

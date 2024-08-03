@@ -32,12 +32,12 @@ class NetworkRequestPackage : public QObject
         explicit NetworkRequestPackage(QObject* parent);
         virtual ~NetworkRequestPackage();
         virtual void createUrl(const QSharedPointer<QVariant> data) = 0;
-        void setUrl(const QUrl& url);
+        void setRawUrl(const QString& rawUrl);
         void setOperationType(const QNetworkAccessManager::Operation opType);
-        const QUrl getUrl() const;
+        const QString getRawUrl() const;
         const QNetworkAccessManager::Operation getOperationType() const;
     private:
-        QUrl mUrl;
+        QString mRawUrl;
         QNetworkAccessManager::Operation mOperationType = QNetworkAccessManager::Operation::UnknownOperation;
 };
 
@@ -49,6 +49,7 @@ class Network : public QNetworkAccessManager
         explicit Network(QObject *parent = nullptr);
         Network(struct Credentials& conf, QObject *parent = nullptr);
         ~Network();
+        static const QString parseIPv6();
 
     signals:
         void sendRequestResult(QByteArray &rawData);
@@ -61,7 +62,6 @@ class Network : public QNetworkAccessManager
         void sslErrorOccured(QNetworkReply*, const QList<QSslError>&);
         void setAuth(QNetworkReply*, QAuthenticator*);
         void preSharedKeyCallback(QNetworkReply*, QSslPreSharedKeyAuthenticator*);
-
 
     private slots:
         //for tls-ssl
