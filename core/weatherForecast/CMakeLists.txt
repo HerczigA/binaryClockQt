@@ -1,0 +1,18 @@
+set(ALL_SOURCES 
+    ${ALL_SOURCES} 
+    ${CMAKE_CURRENT_SOURCE_DIR}/weatherforecast.cpp
+    PARENT_SCOPE
+)
+
+set(ALL_INCLUDE_DIRS
+    ${ALL_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    PARENT_SCOPE
+)
+
+set(ALL_HEADERS
+    ${ALL_HEADERS} 
+    ${CMAKE_CURRENT_SOURCE_DIR}/weatherforecast.h
+    PARENT_SCOPE
+)
+

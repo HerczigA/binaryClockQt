@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file alias="main.qml">qml/main.qml</file>
+        <file alias="BinaryClock.qml">qml/components/binaryClock/BinaryClock.qml</file>
+        <file alias="FirstPage.qml">qml/pages/FirstPage.qml</file>
+        <file alias="WeatherForecast.qml">qml/components/weatherForecast/WeatherForecast.qml</file>
+        <file alias="SlideButton.qml">qml/utilities/SlideButton.qml</file>
+    </qresource>
+    <qresource prefix="/img">
+        <file alias="wood_surface.jpg">img/wood_surface.jpg</file>
+        <file alias="wood-grain.jpg">img/wood-grain.jpg</file>
+    </qresource>
+</RCC>

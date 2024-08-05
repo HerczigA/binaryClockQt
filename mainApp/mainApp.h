@@ -1,20 +1,22 @@
 #pragma once
 
-#include <util.h>
-#include <binaryClock.h>
-#include <weatherforecast.h>
-#include <network.h>
-#include <config.h>
-#include <position.h>
-#include <QNetworkAccessManager>
-#include <QMqttClient>
+#include <core/binaryClock/binaryClock.h>
+#include <core/weatherForecast/weatherforecast.h>
+#include <core/communication/network/network.h>
+#include <core/config/config.h>
+#include <core/position/position.h>
+#include <ui/Model/BinaryClockModel/binaryClockModel.h>
+#include <ui/Model/WeatherForecastModel/weatherForecastModel.h>
+
+#include <QScopedPointer>
+
 #include <memory>
 
 class MainApp : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(BinaryClock* binClock READ binClock CONSTANT)
-    Q_PROPERTY(WeatherForecast* weather READ weather CONSTANT)
+    Q_PROPERTY(qml::BinaryClockModel* binClock READ binClock CONSTANT)
+    Q_PROPERTY(qml::WeatherForecastModel* weather READ weather CONSTANT)
     Q_PROPERTY(int width READ width CONSTANT)
     Q_PROPERTY(int height READ height CONSTANT)
 
@@ -31,13 +33,13 @@ public:
 
     ~MainApp();
     MainApp(const MainApp& mainapp) = delete;
-    BinaryClock* binClock() const;
-    WeatherForecast* weather() const;
+    qml::BinaryClockModel* binClock() const;
+    qml::WeatherForecastModel* weather() const;
     const int width() const;
     const int height() const;
 
 public slots:
-    void receivedConfig(MainAppComponents::Types type, Properties setting);
+    void receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet);
 
 private:
     MainApp(const int& w, const int& h, QObject *parent = nullptr)
@@ -45,15 +47,16 @@ private:
         , mHeight(h)
         , QObject(parent)
     {
-        mConfig = std::make_unique<Config>();
-        mNetwork = std::make_unique<Network>();
-        mBinClock = std::make_unique<BinaryClock>();
-        mWeatherForecast = std::make_unique<WeatherForecast>();
-        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestSignal, mNetwork.get(), &Network::newRequest);
-        mConnections += connect(mNetwork.get(), &Network::sendData, mWeatherForecast.get(), &WeatherForecast::receivedData);
-        mConnections += connect(mConfig.get(), &Config::sendData, mWeatherForecast.get(), &WeatherForecast::receivedConfig);
-        mConnections += connect(mConfig.get(), &Config::sendData, this, &MainApp::receivedConfig);
-        mConnections += connect(mBinClock.get(), &BinaryClock::updateWeather, mWeatherForecast.get(), &WeatherForecast::requestArrived);
+        init();
+        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestPackage, mNetwork.get(), &Network::onRequestPackageReceived, Qt::QueuedConnection);
+        mConnections += connect(mNetwork.get(), &Network::sendRequestResult, mWeatherForecast.get(), &WeatherForecast::receivedRequestResult, Qt::QueuedConnection);
+        mConnections += connect(mConfig.get(), &Config::sendConfigProps, mWeatherForecast.get(), &WeatherForecast::receivedConfig, Qt::QueuedConnection);
+        mConnections += connect(mConfig.get(), &Config::sendConfigProps, this, &MainApp::receivedConfig, Qt::QueuedConnection);
+        mConnections += connect(mBinClock.get(), &BinaryClock::timeUnitChanged, mBinaryClockModel.get(), &qml::BinaryClockModel::receivedTimeUnits, Qt::QueuedConnection);
+        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendTemperature, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onTemperatureReceived, Qt::QueuedConnection);
+        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendIcon, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onIconReceived, Qt::QueuedConnection);
+        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendLocation, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onLocationReceived, Qt::QueuedConnection);
+        mConnections += connect(mWeatherForecastModel.get(), &qml::WeatherForecastModel::requestData, mWeatherForecast.get(), &WeatherForecast::requestArrived, Qt::QueuedConnection);
         mConfig->readConfig();
     }
     int mWidth;
@@ -66,6 +69,8 @@ private:
     std::unique_ptr<WeatherForecast> mWeatherForecast;
     std::unique_ptr<Network> mNetwork;
     std::unique_ptr<Position> mPos;
+    std::unique_ptr<qml::BinaryClockModel> mBinaryClockModel;
+    std::unique_ptr<qml::WeatherForecastModel> mWeatherForecastModel;
     QList<QMetaObject::Connection> mConnections;
 
 };
