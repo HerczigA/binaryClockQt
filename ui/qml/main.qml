@@ -1,9 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import "./pages"
-import "./utilities"
-
+import "qrc:/qml/Pages" as Pages
+import "qrc:/qml/Utilities" as Utilities
 
 Window {
     id: mainWindow
