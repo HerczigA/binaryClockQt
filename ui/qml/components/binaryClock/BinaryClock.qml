@@ -19,6 +19,7 @@ Rectangle {
     property string colorMinute: "#E9740E"
     property string colorSecond: "#4ABA31"
     property int spaceSize: 5
+
     GridLayout
     {
         id: grid
@@ -51,7 +52,6 @@ Rectangle {
         Repeater
         {
             model:clock.binaryMinute
-
             Rectangle
             {
                 Layout.maximumWidth: setCircleProperty()
@@ -88,5 +88,4 @@ Rectangle {
             }
         }
     }
-
 }

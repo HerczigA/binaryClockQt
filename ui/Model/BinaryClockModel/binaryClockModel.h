@@ -32,11 +32,13 @@ class BinaryClockModel : public QObject
         void binaryMinuteChanged();
         void binarySecondChanged();
         void updateWeather();
+        void turnNewDay();
 
     public slots:
         void receivedTimeUnits(const BinaryClock::BinaryClockUnit unit, const QList<bool> result);
         
     private:
+        inline void checkIsNewDay(const QList<bool>& hour);
         QList<bool> mBinaryHour;
         QList<bool> mBinaryMinute;
         QList<bool> mBinarySecond;

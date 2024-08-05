@@ -1,4 +1,5 @@
 #include "binaryClockModel.h"
+#include <algorithm>
 
 const int lastIndex = 7;
 
@@ -33,6 +34,7 @@ void qml::BinaryClockModel::receivedTimeUnits(const BinaryClock::BinaryClockUnit
 {
     if(unit == BinaryClock::BinaryClockUnit::Hour)
     {
+        checkIsNewDay(result);
         setBinaryHour(result);
     }
     else if(unit == BinaryClock::BinaryClockUnit::Minute)
@@ -70,4 +72,12 @@ void qml::BinaryClockModel::setBinarySecond(const QList<bool>& second)
         mBinarySecond = second;
         emit binarySecondChanged();
     }
+}
+
+inline void qml::BinaryClockModel::checkIsNewDay(const QList<bool> &hour)
+{
+    if(std::all_of(hour.begin(), hour.end(), [](bool unit){ return unit ? false : true; }))
+    {
+        emit turnNewDay();
+    }    
 }

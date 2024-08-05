@@ -1,22 +1,12 @@
 import QtQuick 2.15
 import QtQuick.Layouts
-Rectangle {
+
+Item {
     id: weatherForecastRoot
     property var weather
     ColumnLayout
     {
         anchors.fill: weatherForecastRoot
-        Text{
-            id: dateText
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            text: weather && weather.date ? weather.date: "--"  
-            color: "white"
-            font{
-                bold: true
-                family: "Helvetica"
-                pixelSize: 100
-            }
-        }
         Rectangle
         {
             id: temperatureRectangle
@@ -56,16 +46,6 @@ Rectangle {
                 source: weather && weather.icon ? weather.icon : ""
                 height: weatherIconRectangle.height
                 width: weatherIconRectangle.height
-            }
-        }
-        Text{
-            id:locationSection
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            text: weather && weather.location ? weather.location : ""
-            color: "white"
-            font{
-                bold: true
-                pixelSize: 70
             }
         }
     }

@@ -13,13 +13,15 @@ set(QML_IMPORT_PATH ${CMAKE_SOURCE_DIR}/ui/qml CACHE STRING "" FORCE)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
-    add_compile_definitions(WIRINGPI_USAGE=1)
-    find_library(wiringPi_LIB wiringPi)
-    list(APPEND LinkLibraries ${wiringPi_LIB})
-else()
-    add_compile_definitions(WIRINGPI_USAGE=0)
-endif()
+# if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+#     add_compile_definitions(WIRINGPI_USAGE=1)
+#     find_library(wiringPi_LIB wiringPi)
+#     list(APPEND LinkLibraries ${wiringPi_LIB})
+# else()
+#     add_compile_definitions(WIRINGPI_USAGE=0)
+# endif()
+
+add_compile_definitions(WIRINGPI_USAGE=0)
     
 set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt6/qtHost/lib/cmake)
 
@@ -32,6 +34,8 @@ find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Network REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Location REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS Qml REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
     
@@ -98,6 +102,7 @@ target_link_libraries(${PROJECT}
     Qt6::Network
     Qt6::Mqtt
     Qt6::Location
+    Qt6::Qml
 )
 
 install(TARGETS ${PROJECT}

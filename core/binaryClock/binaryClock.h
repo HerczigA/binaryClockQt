@@ -32,6 +32,7 @@ class BinaryClock : public QObject
         void updateTimeUnits();
 
     private:
+        inline void checkIsNewDay(const QList<bool>& hour);
         int convertBCD(int& sec);
         int getActualTimeUnit(BinaryClockUnit unit);
         int mHour;

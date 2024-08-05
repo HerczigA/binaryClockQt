@@ -1,10 +1,15 @@
 #include "mainApp.h"
 
+#include <ui/Model/Utilities/DateHelper.h>
+
+#include <QQmlEngine>
+
 MainApp *MainApp ::s_mainApp = nullptr; 
 
 void MainApp::init()
 {
     qRegisterMetaType<std::shared_ptr<Config::ConfigPacket>>("std::shared_ptr<Config::ConfigPacket>");
+    qmlRegisterType<DateHelper>("MainApp.qmlcomponents", 1, 0, "DateHelper");
     mConfig = std::make_unique<Config>(this);
     mNetwork = std::make_unique<Network>();
     mBinClock = std::make_unique<BinaryClock>(this);
@@ -48,7 +53,6 @@ void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
         if(!isOnline)
         {
             // mPos = std::make_unique<Position>();
-            qDebug() << "GPS";
         }
         else
         {
@@ -56,7 +60,6 @@ void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
             mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation, Qt::QueuedConnection);
             mConnections += connect(mPos.get(), &Position::requestPackage, mNetwork.get(), &Network::onRequestPackageReceived, Qt::QueuedConnection);
             mConnections += connect(mNetwork.get(), &Network::sendRequestResult, mPos.get(), &Position::newOnlinePositionReceived, Qt::QueuedConnection);
-            qDebug() << "online";
         }
         mConnections += connect(mPos.get(), &Position::sendLocation, mWeatherForecast.get(), &WeatherForecast::locationReceived);
         mPos->requestedLocation();

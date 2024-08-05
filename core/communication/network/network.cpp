@@ -63,8 +63,6 @@ void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> req
     if(requestPackage->getRawUrl().isEmpty())
         return;
     
-    qDebug() << requestPackage->getRawUrl();
-
     QNetworkReply* reply = createRequest(requestPackage->getOperationType(),QNetworkRequest(QUrl(requestPackage->getRawUrl())));
     connect(reply, &QNetworkReply::finished, this, &Network::requestReplied);
     connect(this, &QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);

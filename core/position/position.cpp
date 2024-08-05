@@ -73,8 +73,8 @@ Position::~Position()
 {
     for(auto &con : mConnections)
         disconnect(con);
-    if(mGeoPos)
-        delete mGeoPos;
+    // if(mGeoPos)
+    //     delete mGeoPos;
 
 }
 
