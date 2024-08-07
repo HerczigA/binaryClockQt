@@ -52,7 +52,7 @@ void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
         bool isOnline = packet->mConfigMap.value("online").toBool();
         if(!isOnline)
         {
-            // mPos = std::make_unique<Position>();
+            mPos = std::make_unique<Position>();
         }
         else
         {
