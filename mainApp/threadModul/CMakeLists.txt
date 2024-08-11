@@ -1,5 +1,3 @@
-add_subdirectory(threadModul)
-
 file(GLOB SOURCES *.cpp)
 file(GLOB HEADERS *.h)
 
@@ -15,4 +13,3 @@ set(ALL_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
     PARENT_SCOPE
 )
-    
