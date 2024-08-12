@@ -11,7 +11,6 @@ namespace qml
 class BinaryClockModel : public QObject
 {
     Q_OBJECT
-    //CONSTANT only without write and notify
 
     Q_PROPERTY(QList<bool> binaryHour READ  binaryHour NOTIFY binaryHourChanged)
     Q_PROPERTY(QList<bool> binaryMinute READ binaryMinute NOTIFY binaryMinuteChanged)
@@ -38,7 +37,7 @@ class BinaryClockModel : public QObject
         void receivedTimeUnits(const BinaryClock::BinaryClockUnit unit, const QList<bool> result);
         
     private:
-        inline void checkIsNewDay(const QList<bool>& hour);
+        inline void checkIsNewDay();
         QList<bool> mBinaryHour;
         QList<bool> mBinaryMinute;
         QList<bool> mBinarySecond;

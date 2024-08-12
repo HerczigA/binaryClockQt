@@ -21,7 +21,6 @@ class MainApp : public QObject
     Q_PROPERTY(int height READ height CONSTANT)
 
 public:
-    void init();
     static MainApp* getInstance(const int& width, const int& height, QObject *parent = nullptr)
     {
         if(s_mainApp == nullptr)
@@ -48,17 +47,11 @@ private:
         , QObject(parent)
     {
         init();
-        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestPackage, mNetwork.get(), &Network::onRequestPackageReceived, Qt::QueuedConnection);
-        mConnections += connect(mNetwork.get(), &Network::sendRequestResult, mWeatherForecast.get(), &WeatherForecast::receivedRequestResult, Qt::QueuedConnection);
-        mConnections += connect(mConfig.get(), &Config::sendConfigProps, mWeatherForecast.get(), &WeatherForecast::receivedConfig, Qt::QueuedConnection);
-        mConnections += connect(mConfig.get(), &Config::sendConfigProps, this, &MainApp::receivedConfig, Qt::QueuedConnection);
-        mConnections += connect(mBinaryClock.get(), &BinaryClock::timeUnitChanged, mBinaryClockModel.get(), &qml::BinaryClockModel::receivedTimeUnits, Qt::QueuedConnection);
-        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendTemperature, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onTemperatureReceived, Qt::QueuedConnection);
-        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendIcon, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onIconReceived, Qt::QueuedConnection);
-        mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendLocation, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onLocationReceived, Qt::QueuedConnection);
-        mConnections += connect(mWeatherForecastModel.get(), &qml::WeatherForecastModel::requestData, mWeatherForecast.get(), &WeatherForecast::requestArrived, Qt::QueuedConnection);
+        makeConnections();
         mConfig->readConfig();
     }
+    void init();
+    void makeConnections();
     int mWidth;
     int mHeight;
 
