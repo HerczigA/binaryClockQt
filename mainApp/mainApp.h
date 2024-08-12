@@ -52,7 +52,7 @@ private:
         mConnections += connect(mNetwork.get(), &Network::sendRequestResult, mWeatherForecast.get(), &WeatherForecast::receivedRequestResult, Qt::QueuedConnection);
         mConnections += connect(mConfig.get(), &Config::sendConfigProps, mWeatherForecast.get(), &WeatherForecast::receivedConfig, Qt::QueuedConnection);
         mConnections += connect(mConfig.get(), &Config::sendConfigProps, this, &MainApp::receivedConfig, Qt::QueuedConnection);
-        mConnections += connect(mBinClock.get(), &BinaryClock::timeUnitChanged, mBinaryClockModel.get(), &qml::BinaryClockModel::receivedTimeUnits, Qt::QueuedConnection);
+        mConnections += connect(mBinaryClock.get(), &BinaryClock::timeUnitChanged, mBinaryClockModel.get(), &qml::BinaryClockModel::receivedTimeUnits, Qt::QueuedConnection);
         mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendTemperature, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onTemperatureReceived, Qt::QueuedConnection);
         mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendIcon, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onIconReceived, Qt::QueuedConnection);
         mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendLocation, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onLocationReceived, Qt::QueuedConnection);
@@ -64,13 +64,13 @@ private:
 
     static MainApp* s_mainApp;
 
-    std::unique_ptr<Config> mConfig;
-    std::unique_ptr<BinaryClock> mBinClock;
-    std::unique_ptr<WeatherForecast> mWeatherForecast;
-    std::unique_ptr<Network> mNetwork;
-    std::unique_ptr<Position> mPos;
-    std::unique_ptr<qml::BinaryClockModel> mBinaryClockModel;
-    std::unique_ptr<qml::WeatherForecastModel> mWeatherForecastModel;
+    std::shared_ptr<Config> mConfig;
+    std::shared_ptr<BinaryClock> mBinaryClock;
+    std::shared_ptr<WeatherForecast> mWeatherForecast;
+    std::shared_ptr<Network> mNetwork;
+    std::shared_ptr<Position> mPos;
+    std::shared_ptr<qml::BinaryClockModel> mBinaryClockModel;
+    std::shared_ptr<qml::WeatherForecastModel> mWeatherForecastModel;
     QList<QMetaObject::Connection> mConnections;
 
 };

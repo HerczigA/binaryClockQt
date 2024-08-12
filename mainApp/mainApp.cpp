@@ -1,6 +1,7 @@
 #include "mainApp.h"
 
 #include <ui/Model/Utilities/DateHelper.h>
+#include <mainApp/threadModul/threadModul.h>
 
 #include <QQmlEngine>
 
@@ -10,11 +11,13 @@ void MainApp::init()
 {
     qRegisterMetaType<std::shared_ptr<Config::ConfigPacket>>("std::shared_ptr<Config::ConfigPacket>");
     qmlRegisterType<DateHelper>("MainApp.qmlcomponents", 1, 0, "DateHelper");
-    mConfig = std::make_unique<Config>(this);
-    mNetwork = std::make_unique<Network>();
-    mBinClock = std::make_unique<BinaryClock>(this);
+    mBinaryClock = ThreadModul::createComponentIntoNewThread<BinaryClock>();
+    mWeatherForecast = ThreadModul::createComponentIntoNewThread<WeatherForecast>();
+    mConfig = ThreadModul::createComponentIntoNewThread<Config>();
+    mNetwork = ThreadModul::createComponentIntoNewThread<Network>();
+    
+    
     mBinaryClockModel = std::make_unique<qml::BinaryClockModel>(this);
-    mWeatherForecast = std::make_unique<WeatherForecast>(this);
     mWeatherForecastModel = std::make_unique<qml::WeatherForecastModel>(this);
 }
 
@@ -56,7 +59,7 @@ void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
         }
         else
         {
-            mPos = std::make_unique<Position>(packet->mConfigMap);
+            mPos = ThreadModul::createComponentIntoNewThread<Position>(packet->mConfigMap); // std::make_unique<Position>(packet->mConfigMap);
             mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation, Qt::QueuedConnection);
             mConnections += connect(mPos.get(), &Position::requestPackage, mNetwork.get(), &Network::onRequestPackageReceived, Qt::QueuedConnection);
             mConnections += connect(mNetwork.get(), &Network::sendRequestResult, mPos.get(), &Position::newOnlinePositionReceived, Qt::QueuedConnection);
