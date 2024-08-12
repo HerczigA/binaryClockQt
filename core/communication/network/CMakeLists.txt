@@ -1,0 +1,20 @@
+file(GLOB SOURCES *.cpp)
+file(GLOB HEADERS *.h)
+
+# add_subdirectory(extensions)
+
+set(ALL_SOURCES 
+    ${ALL_SOURCES} 
+    ${SOURCES}
+    ${HEADERS}
+    PARENT_SCOPE
+)
+
+set(ALL_INCLUDE_DIRS
+    ${ALL_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    PARENT_SCOPE
+)
+    
+set(NEEDED_LIBS ${NEEDED_LIBS} Qt6::Core Qt6::Network PARENT_SCOPE)
+

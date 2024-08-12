@@ -1,54 +1,82 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(PROJECT mainApp)
+set(PROJECT AviCado)
 
 project(${PROJECT} VERSION 0.1 LANGUAGES CXX)
 
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(QML_IMPORT_PATH ${CMAKE_SOURCE_DIR}/ui/qml CACHE STRING "" FORCE)
+
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-find_package(Qt6 6.3 COMPONENTS Quick REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Gui REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Core REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Network REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED)
-find_package(Qt6 6.3 COMPONENTS Location REQUIRED)
+# if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+#     add_compile_definitions(WIRINGPI_USAGE=1)
+#     find_library(wiringPi_LIB wiringPi)
+#     list(APPEND LinkLibraries ${wiringPi_LIB})
+# else()
+#     add_compile_definitions(WIRINGPI_USAGE=0)
+# endif()
+
+add_compile_definitions(WIRINGPI_USAGE=0)
+    
+set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt6/qtHost/lib/cmake)
+
+message(${CMAKE_PREFIX_PATH})
+
+find_package(Qt6 6.3 COMPONENTS Quick REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS Gui REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS Core REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS Network REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS Location REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS Qml REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
+    
+    # if(make_static)
+    
+    # else()
 
-file(GLOB_RECURSE COMPONENT_SOURCES components/*.cpp)
-file(GLOB_RECURSE COMPONENT_HEADERS components/*.h)
+set(ALL_SOURCES "")
+set(ALL_INCLUDE_DIRS "")
+set(NEEDED_LIBS "")
 
-list(APPEND QML_COMPONENTS
-    components/binaryClock/BinaryClock.qml
-    components/weatherForecast/WeatherForecast.qml
-)
+# endif()
 
-set(MAIN_APP mainApp/mainApp.cpp mainApp/mainApp.h)
 
-set(COMPONENTS ${COMPONENT_SOURCES} ${COMPONENT_HEADERS}  util/util.h)
+add_subdirectory(core)
+add_subdirectory(mainApp)
+add_subdirectory(ui)
 
-qt_add_resources(COMPONENTS resources.qrc)
+file(GLOB_RECURSE QML_COMPONENTS ui/qml/*.qml)
+
+message(STATUS "QML_COMPONENTS: ${QML_COMPONENTS}")
+
+message("CMAKE_SYSTEM_NAME " ${CMAKE_SYSTEM_NAME})
+message("CMAKE_SYSTEM_PROCESSOR " ${CMAKE_SYSTEM_PROCESSOR})
+
+qt_add_resources(RESOURCE resources.qrc)
+
+message(STATUS "ALL SOURCES: ${ALL_SOURCES}")
 
 qt_add_executable(${PROJECT}
-    ${COMPONENTS}
-    ${MAIN_APP}
+    ${RESOURCE}
+    ${ALL_SOURCES}
     main.cpp
 )
+
 
 qt_add_qml_module(${PROJECT}
     URI binaryClock
     VERSION 1.0
     QML_FILES
-    main.qml
     ${QML_COMPONENTS}
-
 )
 
 set_target_properties(${PROJECT} PROPERTIES
@@ -61,14 +89,8 @@ set_target_properties(${PROJECT} PROPERTIES
     LINK_FLAGS "-Wl,-rpath,$ORIGIN/lib"
 )
 
-target_include_directories(${PROJECT} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/util
-    ${CMAKE_CURRENT_SOURCE_DIR}/components/binaryClock
-    ${CMAKE_CURRENT_SOURCE_DIR}/components/weatherForecast
-    ${CMAKE_CURRENT_SOURCE_DIR}/components/Communication/Network
-    ${CMAKE_CURRENT_SOURCE_DIR}/components/config
-    ${CMAKE_CURRENT_SOURCE_DIR}/components/position
-    ${CMAKE_CURRENT_SOURCE_DIR}/mainApp
+target_include_directories(${PROJECT} PRIVATE
+    ${ALL_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT}
@@ -80,6 +102,7 @@ target_link_libraries(${PROJECT}
     Qt6::Network
     Qt6::Mqtt
     Qt6::Location
+    Qt6::Qml
 )
 
 install(TARGETS ${PROJECT}
