@@ -35,6 +35,11 @@ find_package(Qt6 6.3 COMPONENTS Network REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Location REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Qml REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(Qt6 6.3 COMPONENTS DBus REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GLIB REQUIRED glib-2.0)
+pkg_check_modules(GEOCLUE REQUIRED geoclue-2.0)
 
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
@@ -91,6 +96,8 @@ set_target_properties(${PROJECT} PROPERTIES
 
 target_include_directories(${PROJECT} PRIVATE
     ${ALL_INCLUDE_DIRS}
+    ${GLIB_INCLUDE_DIRS}
+    ${GEOCLUE_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT}
@@ -103,6 +110,9 @@ target_link_libraries(${PROJECT}
     Qt6::Mqtt
     Qt6::Location
     Qt6::Qml
+    Qt6::DBus
+    ${GLIB_LIBRARIES}
+    ${GEOCLUE_LIBRARIES}
 )
 
 install(TARGETS ${PROJECT}

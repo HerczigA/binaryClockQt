@@ -60,7 +60,8 @@ const QString Network::parseIPv6()
 
 void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> requestPackage)
 {
-    if(requestPackage->getRawUrl().isEmpty())
+    
+    if(!requestPackage || requestPackage->getRawUrl().isEmpty())
         return;
     
     QNetworkReply* reply = createRequest(requestPackage->getOperationType(),QNetworkRequest(QUrl(requestPackage->getRawUrl())));
