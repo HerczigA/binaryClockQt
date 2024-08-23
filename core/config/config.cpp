@@ -98,15 +98,7 @@ std::shared_ptr<Config::ConfigPacket> Config::createPacket(const QString& enumSt
     }
     else
     {
-        qDebug()<< "meta system could not realize to enum type or to enum's key";
+        qDebug()<< "meta system could not realize the enum type or to enum's key";
         return nullptr;
     }
 }
-
-// template <typename T>
-// const QString Config::parseEnumKey(T metaEnumKey)
-// {
-//     QMetaEnum metaEnum = QMetaEnum::fromType<T>();
-//     const char* enumString = metaEnum.valueToKey(static_cast<int>(metaEnumKey));
-//     return QString(enumString);
-// }

@@ -36,27 +36,7 @@ const int MainApp::height() const
 
 void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
 {
-    if(packet->mConfigType == Config::Types::Position)
-    {
-        QString positionTrackerType = packet->mConfigMap.value("online").toString();
-        if(positionTrackerType.isEmpty())
-        {
-            mPos = std::make_unique<Position>();
-            QObject::connect(mPos.get(), &Position::locationUpdated, [](const QGeoCoordinate &coordinate) {
-                qDebug() << "Location updated:";
-                qDebug() << "Latitude:" << coordinate.latitude();
-                qDebug() << "Longitude:" << coordinate.longitude();
-            });
-            mPos->startLocationUpdate();
-        }   
-        else
-        {
-            mPos = ThreadModul::createComponentIntoNewThread<Position>(packet->mConfigMap); // std::make_unique<Position>(packet->mConfigMap);
-            
-        }
-        // mConnections += connect(mPos.get(), &Position::sendLocation, mWeatherForecast.get(), &WeatherForecast::locationReceived);
-        // mPos->requestedLocation();
-    }
+    Q_UNUSED(packet);
 }
 
 

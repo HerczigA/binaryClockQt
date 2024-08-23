@@ -1,9 +1,6 @@
 #pragma once
 
-// #include <core/communication/network/extensions/jsonhandler.h>
 #include <core/config/config.h>
-// #include <core/weatherForecast/weatherforecast.h>
-
 #include <QSharedPointer>
 #include <QVariant>
 #include <QtNetwork/QNetworkRequest>

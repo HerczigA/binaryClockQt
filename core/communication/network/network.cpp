@@ -68,7 +68,7 @@ void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> req
     connect(reply, &QNetworkReply::finished, this, &Network::requestReplied);
     connect(this, &QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);
     connect(reply ,&QNetworkReply::errorOccurred, this, [reply](QNetworkReply::NetworkError code) {
-        qDebug() << "error occured. Reason code: " << code << "Reason : " << Config::parseEnumKey<QNetworkReply::NetworkError>(code);
+        qDebug() << "error occured. Reason code: " << code << "Reason : " << Config::parseEnumKeyToString<QNetworkReply::NetworkError>(code);
         qDebug() << reply->errorString();
         reply->deleteLater();
     });

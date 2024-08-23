@@ -22,7 +22,6 @@ class PositionRequestPackage : public NetworkRequestPackage
         PositionRequestPackage(QObject *parent = nullptr);
         ~PositionRequestPackage();
         void createUrl(const QSharedPointer<QVariant> data) override;
-
 };
 
 class Position : public QObject
@@ -30,7 +29,15 @@ class Position : public QObject
     Q_OBJECT
 public:
     explicit Position(QObject *parent = nullptr);
-    Position(const ConfigMap& configMap);
+    enum class PositionResources{
+            Unknown = -1,
+            Plugin,
+            Dbus,
+            GpsDevice,
+            Online
+    };
+    Q_ENUM(PositionResources);
+
     ~Position();
     void startLocationUpdate();
 
@@ -44,37 +51,26 @@ public slots:
     void receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet);
     void newPositionReceived(const QGeoPositionInfo &update);
     void newOnlinePositionReceived(const QByteArray& rawData);
-    void errorReceived(QGeoPositionInfoSource::Error);
-    void errorGeoCodeManager();
-    void getLocals(QGeoCodeReply *reply);
-    void localisationError(QGeoCodeReply::Error error, const QString &errorString = QString());
     void requestedLocation();
 
-
-
+private slots:
     void handleLocationUpdated(const QDBusObjectPath &oldPath, const QDBusObjectPath &newPath);
-    
-    void handleLocationUpdated(QString, QString);
 
 private:
     void createDBusClient();
     void createPluginClient();
     void createNetworkRequest();
     
-    
-    QVector<QMetaObject::Connection> mConnections;
     QGeoPositionInfoSource *mGeoPos;
 
-    QGeoCodingManager * mGeoManager;
-
+    QGeoCodingManager* mGeoManager;
     std::unique_ptr<QGeoServiceProvider> mServiceProvider;
 
     QSharedPointer<PositionRequestPackage> mPositionRequestPackage;
-
-    QDBusInterface *m_geoClueManagerInterface;
+    QGeoLocation mGeoLocation;
+    QDBusInterface *mGeoClueManagerInterface;
     QDBusInterface *mGeoClueClientInterface;
-    QString m_clientPath;
-
-    QString mRawUrl;
-    QString mApiKey;
+    QString mClientPath;
+    PositionResources mResourceType;
+        
 };
