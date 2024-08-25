@@ -11,7 +11,7 @@
 
 #include <memory>
 
-constexpr int positionRequestInterval = 5000;
+constexpr int positionRequestInterval = 10000;
 const QString desktopId("AviCado");
 
 PositionRequestPackage::PositionRequestPackage(QObject *parent)
@@ -48,11 +48,7 @@ Position::Position(QObject *parent)
     {
         // maybe use without unique ptr and call  delete later for this shit if necessary
         mGeoManager = mServiceProvider->geocodingManager();
-        if(mGeoManager)
-        {
-            mGeoPos->setPreferredPositioningMethods(QGeoPositionInfoSource::NonSatellitePositioningMethods);
-        }
-        else
+        if(!mGeoManager)
         {
             qDebug() << "Failed to create GeoManager";    
         }
@@ -69,7 +65,7 @@ void Position::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet
 {
     if(packet->mConfigType == Config::Types::Position)
     {
-        Config::parseEnumStringToKey<Position::PositionResources>(mResourceType, packet->mConfigMap["type"].toString());
+        mResourceType = Config::parseEnumStringToKey<Position::PositionResources>(packet->mConfigMap["type"].toString());
         switch (mResourceType)
         {
         case Position::PositionResources::Plugin:
@@ -108,25 +104,31 @@ void Position::newPositionReceived(const QGeoPositionInfo &newPos)
     if(newPos.isValid())
     {
         qInfo()<< newPos.coordinate();
-
-        QGeoCodeReply* reply = mGeoManager->reverseGeocode(newPos.coordinate());
-        connect(reply, &QGeoCodeReply::finished, this, [reply, this]() {
-            if (reply->error() == QGeoCodeReply::NoError) {
-                QList<QGeoLocation> loc = reply->locations();
-                if(loc.size() != 0)
-                {
-                    if(!loc[0].isEmpty())
+        if(mGeoManager)
+        {
+            QGeoCodeReply* reply = mGeoManager->reverseGeocode(newPos.coordinate());
+            connect(reply, &QGeoCodeReply::finished, this, [reply, this]() {
+                if (reply->error() == QGeoCodeReply::NoError) {
+                    QList<QGeoLocation> loc = reply->locations();
+                    if(loc.size() != 0)
                     {
-                        mGeoLocation = loc[0];
-                        QString cityLocation = mGeoLocation.address().city();
-                        emit sendLocation(cityLocation);
+                        if(!loc[0].isEmpty())
+                        {
+                            mGeoLocation = loc[0];
+                            QString cityLocation = mGeoLocation.address().city();
+                            emit sendLocation(cityLocation);
+                        }
                     }
+                } else {
+                    qDebug()<< "Error occured in reversing GeoCode. Error reason: " << reply->errorString();
                 }
-            } else {
-                qDebug()<< "Error occured in reversing GeoCode. Error reason: " << reply->errorString();
-            }
-        });
-        reply->deleteLater();
+            });
+            reply->deleteLater();
+        }
+        else
+        {
+            qDebug() << "Could not process new Position because geomanager is nullptr";
+        }
     }
 }
 
@@ -212,6 +214,25 @@ void Position::handleLocationUpdated(const QDBusObjectPath &oldPath, const QDBus
     qDebug() << "Longitude:" << longitude;
 }
 
+void Position::createPluginClient()
+{
+        QVariantMap params;
+        params["desktopId"] = "AviCado";
+        mGeoPos = QGeoPositionInfoSource::createSource("geoclue2", params, this);
+        if(mGeoPos)
+        {
+            mGeoPos->setPreferredPositioningMethods(QGeoPositionInfoSource::NonSatellitePositioningMethods);
+            connect(mGeoPos, &QGeoPositionInfoSource::positionUpdated, this, &Position::newPositionReceived);
+            connect(mGeoPos, &QGeoPositionInfoSource::errorOccurred, this, [](QGeoPositionInfoSource::Error error)
+            {
+                qDebug() << "Error occured when plugin tried to request update. Error reason: " << Config::parseEnumKeyToString<QGeoPositionInfoSource::Error>(error);
+            });
+            
+        }
+        else
+            qInfo()<< "No geoPos";
+}
+
 void Position::createDBusClient()
 {
      mGeoClueManagerInterface = new QDBusInterface("org.freedesktop.GeoClue2",
@@ -233,22 +254,21 @@ void Position::createDBusClient()
             {
                 bool success = mGeoClueClientInterface->setProperty("DesktopId", QVariant(desktopId));
                 if (success) {
-                    if(QVariant activeStatus = mGeoClueClientInterface->property("Active"); activeStatus.toBool())
-                    {
-                        // <signal name=\"LocationUpdated\">\n      <arg type=\"o\" name=\"old\"/>\n      <arg type=\"o\" name=\"new\"/>\n    </signal>\n
-                        connect(mGeoClueClientInterface, SIGNAL(LocationUpdated(QDBusObjectPath, QDBusObjectPath)),this, SLOT(handleLocationUpdated(QDBusObjectPath, QDBusObjectPath)));
-                    }
-                    else
-                    {
-                        qDebug() << "interface is not active";
-                    }
-                    
+                    // <signal name=\"LocationUpdated\">\n      <arg type=\"o\" name=\"old\"/>\n      <arg type=\"o\" name=\"new\"/>\n    </signal>\n
+                    connect(mGeoClueClientInterface, SIGNAL(LocationUpdated(QDBusObjectPath, QDBusObjectPath)),this, SLOT(handleLocationUpdated(QDBusObjectPath, QDBusObjectPath)));
                     QDBusReply<void> startReply = mGeoClueClientInterface->call("Start");
                     if (!startReply.isValid()) {
                         qDebug() << "Failed to call \"Start\" by client:" << startReply.error().message();
-                    } 
-                } 
-                else 
+                    }
+                    QVariant activeStatus = mGeoClueClientInterface->property("Active"); 
+                    if(activeStatus.toBool())
+                    {
+                        qDebug() << "Client is active";
+                    } else {
+                        qDebug() << "Failed to get Active property";
+                    }
+                }
+                else
                 {
                     qDebug() << "Failed to set DesktopId";
                 }
@@ -257,8 +277,8 @@ void Position::createDBusClient()
             {
                 qDebug() << "Failed to create GeoClue2 Client interface";
             }
-        } 
-        else 
+        }
+        else
         {
             qDebug() << "Failed to get GeoClue2 client:" << reply.error().message();
         }
@@ -267,25 +287,6 @@ void Position::createDBusClient()
     {
         qDebug()<<"Failed to create GeoClue2 Manager interface";
     }
-}
-
-void Position::createPluginClient()
-{
-        QVariantMap params;
-        params["desktopId"] = "AviCado";
-        mGeoPos = QGeoPositionInfoSource::createSource("geoclue2", params, this);
-        if(mGeoPos)
-        {
-            mGeoPos->setPreferredPositioningMethods(QGeoPositionInfoSource::NonSatellitePositioningMethods);
-            connect(mGeoPos, &QGeoPositionInfoSource::positionUpdated, this, &Position::newPositionReceived);
-            connect(mGeoPos, &QGeoPositionInfoSource::errorOccurred, this, [](QGeoPositionInfoSource::Error error)
-            {
-                qDebug() << "Error occured when plugin tried to request update. Error reason: " << Config::parseEnumKeyToString<QGeoPositionInfoSource::Error>(error);
-            });
-            
-        }
-        else
-            qInfo()<< "No geoPos";
 }
 
 void Position::createNetworkRequest()

@@ -43,15 +43,16 @@ public:
         return QString(enumString);
     }
     template<typename T>
-    static void parseEnumStringToKey(const T& metaEnumKey, const QString& enumString)
+    static T parseEnumStringToKey(const QString& enumString)
     {
         bool ok = false;
         QMetaEnum metaEnum = QMetaEnum::fromType<T>();
         int enumValue = metaEnum.keyToValue(enumString.toStdString().c_str(), &ok);
         if(ok)
         {
-            metaEnumKey = static_cast<T>(enumValue);
+            return static_cast<T>(enumValue);
         }
+        return static_cast<T>(-1);
     }
 
 signals:
