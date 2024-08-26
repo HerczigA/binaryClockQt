@@ -10,8 +10,6 @@
 #include <QtNetwork/QNetworkInterface>
 #include <QtNetwork/QHostAddress>
 
-
-
 class Credentials : public QAuthenticator
 {
     public:

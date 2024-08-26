@@ -2,6 +2,11 @@
 
 #include <core/communication/network/network.h>
 #include <core/config/config.h>
+#include <core/position/PositionResources/PositionResource.h>
+//forward declaration in position resource ? 
+#include <core/position/PositionResources/PositionPluginResource.h>
+#include <core/position/PositionResources/PositionDBusResource.h>
+#include <core/position/PositionResources/PositionNetworkResource.h>
 
 #include <QtPositioning/QGeoPositionInfoSource>
 #include <QtPositioning/QGeoLocation>
@@ -13,8 +18,12 @@
 
 #include <QGeoCoordinate>
 #include <QDBusInterface>
-
 #include <QVariant>
+
+#include <memory>
+
+namespace position
+{
 
 class PositionRequestPackage : public NetworkRequestPackage
 {
@@ -29,14 +38,14 @@ class Position : public QObject
     Q_OBJECT
 public:
     explicit Position(QObject *parent = nullptr);
-    enum class PositionResources{
+    enum class ResourceTypes{
             Unknown = -1,
             Plugin,
             Dbus,
             GpsDevice,
             Online
     };
-    Q_ENUM(PositionResources);
+    Q_ENUM(ResourceTypes);
 
     ~Position();
     void startLocationUpdate();
@@ -49,28 +58,21 @@ signals:
 
 public slots:
     void receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet);
-    void newPositionReceived(const QGeoPositionInfo &update);
     void newOnlinePositionReceived(const QByteArray& rawData);
     void requestedLocation();
 
 private slots:
-    void handleLocationUpdated(const QDBusObjectPath &oldPath, const QDBusObjectPath &newPath);
+    void newPositionReceived(const QGeoCoordinate &coordinate);
 
 private:
-    void createDBusClient();
-    void createPluginClient();
-    void createNetworkRequest();
-    
-    QGeoPositionInfoSource *mGeoPos;
-
     QGeoCodingManager* mGeoManager;
     std::unique_ptr<QGeoServiceProvider> mServiceProvider;
 
     QSharedPointer<PositionRequestPackage> mPositionRequestPackage;
     QGeoLocation mGeoLocation;
-    QDBusInterface *mGeoClueManagerInterface;
-    QDBusInterface *mGeoClueClientInterface;
-    QString mClientPath;
-    PositionResources mResourceType;
         
+    ResourceTypes mResourceType;
+    QSharedPointer<PositionResource> mPositionResource;
 };
+}
+
