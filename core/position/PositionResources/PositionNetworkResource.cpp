@@ -21,7 +21,7 @@ void PositionRequestPackage::createUrl(const QSharedPointer<QVariant> data)
         ConfigMap configMap = data->toMap();
         QString url = configMap["url"].toString();
         QString key = "access_key=" +configMap["apikey"].toString();
-        QString query = "&query="+ Network::parseIPv6();
+        QString query = "&query="+ Network::parseIPv6() + "&limit=1";
         rawUrl = url+key+query;
         setRawUrl(rawUrl);
     }

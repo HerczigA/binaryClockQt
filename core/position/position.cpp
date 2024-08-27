@@ -90,8 +90,7 @@ void Position::newPositionReceived(const QVariant &result)
     }
     else if(result.canConvert<QByteArray>())
     {
-        QByteArray byteArray = result.toByteArray();
-        qInfo() << byteArray;
+        newOnlinePositionReceived(result.toByteArray());
     }
 }
 

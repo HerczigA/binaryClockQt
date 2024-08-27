@@ -49,7 +49,7 @@ void MainApp::init()
     mWeatherForecast = ThreadModul::createComponentIntoNewThread<WeatherForecast>();
     mConfig = ThreadModul::createComponentIntoNewThread<Config>();
     mNetwork = ThreadModul::createComponentIntoNewThread<Network>();
-    mPos = ThreadModul::createComponentIntoNewThread<position::Position>();
+    mPosition = ThreadModul::createComponentIntoNewThread<position::Position>();
     
     mBinaryClockModel = std::make_unique<qml::BinaryClockModel>(this);
     mWeatherForecastModel = std::make_unique<qml::WeatherForecastModel>(this);
@@ -66,7 +66,8 @@ void MainApp::makeConnections()
     mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendLocation, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onLocationReceived, Qt::QueuedConnection);
     mConnections += connect(mWeatherForecastModel.get(), &qml::WeatherForecastModel::requestData, mWeatherForecast.get(), &WeatherForecast::requestArrived, Qt::QueuedConnection);
     
-    mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &position::Position::requestedLocation, Qt::QueuedConnection);
-    mConnections += connect(mConfig.get(), &Config::sendConfigProps, mPos.get(), &position::Position::receivedConfig, Qt::QueuedConnection);
+    mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPosition.get(), &position::Position::requestedLocation, Qt::QueuedConnection);
+    mConnections += connect(mPosition.get(), &position::Position::sendLocation, mWeatherForecast.get(), &WeatherForecast::sendLocation, Qt::QueuedConnection);
+    mConnections += connect(mConfig.get(), &Config::sendConfigProps, mPosition.get(), &position::Position::receivedConfig, Qt::QueuedConnection);
 }
 

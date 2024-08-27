@@ -48,13 +48,13 @@ signals:
 
 public slots:
     void receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet);
-    void newOnlinePositionReceived(const QByteArray& rawData);
     void requestedLocation();
 
 private slots:
     void newPositionReceived(const QVariant &coordinate);
 
 private:
+    void newOnlinePositionReceived(const QByteArray& rawData);
     void createPositionResource(QSharedPointer<ConfigMap> configMap = nullptr);
     QGeoCodingManager* mGeoManager;
     std::unique_ptr<QGeoServiceProvider> mServiceProvider;

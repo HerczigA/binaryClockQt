@@ -27,21 +27,7 @@ Network::Network(QObject *parent)
 {
     setIPv6();
 }
-// static const QString Network::parseExternalIP() 
-// {
-//         QNetworkRequest request(QUrl("https://api.ipify.org"));
-//         QNetworkReply* reply = createRequest(QNetworkAccessManager::GetOperation, request);
-//         connect(reply, &QNetworkReply::finished, this, [this, reply](){
-//             qDebug() << reply->readAll();
-//             mExternalIp = reply->readAll();
-//         });
-//         connect(this, &QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);
-//         connect(reply ,&QNetworkReply::errorOccurred, this, [reply](QNetworkReply::NetworkError code) {
-//             qDebug() << "error occured. Reason code: " << code << "Reason : " << Config::parseEnumKeyToString<QNetworkReply::NetworkError>(code);
-//             qDebug() << reply->errorString();
-//             reply->deleteLater();
-//         });
-// }
+
 Network::Network(Credentials &conf, QObject *parent)
     : QNetworkAccessManager{parent}
 {
