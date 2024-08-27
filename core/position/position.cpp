@@ -3,36 +3,13 @@
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QJsonObject>
-
 #include <QDBusReply>
 #include <QDBusVariant>
 
+#include <utility>
 namespace position
 {
 
-PositionRequestPackage::PositionRequestPackage(QObject *parent)
-    :NetworkRequestPackage(parent)
-{
-
-}
-
-PositionRequestPackage::~PositionRequestPackage()
-{
-}
-
-void PositionRequestPackage::createUrl(const QSharedPointer<QVariant> data)
-{
-    QString rawUrl;
-    if(data->canConvert<ConfigMap>())
-    {
-        ConfigMap configMap = data->toMap();
-        QString url = configMap["url"].toString();
-        QString key = "access_key=" +configMap["apikey"].toString();
-        QString query = "&query="+ Network::parseIPv6();
-        rawUrl = url+key+query;
-        setRawUrl(rawUrl);
-    }
-}
 
 Position::Position(QObject *parent)
     : QObject{parent}
@@ -52,7 +29,6 @@ Position::Position(QObject *parent)
     {
         qDebug() << "Failed to create OSM GeoServiceProvider";
     }
-    
 }
 
 
@@ -60,29 +36,9 @@ void Position::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet
 {
     if(packet->mConfigType == Config::Types::Position)
     {
-        mPositionResource.reset();
         mResourceType = Config::parseEnumStringToKey<Position::ResourceTypes>(packet->mConfigMap["type"].toString());
-        switch (mResourceType)
-        {
-        case Position::ResourceTypes::Plugin:
-            mPositionResource = QSharedPointer<PositionPluginResource>::create();
-            break;
-        case Position::ResourceTypes::Dbus:
-            mPositionResource = QSharedPointer<PositionDBusResource>::create();
-            break;
-        case Position::ResourceTypes::GpsDevice:
-            // to do:  implement in the future if device will be available
-            break;
-        case Position::ResourceTypes::Online:
-            // to do :move entire prop to position network class 
-            // mPositionRequestPackage = QSharedPointer<PositionRequestPackage>::create(this);
-            // mPositionRequestPackage->createUrl(QSharedPointer<QVariant>::create(QVariant(packet->mConfigMap)));
-            // mPositionRequestPackage->setOperationType(std::move(QNetworkAccessManager::Operation::GetOperation));
-            break;
-        
-        default:
-            break;
-        }
+        QSharedPointer<ConfigMap> configMap = QSharedPointer<ConfigMap>::create(packet->mConfigMap);
+        createPositionResource(std::forward<QSharedPointer<ConfigMap>>(configMap));
         startLocationUpdate();
     }
 }
@@ -95,36 +51,47 @@ Position::~Position()
     }
 }
 
-void Position::newPositionReceived(const QGeoCoordinate &coordinate)
+void Position::newPositionReceived(const QVariant &result)
 {
-    if(coordinate.isValid())
+    if(result.canConvert<QGeoCoordinate>())
     {
-        qInfo()<< coordinate;
-        if(mGeoManager)
+        auto coordinate = qvariant_cast<QGeoCoordinate>(result);
+        if(coordinate.isValid())
         {
-            QGeoCodeReply* reply = mGeoManager->reverseGeocode(coordinate);
-            connect(reply, &QGeoCodeReply::finished, this, [reply, this]() {
-                if (reply->error() == QGeoCodeReply::NoError) {
-                    QList<QGeoLocation> loc = reply->locations();
-                    if(loc.size() != 0)
-                    {
-                        if(!loc[0].isEmpty())
+            qInfo()<< coordinate;
+            if(mGeoManager)
+            {
+                QGeoCodeReply* reply = mGeoManager->reverseGeocode(coordinate);
+                connect(reply, &QGeoCodeReply::finished, this, [reply, this]() {
+                    if (reply->error() == QGeoCodeReply::NoError) {
+                        QList<QGeoLocation> loc = reply->locations();
+                        if(loc.size() != 0)
                         {
-                            mGeoLocation = loc[0];
-                            QString cityLocation = mGeoLocation.address().city();
-                            emit sendLocation(cityLocation);
+                            if(!loc[0].isEmpty())
+                            {
+                                mGeoLocation = loc[0];
+                                QString cityLocation = mGeoLocation.address().city();
+                                emit sendLocation(cityLocation);
+                            }
                         }
                     }
-                } else {
-                    qDebug()<< "Error occured in reversing GeoCode. Error reason: " << reply->errorString();
-                }
-            });
-            reply->deleteLater();
+                    else 
+                    {
+                        qDebug()<< "Error occured in reversing GeoCode. Error reason: " << reply->errorString();
+                    }
+                });
+                reply->deleteLater();
+            }
+            else
+            {
+                qDebug() << "Could not process new Position because geomanager is nullptr";
+            }
         }
-        else
-        {
-            qDebug() << "Could not process new Position because geomanager is nullptr";
-        }
+    }
+    else if(result.canConvert<QByteArray>())
+    {
+        QByteArray byteArray = result.toByteArray();
+        qInfo() << byteArray;
     }
 }
 
@@ -160,6 +127,36 @@ void Position::newOnlinePositionReceived(const QByteArray& rawData)
 void Position::requestedLocation()
 {
     startLocationUpdate();
+}
+
+void Position::createPositionResource(QSharedPointer<ConfigMap> configMap)
+{
+    mPositionResource.reset();
+    switch (mResourceType)
+    {
+        case Position::ResourceTypes::Plugin:
+            mPositionResource = QSharedPointer<PositionPluginResource>::create();
+            
+            break;
+        case Position::ResourceTypes::Dbus:
+            mPositionResource = QSharedPointer<PositionDBusResource>::create();
+            break;
+        case Position::ResourceTypes::GpsDevice:
+            // to do:  implement in the future if device will be available
+            break;
+        case Position::ResourceTypes::Online:
+            if(configMap)
+            {
+                mPositionResource = QSharedPointer<PositionNetworkResource>::create(configMap);
+            }
+            break;
+        default:
+            break;
+    }
+    if(mPositionResource)
+    {
+        connect(mPositionResource.get(), &PositionResource::sendNewResult, this, &Position::newPositionReceived, Qt::QueuedConnection);
+    }
 }
 
 void Position::startLocationUpdate()

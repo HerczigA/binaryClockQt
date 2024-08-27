@@ -16,14 +16,18 @@ PositionPluginResource::PositionPluginResource(QObject *parent)
     if(mGeoPos)
     {
         mGeoPos->setPreferredPositioningMethods(QGeoPositionInfoSource::NonSatellitePositioningMethods);
-        connect(mGeoPos, &QGeoPositionInfoSource::positionUpdated, this, &PositionPluginResource::newPositionReceived);
+        connect(mGeoPos, &QGeoPositionInfoSource::positionUpdated, this, &PositionPluginResource::newPositionReceived, Qt::QueuedConnection);
         connect(mGeoPos, &QGeoPositionInfoSource::errorOccurred, this, [](QGeoPositionInfoSource::Error error)
                 {
                     qDebug() << "Error occured when plugin tried to request update. Error reason: " << Config::parseEnumKeyToString<QGeoPositionInfoSource::Error>(error);
-                });
+                }, Qt::QueuedConnection);
     }
     else
         qInfo()<< "No geoPos";
+}
+
+PositionPluginResource::~PositionPluginResource()
+{
 }
 
 void PositionPluginResource::requestLocation()
@@ -39,7 +43,7 @@ void PositionPluginResource::newPositionReceived(const QGeoPositionInfo &newPos)
     if(newPos.isValid())
     {
         qInfo()<< newPos.coordinate();
-        emit sendNewCoordinate(newPos.coordinate());
+        emit sendNewResult(QVariant::fromValue(newPos.coordinate()));
     }
 }
 

@@ -2,9 +2,10 @@
 
 #include "PositionResource.h"
 
-#include <QtPositioning/QGeoPositionInfoSource>
 #include <QDBusInterface>
 #include <QString>
+#include <QGeoCoordinate>
+#include <QVariant>
 
 namespace position
 {
@@ -20,6 +21,7 @@ public:
 
 private slots:
     void handleLocationUpdated(const QDBusObjectPath &oldPath, const QDBusObjectPath &newPath);
+
 private:
     QDBusInterface *mGeoClueManagerInterface;
     QDBusInterface *mGeoClueClientInterface;

@@ -43,12 +43,13 @@ void MainApp::receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet)
 void MainApp::init()
 {
     qRegisterMetaType<std::shared_ptr<Config::ConfigPacket>>("std::shared_ptr<Config::ConfigPacket>");
+    qRegisterMetaType<QGeoCoordinate>();
     qmlRegisterType<DateHelper>("MainApp.qmlcomponents", 1, 0, "DateHelper");
     mBinaryClock = ThreadModul::createComponentIntoNewThread<BinaryClock>();
     mWeatherForecast = ThreadModul::createComponentIntoNewThread<WeatherForecast>();
     mConfig = ThreadModul::createComponentIntoNewThread<Config>();
     mNetwork = ThreadModul::createComponentIntoNewThread<Network>();
-    mPos = ThreadModul::createComponentIntoNewThread<Position>();
+    mPos = ThreadModul::createComponentIntoNewThread<position::Position>();
     
     mBinaryClockModel = std::make_unique<qml::BinaryClockModel>(this);
     mWeatherForecastModel = std::make_unique<qml::WeatherForecastModel>(this);
@@ -65,9 +66,7 @@ void MainApp::makeConnections()
     mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendLocation, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onLocationReceived, Qt::QueuedConnection);
     mConnections += connect(mWeatherForecastModel.get(), &qml::WeatherForecastModel::requestData, mWeatherForecast.get(), &WeatherForecast::requestArrived, Qt::QueuedConnection);
     
-    mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &Position::requestedLocation, Qt::QueuedConnection);
-    mConnections += connect(mPos.get(), &Position::requestPackage, mNetwork.get(), &Network::onRequestPackageReceived, Qt::QueuedConnection);
-    mConnections += connect(mNetwork.get(), &Network::sendRequestResult, mPos.get(), &Position::newOnlinePositionReceived, Qt::QueuedConnection);
-    mConnections += connect(mConfig.get(), &Config::sendConfigProps, mPos.get(), &Position::receivedConfig, Qt::QueuedConnection);
+    mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPos.get(), &position::Position::requestedLocation, Qt::QueuedConnection);
+    mConnections += connect(mConfig.get(), &Config::sendConfigProps, mPos.get(), &position::Position::receivedConfig, Qt::QueuedConnection);
 }
 

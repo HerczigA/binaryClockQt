@@ -61,19 +61,21 @@ PositionDBusResource::~PositionDBusResource()
 
 void PositionDBusResource::requestLocation()
 {
-    /*QDBusReply<void> startReply = mGeoClueClientInterface->call("Start");
+    QDBusReply<void> startReply = mGeoClueClientInterface->call("Start");
     if (!startReply.isValid()) {
         qDebug() << "Failed to call \"Start\" by client:" << startReply.error().message();
-    }*/
+    }
     QVariant activeStatus = mGeoClueClientInterface->property("Active");
     if(activeStatus.toBool())
     {
         qDebug() << "Client is active";
-        QDBusReply<void> startReply = mGeoClueClientInterface->call("Start");
+        /*QDBusReply<void> startReply = mGeoClueClientInterface->call("Start");
         if (!startReply.isValid()) {
             qDebug() << "Failed to call \"Start\" by client:" << startReply.error().message();
-        }
-    } else {
+        }*/
+    }
+    else
+    {
         qDebug() << "Failed to get Active property";
     }
 }
@@ -94,7 +96,7 @@ void PositionDBusResource::handleLocationUpdated(const QDBusObjectPath &oldPath,
     double latitude = locationInterface.property("Latitude").toDouble();
     double longitude = locationInterface.property("Longitude").toDouble();
     QGeoCoordinate coordinate(latitude, longitude);
-    emit sendNewCoordinate(coordinate);
+    emit sendNewResult(QVariant::fromValue(coordinate));
     qDebug() << "New location:";
     qDebug() << "Latitude:" << latitude;
     qDebug() << "Longitude:" << longitude;

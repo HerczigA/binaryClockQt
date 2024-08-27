@@ -44,6 +44,7 @@ class Network : public QNetworkAccessManager
         explicit Network(QObject *parent = nullptr);
         Network(struct Credentials& conf, QObject *parent = nullptr);
         ~Network();
+        static const QString parseExternalIP();
         static const QString parseIPv6();
 
     signals:
@@ -72,6 +73,6 @@ class Network : public QNetworkAccessManager
         QSslConfiguration mSslConf;
         QHostAddress mLocalAddress;
         QString mIPv6;
-        // JsonHandler mJson;
+        QString mExternalIp;
 
 };

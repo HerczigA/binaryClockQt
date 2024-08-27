@@ -3,6 +3,8 @@
 #include "PositionResource.h"
 
 #include <QtPositioning/QGeoPositionInfoSource>
+#include <QGeoCoordinate>
+#include <QVariant>
 
 namespace position
 {

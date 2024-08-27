@@ -2,8 +2,6 @@
 
 #include <QObject>
  
-#include <QGeoCoordinate>
-
 namespace position
 {
 
@@ -17,7 +15,7 @@ public:
     virtual void requestLocation() = 0;
 
 signals:
-    void sendNewCoordinate(const QGeoCoordinate& coordinates);
+    void sendNewResult(const QVariant& result);
 };
 
 }

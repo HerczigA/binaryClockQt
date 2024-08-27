@@ -1,8 +1,9 @@
 #pragma once
 
-#include <core/communication/network/network.h>
+
 #include <core/config/config.h>
 #include <core/position/PositionResources/PositionResource.h>
+
 //forward declaration in position resource ? 
 #include <core/position/PositionResources/PositionPluginResource.h>
 #include <core/position/PositionResources/PositionDBusResource.h>
@@ -14,24 +15,13 @@
 #include <QtLocation/QGeoCodingManager>
 #include <QtLocation/QGeoCodeReply>
 #include <QtLocation/QGeoServiceProvider>
-
-
 #include <QGeoCoordinate>
-#include <QDBusInterface>
 #include <QVariant>
 
 #include <memory>
 
 namespace position
 {
-
-class PositionRequestPackage : public NetworkRequestPackage
-{
-    public:
-        PositionRequestPackage(QObject *parent = nullptr);
-        ~PositionRequestPackage();
-        void createUrl(const QSharedPointer<QVariant> data) override;
-};
 
 class Position : public QObject
 {
@@ -62,17 +52,17 @@ public slots:
     void requestedLocation();
 
 private slots:
-    void newPositionReceived(const QGeoCoordinate &coordinate);
+    void newPositionReceived(const QVariant &coordinate);
 
 private:
+    void createPositionResource(QSharedPointer<ConfigMap> configMap = nullptr);
     QGeoCodingManager* mGeoManager;
     std::unique_ptr<QGeoServiceProvider> mServiceProvider;
-
-    QSharedPointer<PositionRequestPackage> mPositionRequestPackage;
     QGeoLocation mGeoLocation;
-        
     ResourceTypes mResourceType;
     QSharedPointer<PositionResource> mPositionResource;
 };
+
 }
+//Q_DECLARE_METATYPE(QGeoCoordinate)
 

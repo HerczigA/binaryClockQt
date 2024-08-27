@@ -61,7 +61,7 @@ private:
     std::shared_ptr<BinaryClock> mBinaryClock;
     std::shared_ptr<WeatherForecast> mWeatherForecast;
     std::shared_ptr<Network> mNetwork;
-    std::shared_ptr<Position> mPos;
+    std::shared_ptr<position::Position> mPos;
     std::shared_ptr<qml::BinaryClockModel> mBinaryClockModel;
     std::shared_ptr<qml::WeatherForecastModel> mWeatherForecastModel;
     QList<QMetaObject::Connection> mConnections;
