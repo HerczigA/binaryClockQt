@@ -1,5 +1,3 @@
-add_subdirectory(PositionResources)
-
 file(GLOB SOURCES *.cpp)
 file(GLOB HEADERS *.h)
 

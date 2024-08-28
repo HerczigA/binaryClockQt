@@ -47,10 +47,6 @@ void BinaryClock::updateTimeUnits()
     {
         QList<bool> result(8,false);
         int timeUnit = getActualTimeUnit(static_cast<BinaryClockUnit>(unit));
-        if(unit == static_cast<int>(BinaryClockUnit::Hour))
-        {
-
-        }
         int time = convertBCD(timeUnit);
         for(int i = 0; i <= binaryTimeUnit; i++)
             result[binaryTimeUnit-i] = 0x01 & (time >> i);

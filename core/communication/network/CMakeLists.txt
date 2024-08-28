@@ -1,7 +1,6 @@
 file(GLOB SOURCES *.cpp)
 file(GLOB HEADERS *.h)
 
-# add_subdirectory(extensions)
 
 set(ALL_SOURCES 
     ${ALL_SOURCES} 

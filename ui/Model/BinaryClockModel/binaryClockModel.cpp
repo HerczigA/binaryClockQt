@@ -9,6 +9,7 @@ qml::BinaryClockModel::BinaryClockModel(QObject *parent)
     , mBinaryMinute(8,false)
     , mBinarySecond(8,false)
 {
+    connect(this, &BinaryClockModel::binaryHourChanged, this, &BinaryClockModel::checkIsNewDay);
 }
 
 qml::BinaryClockModel::~BinaryClockModel()
@@ -34,7 +35,6 @@ void qml::BinaryClockModel::receivedTimeUnits(const BinaryClock::BinaryClockUnit
 {
     if(unit == BinaryClock::BinaryClockUnit::Hour)
     {
-        checkIsNewDay(result);
         setBinaryHour(result);
     }
     else if(unit == BinaryClock::BinaryClockUnit::Minute)
@@ -74,9 +74,9 @@ void qml::BinaryClockModel::setBinarySecond(const QList<bool>& second)
     }
 }
 
-inline void qml::BinaryClockModel::checkIsNewDay(const QList<bool> &hour)
+inline void qml::BinaryClockModel::checkIsNewDay()
 {
-    if(std::all_of(hour.begin(), hour.end(), [](bool unit){ return unit ? false : true; }))
+    if(std::all_of(mBinaryHour.cbegin(), mBinaryHour.cend(), [](bool unit){ return unit ? false : true; }))
     {
         emit turnNewDay();
     }    

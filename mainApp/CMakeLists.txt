@@ -1,3 +1,5 @@
+add_subdirectory(threadModul)
+
 file(GLOB SOURCES *.cpp)
 file(GLOB HEADERS *.h)
 

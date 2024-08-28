@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Layouts
+import "qrc:/qml/Components/" as Components
 
 Item {
     id: weatherForecastRoot
@@ -43,7 +44,7 @@ Item {
             Image {
                 id: weatherIcon
                 anchors.centerIn: parent
-                source: weather && weather.icon ? weather.icon : ""
+                source: weather && weather.icon ? weather.icon : "qrc:/img/errorIcon.png"
                 height: weatherIconRectangle.height
                 width: weatherIconRectangle.height
             }

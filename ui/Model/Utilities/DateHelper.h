@@ -18,7 +18,7 @@ signals:
     void dateChanged();
 
 public slots:
-    void updateDate();
+    Q_INVOKABLE void updateDate();
 
 private:
     QDate m_date;

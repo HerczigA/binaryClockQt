@@ -1,9 +1,6 @@
 #pragma once
 
-// #include <core/communication/network/extensions/jsonhandler.h>
 #include <core/config/config.h>
-// #include <core/weatherForecast/weatherforecast.h>
-
 #include <QSharedPointer>
 #include <QVariant>
 #include <QtNetwork/QNetworkRequest>
@@ -12,8 +9,6 @@
 #include <QtNetwork/QAuthenticator>
 #include <QtNetwork/QNetworkInterface>
 #include <QtNetwork/QHostAddress>
-
-
 
 class Credentials : public QAuthenticator
 {
@@ -77,6 +72,6 @@ class Network : public QNetworkAccessManager
         QSslConfiguration mSslConf;
         QHostAddress mLocalAddress;
         QString mIPv6;
-        // JsonHandler mJson;
+        QString mExternalIp;
 
 };

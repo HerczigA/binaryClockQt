@@ -1,7 +1,10 @@
 #pragma once
 
-#include <core/communication/network/network.h>
 #include <core/config/config.h>
+#include <core/position/PositionResources/PositionResource.h>
+#include <core/position/PositionResources/PositionPluginResource.h>
+#include <core/position/PositionResources/PositionDBusResource.h>
+#include <core/position/PositionResources/PositionNetworkResource.h>
 
 #include <QtPositioning/QGeoPositionInfoSource>
 #include <QtPositioning/QGeoLocation>
@@ -9,44 +12,51 @@
 #include <QtLocation/QGeoCodingManager>
 #include <QtLocation/QGeoCodeReply>
 #include <QtLocation/QGeoServiceProvider>
+#include <QGeoCoordinate>
 #include <QVariant>
 
-class PositionRequestPackage : public NetworkRequestPackage
-{
-    public:
-        PositionRequestPackage(QObject *parent = nullptr);
-        ~PositionRequestPackage();
-        void createUrl(const QSharedPointer<QVariant> data) override;
+#include <memory>
 
-};
+namespace position
+{
 
 class Position : public QObject
 {
     Q_OBJECT
 public:
     explicit Position(QObject *parent = nullptr);
-    Position(const ConfigMap& configMap);
+    enum class ResourceTypes{
+            Unknown = -1,
+            Plugin,
+            DBus,
+            GpsDevice,
+            Online
+    };
+    Q_ENUM(ResourceTypes);
+
     ~Position();
+    void startLocationUpdate();
 
 signals:
     void sendLocation(const QString& location);
     void requestPackage(QSharedPointer<NetworkRequestPackage> requestPackage);
+    void locationUpdated(const QGeoCoordinate &coordinate);
+
 public slots:
-    void newPositionReceived(const QGeoPositionInfo &update);
-    void newOnlinePositionReceived(const QByteArray& rawData);
-    void errorReceived(QGeoPositionInfoSource::Error);
-    void errorGeoCodeManager();
-    void getLocals(QGeoCodeReply *reply);
-    void localisationError(QGeoCodeReply::Error error, const QString &errorString = QString());
+    void receivedConfig(const std::shared_ptr<Config::ConfigPacket> packet);
     void requestedLocation();
 
+private slots:
+    void newPositionReceived(const QVariant &coordinate);
+
 private:
-    QVector<QMetaObject::Connection> mConnections;
-    QGeoPositionInfoSource *mGeoPos;
-    QGeoLocation mLocation;
-    QGeoAddress mAddress;
-    QGeoCodingManager * mGeoManager;
-    QGeoCodeReply * mGeoCodeReply;
+    void newOnlinePositionReceived(const QByteArray& rawData);
+    void createPositionResource(QSharedPointer<ConfigMap> configMap = nullptr);
+    QGeoCodingManager* mGeoManager;
     std::unique_ptr<QGeoServiceProvider> mServiceProvider;
-    QSharedPointer<PositionRequestPackage> mPositionRequestPackage;
+    QGeoLocation mGeoLocation;
+    ResourceTypes mResourceType;
+    QSharedPointer<PositionResource> mPositionResource;
 };
+
+}

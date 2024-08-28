@@ -8,7 +8,7 @@ Item {
     property var mainAppData
     Image {
         id: woodImg
-        source: "qrc:/img/wood_cranny.jpg"
+        source: "qrc:/img/wood_surface.jpg"
         width: parent.width
         height : parent.height
     }
@@ -44,7 +44,7 @@ Item {
             {
                 id:locationSection
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                text: mainAppData.weather && mainAppData.weather.location ? mainAppData.weather.location : ""
+                text: mainAppData.weather && mainAppData.weather.location ? mainAppData.weather.location : "N/A"
                 color: "white"
                 font{
                     bold: true
