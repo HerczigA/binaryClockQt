@@ -16,12 +16,6 @@ class BinaryClock : public QObject
             Second
         };
         Q_ENUM(BinaryClockUnit);
-
-        // BinaryClockUnit& operator++(BinaryClockUnit& unit) {
-        //     unit = static_cast<BinaryClockUnit>(static_cast<std::underlying_type_t<BinaryClockUnit>>(unit) + 1);
-        //     return c;
-        // }
-
         explicit BinaryClock (QObject *parent = nullptr);
         ~BinaryClock ();
 
