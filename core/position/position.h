@@ -1,10 +1,7 @@
 #pragma once
 
-
 #include <core/config/config.h>
 #include <core/position/PositionResources/PositionResource.h>
-
-//forward declaration in position resource ? 
 #include <core/position/PositionResources/PositionPluginResource.h>
 #include <core/position/PositionResources/PositionDBusResource.h>
 #include <core/position/PositionResources/PositionNetworkResource.h>
@@ -64,5 +61,3 @@ private:
 };
 
 }
-//Q_DECLARE_METATYPE(QGeoCoordinate)
-
