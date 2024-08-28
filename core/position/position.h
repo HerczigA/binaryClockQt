@@ -28,7 +28,7 @@ public:
     enum class ResourceTypes{
             Unknown = -1,
             Plugin,
-            Dbus,
+            DBus,
             GpsDevice,
             Online
     };
@@ -40,7 +40,6 @@ public:
 signals:
     void sendLocation(const QString& location);
     void requestPackage(QSharedPointer<NetworkRequestPackage> requestPackage);
-
     void locationUpdated(const QGeoCoordinate &coordinate);
 
 public slots:

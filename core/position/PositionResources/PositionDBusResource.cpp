@@ -7,6 +7,7 @@ namespace position
 {
 
 PositionDBusResource::PositionDBusResource(QObject *parent)
+    :PositionResource(parent)
 {
     mGeoClueManagerInterface = new QDBusInterface("org.freedesktop.GeoClue2",
                                                   "/org/freedesktop/GeoClue2/Manager",
@@ -25,7 +26,7 @@ PositionDBusResource::PositionDBusResource(QObject *parent)
                                                          QDBusConnection::systemBus());
             if(mGeoClueClientInterface->isValid())
             {
-                const QVariant desktopId("AviCado");
+                const QVariant desktopId("MainApp");
                 bool success = mGeoClueClientInterface->setProperty("DesktopId", desktopId);
                 if (success)
                 {
@@ -69,10 +70,6 @@ void PositionDBusResource::requestLocation()
     if(activeStatus.toBool())
     {
         qDebug() << "Client is active";
-        /*QDBusReply<void> startReply = mGeoClueClientInterface->call("Start");
-        if (!startReply.isValid()) {
-            qDebug() << "Failed to call \"Start\" by client:" << startReply.error().message();
-        }*/
     }
     else
     {
@@ -100,7 +97,6 @@ void PositionDBusResource::handleLocationUpdated(const QDBusObjectPath &oldPath,
     qDebug() << "New location:";
     qDebug() << "Latitude:" << latitude;
     qDebug() << "Longitude:" << longitude;
-
 }
 
 }

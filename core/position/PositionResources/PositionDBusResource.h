@@ -15,7 +15,7 @@ class PositionDBusResource: public PositionResource
     Q_OBJECT
 
 public:
-    explicit PositionDBusResource(QObject *parent = nullptr);
+    PositionDBusResource(QObject *parent = nullptr);
     virtual ~PositionDBusResource() override;
     virtual void requestLocation() override;
 

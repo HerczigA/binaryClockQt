@@ -44,7 +44,6 @@ PositionNetworkResource::PositionNetworkResource(QSharedPointer<ConfigMap> confi
 
 PositionNetworkResource::~PositionNetworkResource()
 {
-
 }
 
 void PositionNetworkResource::requestLocation()

@@ -21,7 +21,7 @@ class PositionNetworkResource : public PositionResource
 {
     Q_OBJECT
 public:
-    explicit PositionNetworkResource(QSharedPointer<ConfigMap> configMap, QObject *parent = nullptr);
+    PositionNetworkResource(QSharedPointer<ConfigMap> configMap, QObject *parent = nullptr);
     ~PositionNetworkResource();
     virtual void requestLocation() override;
     const PositionRequestPackage* getPositionRequestPackage() const;

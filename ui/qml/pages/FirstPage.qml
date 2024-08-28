@@ -8,7 +8,7 @@ Item {
     property var mainAppData
     Image {
         id: woodImg
-        source: "qrc:/img/wood_cranny.jpg"
+        source: "qrc:/img/wood_surface.jpg"
         width: parent.width
         height : parent.height
     }

@@ -137,7 +137,7 @@ void Position::createPositionResource(QSharedPointer<ConfigMap> configMap)
             mPositionResource = QSharedPointer<PositionPluginResource>::create();
             
             break;
-        case Position::ResourceTypes::Dbus:
+        case Position::ResourceTypes::DBus:
             mPositionResource = QSharedPointer<PositionDBusResource>::create();
             break;
         case Position::ResourceTypes::GpsDevice:
@@ -160,7 +160,8 @@ void Position::createPositionResource(QSharedPointer<ConfigMap> configMap)
 
 void Position::startLocationUpdate()
 {
-    mPositionResource->requestLocation();
+    if(mPositionResource)
+        mPositionResource->requestLocation();
 }
 
 }

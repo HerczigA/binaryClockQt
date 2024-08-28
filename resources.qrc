@@ -7,7 +7,9 @@
         <file alias="Utilities/SlideButton.qml">ui/qml/utilities/SlideButton.qml</file>
     </qresource>
     <qresource prefix="/img">
-        <file alias="wood_cranny.jpg">ui/img/wood_surface.jpg</file>
-        <file alias="wood-grain.jpg">ui/img/wood_grain.jpg</file>
+        <file alias="wood_surface.jpg">ui/img/wood_surface.jpg</file>
+        <file alias="wood_grain.jpg">ui/img/wood_grain.jpg</file>
+        <file alias="okIcon.png">ui/img/okIcon.png</file>
+        <file alias="errorIcon.png">ui/img/errorIcon.png</file>
     </qresource>
 </RCC>

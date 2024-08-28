@@ -11,7 +11,7 @@ PositionPluginResource::PositionPluginResource(QObject *parent)
     : PositionResource(parent)
 {
     QVariantMap params;
-    params["desktopId"] = "AviCado";
+    params["desktopId"] = "MainApp";
     mGeoPos = QGeoPositionInfoSource::createSource("geoclue2", params, this);
     if(mGeoPos)
     {
@@ -33,7 +33,7 @@ PositionPluginResource::~PositionPluginResource()
 void PositionPluginResource::requestLocation()
 {
     if(mGeoPos)
-    {
+    { 
         mGeoPos->requestUpdate(positionRequestInterval);
     }
 }

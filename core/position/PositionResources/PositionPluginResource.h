@@ -14,7 +14,7 @@ class PositionPluginResource: public PositionResource
     Q_OBJECT
 
 public:
-    explicit PositionPluginResource(QObject *parent = nullptr);
+    PositionPluginResource(QObject *parent = nullptr);
     ~PositionPluginResource();
     virtual void requestLocation() override;
 
