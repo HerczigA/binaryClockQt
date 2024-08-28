@@ -1,4 +1,4 @@
-add_subdirectory(PositionResources)
+add_subdirectory(positionResources)
 
 file(GLOB SOURCES *.cpp)
 file(GLOB HEADERS *.h)

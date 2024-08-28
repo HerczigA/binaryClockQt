@@ -29,7 +29,7 @@ class ThreadModul : public QObject
             auto modul = std::make_shared<T>(args...);
             modul->moveToThread(thread.get());
             QObject::connect(thread.get(), &QThread::finished, modul.get(), &QObject::deleteLater);
-            // QObject::connect(thread.get(), &QThread::finished, thread.get(), &QThread::deleteLater, Qt::QueuedConnection);
+            QObject::connect(thread.get(), &QThread::finished, thread.get(), &QThread::deleteLater, Qt::QueuedConnection);
             thread->start();
             return modul;
         }

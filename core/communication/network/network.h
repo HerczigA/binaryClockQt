@@ -73,5 +73,4 @@ class Network : public QNetworkAccessManager
         QHostAddress mLocalAddress;
         QString mIPv6;
         QString mExternalIp;
-
 };

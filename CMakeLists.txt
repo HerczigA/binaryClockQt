@@ -41,6 +41,10 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(GEOCLUE REQUIRED geoclue-2.0)
 
+find_package(Qt6 6.3 COMPONENTS DBus REQUIRED PATHS ${CMAKE_PREFIX_PATH})
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GLIB REQUIRED glib-2.0)
+pkg_check_modules(GEOCLUE REQUIRED geoclue-2.0)
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
     

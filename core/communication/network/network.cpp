@@ -31,12 +31,10 @@ Network::Network(QObject *parent)
 Network::Network(Credentials &conf, QObject *parent)
     : QNetworkAccessManager{parent}
 {
-
 }
 
 Network::~Network()
 {
-
 }
 
 const QString Network::parseIPv6()

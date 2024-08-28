@@ -23,14 +23,12 @@ public:
 
     struct ConfigPacket
     {
-        
-            ConfigPacket();
-            ConfigPacket(const ConfigPacket& configPacket);
-            ConfigPacket(const Config::Types& opType, const ConfigMap& configMap);
-            ~ConfigPacket(){}  
-            ConfigMap mConfigMap;
-            Config::Types  mConfigType;
-
+        ConfigPacket();
+        ConfigPacket(const ConfigPacket& configPacket);
+        ConfigPacket(const Config::Types& opType, const ConfigMap& configMap);
+        ~ConfigPacket(){}  
+        ConfigMap mConfigMap;
+        Config::Types  mConfigType;
     };
 
     void readConfig();

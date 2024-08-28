@@ -23,11 +23,8 @@ protected:
     bool mIsOpenFd;
     void *buffer;
 
-
 private:
-
 };
-
 
 class SerialWiringPi : public SerialCom
 {
@@ -39,7 +36,6 @@ public:
 
     }
     ~SerialWiringPi() {}
-    //virtual void initSerialLine() = 0;
     virtual qint16 readFromPort() = 0;
 
 signals:
