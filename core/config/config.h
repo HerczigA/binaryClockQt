@@ -36,11 +36,23 @@ public:
     void readConfig();
     bool configFileIsExist();
     template<typename T>
-    static const QString parseEnumKey(T metaEnumKey)
+    static const QString parseEnumKeyToString(T metaEnumKey)
     {
         QMetaEnum metaEnum = QMetaEnum::fromType<T>();
         const char* enumString = metaEnum.valueToKey(static_cast<int>(metaEnumKey));
         return QString(enumString);
+    }
+    template<typename T>
+    static T parseEnumStringToKey(const QString& enumString)
+    {
+        bool ok = false;
+        QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+        int enumValue = metaEnum.keyToValue(enumString.toStdString().c_str(), &ok);
+        if(ok)
+        {
+            return static_cast<T>(enumValue);
+        }
+        return static_cast<T>(-1);
     }
 
 signals:

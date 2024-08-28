@@ -1,7 +1,6 @@
 #include "network.h"
 #include <QFileInfo>
 
-
 void NetworkRequestPackage::setRawUrl(const QString &url)
 {
     mRawUrl = url;
@@ -60,14 +59,15 @@ const QString Network::parseIPv6()
 
 void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> requestPackage)
 {
-    if(requestPackage->getRawUrl().isEmpty())
+    
+    if(!requestPackage || requestPackage->getRawUrl().isEmpty())
         return;
     
     QNetworkReply* reply = createRequest(requestPackage->getOperationType(),QNetworkRequest(QUrl(requestPackage->getRawUrl())));
     connect(reply, &QNetworkReply::finished, this, &Network::requestReplied);
     connect(this, &QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);
     connect(reply ,&QNetworkReply::errorOccurred, this, [reply](QNetworkReply::NetworkError code) {
-        qDebug() << "error occured. Reason code: " << code << "Reason : " << Config::parseEnumKey<QNetworkReply::NetworkError>(code);
+        qDebug() << "error occured. Reason code: " << code << "Reason : " << Config::parseEnumKeyToString<QNetworkReply::NetworkError>(code);
         qDebug() << reply->errorString();
         reply->deleteLater();
     });
@@ -76,12 +76,12 @@ void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> req
 void Network::requestReplied()
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
-    
     if(reply)
     {
         QByteArray rawData;
         rawData = reply->readAll();
         emit sendRequestResult(rawData);
+        reply->deleteLater();
     }
 }
 
