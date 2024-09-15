@@ -1,4 +1,4 @@
-#include "PositionNetworkResource.h"
+#include "positionNetworkResource.h"
 
 
 namespace position
