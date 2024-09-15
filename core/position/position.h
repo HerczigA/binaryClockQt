@@ -1,10 +1,10 @@
 #pragma once
 
 #include <core/config/config.h>
-#include <core/position/PositionResources/PositionResource.h>
-#include <core/position/PositionResources/PositionPluginResource.h>
-#include <core/position/PositionResources/PositionDBusResource.h>
-#include <core/position/PositionResources/PositionNetworkResource.h>
+#include <core/position/positionResources/positionResource.h>
+#include <core/position/positionResources/positionPluginResource.h>
+#include <core/position/positionResources/positionDBusResource.h>
+#include <core/position/positionResources/positionNetworkResource.h>
 
 #include <QtPositioning/QGeoPositionInfoSource>
 #include <QtPositioning/QGeoLocation>
