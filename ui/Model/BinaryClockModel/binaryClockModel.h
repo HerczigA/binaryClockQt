@@ -18,13 +18,14 @@ class BinarySecondModel : public QObject
     private:
         bool mSecond;
 };
-
+//inherit from public abstractlist<qobject>  
 class BinaryClockModel : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QList<bool> binaryHour READ  binaryHour NOTIFY binaryHourChanged)
     Q_PROPERTY(QList<bool> binaryMinute READ binaryMinute NOTIFY binaryMinuteChanged)
+    //remove this if inherits from abstractlist
     Q_PROPERTY(QAbstractListModel* listModel READ listModel CONSTANT)
 
     public:
@@ -51,6 +52,7 @@ class BinaryClockModel : public QObject
         inline void checkIsNewDay();
         QList<bool> mBinaryHour;
         QList<bool> mBinaryMinute;
+        //remove this also if inherits from abstractlist
         AbstractListModel<bool>* mBinarySecond;
 };
 
