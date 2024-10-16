@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PositionResource.h"
+#include "positionResource.h"
 
 #include <QtPositioning/QGeoPositionInfoSource>
 #include <QGeoCoordinate>

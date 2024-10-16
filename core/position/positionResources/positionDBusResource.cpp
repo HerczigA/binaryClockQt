@@ -1,4 +1,4 @@
-#include "PositionDBusResource.h"
+#include "positionDBusResource.h"
 
 #include <QDBusReply>
 #include <QDBusVariant>

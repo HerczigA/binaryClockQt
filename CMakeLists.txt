@@ -32,7 +32,6 @@ find_package(Qt6 6.3 COMPONENTS Gui REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Core REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Positioning REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Network REQUIRED PATHS ${CMAKE_PREFIX_PATH})
-find_package(Qt6 6.3 COMPONENTS Mqtt REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Location REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Qml REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS DBus REQUIRED PATHS ${CMAKE_PREFIX_PATH})
@@ -41,23 +40,12 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(GEOCLUE REQUIRED geoclue-2.0)
 
-find_package(Qt6 6.3 COMPONENTS DBus REQUIRED PATHS ${CMAKE_PREFIX_PATH})
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GLIB REQUIRED glib-2.0)
-pkg_check_modules(GEOCLUE REQUIRED geoclue-2.0)
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
-    
-    # if(make_static)
-    
-    # else()
 
 set(ALL_SOURCES "")
 set(ALL_INCLUDE_DIRS "")
 set(NEEDED_LIBS "")
-
-# endif()
-
 
 add_subdirectory(core)
 add_subdirectory(mainApp)
@@ -111,7 +99,6 @@ target_link_libraries(${PROJECT}
     Qt6::Gui
     Qt6::Positioning
     Qt6::Network
-    Qt6::Mqtt
     Qt6::Location
     Qt6::Qml
     Qt6::DBus

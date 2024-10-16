@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PositionResource.h"
+#include "positionResource.h"
 
 #include <core/communication/network/network.h>
 

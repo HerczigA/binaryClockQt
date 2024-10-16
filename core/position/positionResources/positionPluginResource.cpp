@@ -1,4 +1,4 @@
-#include "PositionPluginResource.h"
+#include "positionPluginResource.h"
 
 #include <core/config/config.h>
 
