@@ -14,9 +14,12 @@ WeatherForecast::~WeatherForecast()
 
 void WeatherForecast::updateLocation()
 {
-    if(mWeatherForecastRequestPackage->getLocation().isEmpty())
+    if(mWeatherForecastRequestPackage)
     {
-        emit requestLocation();
+        if( mWeatherForecastRequestPackage->getLocation().isEmpty())
+        {
+            emit requestLocation();
+        }
     }
 }
 
