@@ -1,6 +1,8 @@
 add_subdirectory(BinaryClockModel)
-add_subdirectory(WeatherForecastModel)
+add_subdirectory(ListModel)
 add_subdirectory(Utilities)
+add_subdirectory(WeatherForecastModel)
+
 
 set(ALL_SOURCES
     ${ALL_SOURCES}
