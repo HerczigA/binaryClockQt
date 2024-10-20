@@ -6,24 +6,8 @@
 #include <QSharedPointer>
 #include <QVariant>
 
-// class ListModel : public QOBject
-// {
-//     Q_OBJECT
-//     Q_PROPERTY(QAbstractListModel* model READ model CONSTANT)
-//     public:
-//     ListModel(QObject* parent=nullptr)
-//     {
-//         mListModel = QSharedPointer<AbstractListModel<QObject*>>(new AbstractListModel<QVariant>(this));
-//     }
-//     QList<QObject*> model() const
-//     {
-//         return mListModel;
-//     }
-//     private:
-//         QSharedPointer<AbstractListModel<QVariant>> mListModel;
-// };
+#include <type_traits>
 
-template<typename T>
 class AbstractListModel : public QAbstractListModel
 {
 public:
@@ -42,7 +26,7 @@ public:
         if (!index.isValid() || index.row() >= mList.size())
             return QVariant();
 
-        return QVariant::fromValue(mList.at(index.row()));
+        return QVariant::fromValue(mList.at(index.row()).data());
     }
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override
@@ -65,7 +49,7 @@ public:
         return mList.count();
     }
 
-    void setList(const QList<T>& list)
+    void setList(const QList<QSharedPointer<QObject>> list)
     {
         beginResetModel();
         mList = list;
@@ -76,8 +60,9 @@ public:
         if (!index.isValid() || index.row() >= mList.size())
             return false;
 
-        T item = value.value<T>();
-        if (mList[index.row()] != item) {
+        QSharedPointer<QObject> item = qvariant_cast<QSharedPointer<QObject>>(value);
+        if (mList[index.row()] != item)
+        {
             mList[index.row()] = item;
             emit dataChanged(index, index, {role});
             return true;
@@ -85,12 +70,12 @@ public:
         return false;
     }
 
-    QList<T> getList() const
+    QList<QSharedPointer<QObject>> getList() const
     {
         return mList;
     }
 
-    Q_INVOKABLE void addNewElement(const QSharedPointer<T> element)
+    Q_INVOKABLE void append(const QSharedPointer<QObject> element)
     {
         beginInsertRows(QModelIndex(), rowCount(), rowCount());
         mList.append(element);
@@ -105,7 +90,7 @@ public:
         }
     }
 
-    Q_INVOKABLE void updateItem(int index, const T& item) {
+    Q_INVOKABLE void updateItem(int index, QSharedPointer<QObject> item) {
         if (index >= 0 && index < mList.size()) {
             mList[index] = item;
             QModelIndex modelIndex = createIndex(index, 0);
@@ -121,6 +106,19 @@ protected:
         return roles;
     }
 
-private:
-    QList<T> mList;
+protected:
+    QList<QSharedPointer<QObject>> mList;
+};
+
+template<typename T>
+class ListModel : public AbstractListModel
+{
+
+public:
+    ListModel(QObject* parent = nullptr) : AbstractListModel(parent) {}
+    void append(const QSharedPointer<T>& item)
+    {
+        static_assert(std::is_base_of<QObject, T>::value, "T must inherit from QObject");
+        AbstractListModel::append(item);
+    }
 };
