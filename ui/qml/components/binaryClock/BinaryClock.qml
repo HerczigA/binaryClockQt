@@ -70,7 +70,7 @@ Rectangle {
         }
         Repeater
         {
-            model:clock.listModel ? clock.listModel : undefined 
+            model:clock.binarySecond
             Rectangle
             {
                 Layout.maximumWidth: setCircleProperty()
@@ -83,7 +83,7 @@ Rectangle {
                     width: 5
                     color: "black"
                 }
-                color:  model.display ? colorSecond : "white"
+                color:  setActive(clock.binarySecond[index], colorSecond)
                 radius: width /2
             }
         }

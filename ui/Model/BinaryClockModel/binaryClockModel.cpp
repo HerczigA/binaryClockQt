@@ -8,9 +8,8 @@ qml::BinaryClockModel::BinaryClockModel(QObject *parent)
     : QObject{parent}
     , mBinaryHour(8,false)
     , mBinaryMinute(8,false)
-    // , mBinarySecond(8,false)
-{
-    mBinarySecond = new AbstractListModel<bool>(this);   
+    , mBinarySecond(8,false)
+{  
     connect(this, &BinaryClockModel::binaryHourChanged, this, &BinaryClockModel::checkIsNewDay);
 }
 
@@ -28,10 +27,10 @@ const QList<bool> qml::BinaryClockModel::binaryMinute() const
     return mBinaryMinute;
 }
 
-// const QList<bool> qml::BinaryClockModel::binarySecond() const
-// {
-//     return mBinarySecond;
-// }
+const QList<bool> qml::BinaryClockModel::binarySecond() const
+{
+    return mBinarySecond;
+}
 
 void qml::BinaryClockModel::receivedTimeUnits(const BinaryClock::BinaryClockUnit unit, const QList<bool> result)
 {
@@ -45,9 +44,7 @@ void qml::BinaryClockModel::receivedTimeUnits(const BinaryClock::BinaryClockUnit
     }
     else
     {
-        // QList<QSharedPointer<bool>> newList = QSharedPointer<bool>::create(result);
-        mBinarySecond->setList(result);
-        // setBinarySecond(result);
+        setBinarySecond(result);
     }
 }
 
@@ -69,14 +66,14 @@ void qml::BinaryClockModel::setBinaryMinute(const QList<bool>& minute)
     }
 }
 
-// void qml::BinaryClockModel::setBinarySecond(const QList<bool>& second)
-// {
-//     if(mBinarySecond != second)
-//     {
-//         mBinarySecond = second;
-//         emit binarySecondChanged();
-//     }
-// }
+void qml::BinaryClockModel::setBinarySecond(const QList<bool>& second)
+{
+    if(mBinarySecond != second)
+    {
+        mBinarySecond = second;
+        emit binarySecondChanged();
+    }
+}
 
 inline void qml::BinaryClockModel::checkIsNewDay()
 {

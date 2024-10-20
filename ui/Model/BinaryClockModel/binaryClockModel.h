@@ -8,40 +8,28 @@
 namespace qml
 {
 
-class BinarySecondModel : public QObject
-{
-    
-    Q_OBJECT
-    Q_PROPERTY(bool second READ second CONSTANT)
-    public:
-        bool second() const { return mSecond; }
-    private:
-        bool mSecond;
-};
-//inherit from public abstractlist<qobject>  
 class BinaryClockModel : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QList<bool> binaryHour READ  binaryHour NOTIFY binaryHourChanged)
     Q_PROPERTY(QList<bool> binaryMinute READ binaryMinute NOTIFY binaryMinuteChanged)
-    //remove this if inherits from abstractlist
-    Q_PROPERTY(QAbstractListModel* listModel READ listModel CONSTANT)
+    Q_PROPERTY(QList<bool> binarySecond READ binarySecond NOTIFY binarySecondChanged)
 
     public:
         explicit BinaryClockModel (QObject *parent = nullptr);
         ~BinaryClockModel ();
         const QList<bool> binaryHour() const;
         const QList<bool> binaryMinute() const;
-        QAbstractListModel* listModel() const { return mBinarySecond; }
+        const QList<bool> binarySecond() const;
         void setBinaryHour(const QList<bool>& hour);
         void setBinaryMinute(const QList<bool>& minute);
-        // void setBinarySecond(const QList<bool>& second);
+        void setBinarySecond(const QList<bool>& second);
 
     signals:
         void binaryHourChanged();
         void binaryMinuteChanged();
-        // void binarySecondChanged();
+        void binarySecondChanged();
         void updateWeather();
         void turnNewDay();
 
@@ -52,8 +40,7 @@ class BinaryClockModel : public QObject
         inline void checkIsNewDay();
         QList<bool> mBinaryHour;
         QList<bool> mBinaryMinute;
-        //remove this also if inherits from abstractlist
-        AbstractListModel<bool>* mBinarySecond;
+        QList<bool> mBinarySecond;
 };
 
 }
