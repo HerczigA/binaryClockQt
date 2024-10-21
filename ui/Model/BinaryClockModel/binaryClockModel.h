@@ -1,7 +1,7 @@
 #pragma once
 
 #include <core/binaryClock/binaryClock.h>
-
+#include <ui/Model/ListModel/ListModel.h>
 #include <QObject>
 #include <QList>
 

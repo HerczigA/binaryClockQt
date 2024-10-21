@@ -1,5 +1,6 @@
 #include "binaryClockModel.h"
 #include <algorithm>
+#include <QSharedPointer>
 
 const int lastIndex = 7;
 
@@ -8,7 +9,7 @@ qml::BinaryClockModel::BinaryClockModel(QObject *parent)
     , mBinaryHour(8,false)
     , mBinaryMinute(8,false)
     , mBinarySecond(8,false)
-{
+{  
     connect(this, &BinaryClockModel::binaryHourChanged, this, &BinaryClockModel::checkIsNewDay);
 }
 

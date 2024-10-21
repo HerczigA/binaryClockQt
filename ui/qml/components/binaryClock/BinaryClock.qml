@@ -83,7 +83,7 @@ Rectangle {
                     width: 5
                     color: "black"
                 }
-                color: setActive(clock.binarySecond[index], colorSecond)
+                color:  setActive(clock.binarySecond[index], colorSecond)
                 radius: width /2
             }
         }

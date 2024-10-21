@@ -25,15 +25,14 @@ class ThreadModul : public QObject
                 thread = std::make_shared<QThread>();
                 s_threadMap[threadType] = thread;
             }
-
             auto modul = std::make_shared<T>(args...);
             modul->moveToThread(thread.get());
-            QObject::connect(thread.get(), &QThread::finished, modul.get(), &QObject::deleteLater);
+            QObject::connect(thread.get(), &QThread::finished, modul.get(), &QObject::deleteLater, Qt::QueuedConnection);
             QObject::connect(thread.get(), &QThread::finished, thread.get(), &QThread::deleteLater, Qt::QueuedConnection);
             thread->start();
             return modul;
         }
-
+        // clean up for sigsev
         static void cleanup() 
         {
             for (const auto it : s_threadMap.values()) {
