@@ -19,10 +19,13 @@ void PositionRequestPackage::createUrl(const QSharedPointer<QVariant> data)
     if(data->canConvert<ConfigMap>())
     {
         ConfigMap configMap = data->toMap();
-        QString url = configMap["url"].toString();
-        QString key = "access_key=" +configMap["apikey"].toString();
-        QString query = "&query="+ Network::parseIPv6() + "&limit=1";
-        rawUrl = url+key+query;
+        rawUrl = configMap["url"].toString();
+        if(!configMap["apikey"].toString().isEmpty())
+        {
+            QString key = "access_key=" +configMap["apikey"].toString();
+            QString query = "&query="+ Network::parseIPv6() + "&limit=1";
+            rawUrl += key+query;
+        }
         setRawUrl(rawUrl);
     }
 }

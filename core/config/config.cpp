@@ -19,8 +19,9 @@ Config::ConfigPacket::ConfigPacket(const Config::Types &opType, const ConfigMap 
 }
 
 Config::Config(QObject *parent )
-    : QSettings{SystemScope, "MainApp","mainApp", parent}
+    : QSettings{QSettings::SystemScope, "MainApp","mainApp", parent}
 {
+    this->setFallbacksEnabled(false);
     qInfo() << "Look for config file at " << fileName();
 }
 

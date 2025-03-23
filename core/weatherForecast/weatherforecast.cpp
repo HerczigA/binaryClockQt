@@ -85,7 +85,7 @@ void WeatherForecast::locationReceived(const QString& location)
     mWeatherForecastRequestPackage->setLocation(location);
     mWeatherForecastRequestPackage->updateUrl(location);
     sendRequestWeatherData();
-    emit sendLocation(mWeatherForecastRequestPackage->getLocation());
+    emit sendLocation(location);
 }
 
 WeatherForecastRequestPackage::WeatherForecastRequestPackage(QObject *parent)

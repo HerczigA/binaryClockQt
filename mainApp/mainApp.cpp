@@ -64,7 +64,7 @@ void MainApp::makeConnections()
     mConnections += connect(mWeatherForecast.get(), &WeatherForecast::sendLocation, mWeatherForecastModel.get(), &qml::WeatherForecastModel::onLocationReceived, Qt::QueuedConnection);
     mConnections += connect(mWeatherForecast.get(), &WeatherForecast::requestLocation, mPosition.get(), &position::Position::requestedLocation, Qt::QueuedConnection);
     
-    mConnections += connect(mPosition.get(), &position::Position::sendLocation, mWeatherForecast.get(), &WeatherForecast::sendLocation, Qt::QueuedConnection);
+    mConnections += connect(mPosition.get(), &position::Position::sendLocation, mWeatherForecast.get(), &WeatherForecast::locationReceived, Qt::QueuedConnection);
     mConnections += connect(mConfig.get(), &Config::sendConfigProps, mWeatherForecast.get(), &WeatherForecast::receivedConfig, Qt::QueuedConnection);
     mConnections += connect(mConfig.get(), &Config::sendConfigProps, mPosition.get(), &position::Position::receivedConfig, Qt::QueuedConnection);
     

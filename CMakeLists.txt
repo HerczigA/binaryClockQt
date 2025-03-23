@@ -23,7 +23,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 add_compile_definitions(WIRINGPI_USAGE=0)
     
-set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt6/qtHost/lib/cmake)
+set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt/6.3.2/gcc_64/lib/cmake)
 
 message(${CMAKE_PREFIX_PATH})
 

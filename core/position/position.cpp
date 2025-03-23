@@ -96,7 +96,7 @@ void Position::newPositionReceived(const QVariant &result)
 
 void Position::newOnlinePositionReceived(const QByteArray& rawData)
 {
-    if(rawData.contains("locality"))
+    if(rawData.contains("city"))
     {
         QJsonParseError result;
         QJsonDocument document = QJsonDocument::fromJson(rawData, &result);
@@ -108,10 +108,10 @@ void Position::newOnlinePositionReceived(const QByteArray& rawData)
                 object = document.object();
                 if(!object.isEmpty())
                 {
-                    QJsonValue value = object.value("data");
+                    QJsonValue value = object.value("city");
                     if(!value.isNull())
                     {
-                        emit sendLocation(value[0]["locality"].toVariant().toString());
+                        emit sendLocation(value.toVariant().toString());
                     }
                 }
             }
