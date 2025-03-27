@@ -5,11 +5,15 @@
         <file alias="Pages/FirstPage.qml">ui/qml/pages/FirstPage.qml</file>
         <file alias="main.qml">ui/qml/main.qml</file>
         <file alias="Utilities/SlideButton.qml">ui/qml/utilities/SlideButton.qml</file>
+        <file alias="Utilities/SlideDownWindow.qml">ui/qml/utilities/SlideDownWindow.qml</file>
     </qresource>
     <qresource prefix="/img">
         <file alias="wood_surface.jpg">ui/img/wood_surface.jpg</file>
         <file alias="wood_grain.jpg">ui/img/wood_grain.jpg</file>
         <file alias="okIcon.png">ui/img/okIcon.png</file>
         <file alias="errorIcon.png">ui/img/errorIcon.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>ui/qml/utilities/SlideDownWindow.qml</file>
     </qresource>
 </RCC>
