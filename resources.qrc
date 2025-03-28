@@ -12,6 +12,7 @@
         <file alias="wood_grain.jpg">ui/img/wood_grain.jpg</file>
         <file alias="okIcon.png">ui/img/okIcon.png</file>
         <file alias="errorIcon.png">ui/img/errorIcon.png</file>
+        <file alias="downArrow.svg">ui/img/down_arrow.svg</file>
     </qresource>
     <qresource prefix="/">
         <file>ui/qml/utilities/SlideDownWindow.qml</file>

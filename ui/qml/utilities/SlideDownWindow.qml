@@ -21,12 +21,21 @@ Rectangle {
 
         Rectangle {
             id: topButton
-            width: parent.width /20
-            height: 50
+            implicitWidth: parent.width /20
+            implicitHeight: 50
             color: "#e7e2e1"
             radius: {
                 bottomLeft:10
                 bottomRight:10
+            }
+            Image{
+                source: "qrc:/img/downArrow.svg"
+                height: parent.height * 0.8
+                width: parent.width * 0.8
+                anchors.topMargin: parent.height * 0.1
+                anchors.leftMargin: parent.width * 0.1
+                anchors.rightMargin: parent.width * 0.1
+                anchors.bottom: parent.bottom
             }
 
             anchors.top: parent.bottom
