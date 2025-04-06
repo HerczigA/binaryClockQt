@@ -19,7 +19,7 @@ Config::ConfigPacket::ConfigPacket(const Config::Types &opType, const ConfigMap 
 }
 
 Config::Config(QObject *parent )
-    : QSettings{QSettings::SystemScope, "MainApp","mainApp", parent}
+    : QSettings{QSettings::IniFormat, QSettings::SystemScope, "MainApp","mainApp", parent}
 {
     this->setFallbacksEnabled(false);
     qInfo() << "Look for config file at " << fileName();
@@ -27,14 +27,13 @@ Config::Config(QObject *parent )
 
 void Config::readConfig()
 {
+
     if(configFileIsExist())
     {
         sync();
-        mAllKeys = allKeys();
-        if(mAllKeys.empty())
+        if(allKeys().empty())
             return;
-        QStringList subGroups = childGroups();
-        getSubGroups(subGroups);
+        getSubGroups(childGroups());
     }
     else
     {
@@ -67,7 +66,7 @@ void Config::writeConfig()
     }
 }
 
-void Config::getSubGroups(QStringList &groups)
+void Config::getSubGroups(QStringList &&groups)
 {
     ConfigMap setting;
     for(auto& group : groups)

@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Layouts
-import "qrc:/qml/Components/" as Components
+import "qrc:/qml/Components" as Components
+import "qrc:/qml/Utilities" as Utilities
 import MainApp.qmlcomponents 1.0
 
 Item {
@@ -10,60 +11,70 @@ Item {
         id: woodImg
         source: "qrc:/img/wood_surface.jpg"
         width: parent.width
-        height : parent.height
+        height: parent.height
     }
-    RowLayout
-    {
+
+    Utilities.SlideDownWindow {
+        id: slideDownWindow
+        model: mainAppData.binClock
+    }
+
+    MouseArea {
+        id: firstPageMouseArea
         anchors.fill: parent
-        ColumnLayout
-        {
+        enabled: slideDownWindow.isOpened
+        onClicked: {
+            if (slideDownWindow.isOpened) {
+                slideDownWindow.isOpened = false
+            }
+        }
+    }
+
+    RowLayout {
+        anchors.fill: parent
+        ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.bottomMargin: firstPage.height/12
+            Layout.bottomMargin: firstPage.height / 12
             Layout.topMargin: 50
             DateHelper {
                 id: dateHelper
             }
-            Text{
+            Text {
                 id: dateText
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                text:dateHelper && dateHelper.date !== "" ? Qt.formatDate(dateHelper.date, "yyyy/M/d") : "--"
+                text: dateHelper
+                      && dateHelper.date !== "" ? Qt.formatDate(
+                                                      dateHelper.date,
+                                                      "yyyy/M/d") : "--"
                 color: "white"
-                font{
+                font {
                     bold: true
                     family: "Helvetica"
                     pixelSize: 100
                 }
             }
-            Components.WeatherForecast{
+            Components.WeatherForecast {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 weather: mainAppData.weather
             }
-            Text
-            {
-                id:locationSection
+            Text {
+                id: locationSection
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                text: mainAppData.weather && mainAppData.weather.location ? mainAppData.weather.location : "N/A"
+                text: mainAppData.weather
+                      && mainAppData.weather.location ? mainAppData.weather.location : "N/A"
                 color: "white"
-                font{
+                font {
                     bold: true
                     pixelSize: 70
                 }
             }
         }
-        Components.BinaryClock
-        {
-            id: binaryClock
-            clock: mainAppData.binClock
-            Layout.preferredWidth: parent.width /2
-            Layout.fillHeight: true
-            color: "transparent"
-        }
-        Connections{
+        Connections {
             target: mainAppData.binClock
-            function onTurnNewDay(){
-                dateHelper.updateDate();
+            function onTurnNewDay() {
+                dateHelper.updateDate()
             }
         }
     }

@@ -1,6 +1,35 @@
 # binaryClockQt
 Hey everbody this is a small sandbox project to learn Qt both on c++ and qml side.
-It has been developing for raspberry project. 
+It has been developing for raspberry project with qt6.3.2.
+Required packages:
+- QtQuick
+- QtGui
+- QtCore
+- QtPositioning
+- QtNetwork
+- QtLocation
+- QtQml
+- QtDBus
+
+Unfortunatelly qtLocation is not building alongside with qtbase from online installer like the other modules.
+When you installed every packages what are required you have build qtLocation from source:
+https://code.qt.io/cgit/qt/qtlocation.git/
+
+After downloading, go to qtLocation. Make a build dir then go into.
+- mkdir buid
+- cd build
+
+You have to use qt-cmake. Usually qt-cmake located in like user/Qt/6.x.y/macos|gcc_64|other/bin/qt-cmake.
+This is a qt specific cmake script which a "smart" cmake. It holds every flags what is needed so you don't 
+have to specify explicitly.
+- user/Qt/6.x.y/macos|gcc_64|other/bin/qt-cmake ..
+- cmake --build . 
+After succesfully build ( without any error)
+- cmake --install . 
+The last command will copy every cmake files and other dependecies to the proper path to qt to find
+qtlocation specific libs.
+
+
 If you would like to use the program you need the following files:
  - A mainApp.conf config file in /etc/xdg/MainApp
  - An MainApp.desktop file for dbus communication with geoclue2 to get goordinates

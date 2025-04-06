@@ -36,9 +36,16 @@ find_package(Qt6 6.3 COMPONENTS Location REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS Qml REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 find_package(Qt6 6.3 COMPONENTS DBus REQUIRED PATHS ${CMAKE_PREFIX_PATH})
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GLIB REQUIRED glib-2.0)
-pkg_check_modules(GEOCLUE REQUIRED geoclue-2.0)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    message(STATUS "We're on macOS")
+    find_package(OpenSSL REQUIRED)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    message(STATUS "We're on Linux")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GLIB REQUIRED glib-2.0)
+    pkg_check_modules(GEOCLUE REQUIRED geoclue-2.0)
+endif()
+
 
 
 set(CMAKE_USE_RELATIVE_PATHS ON)
@@ -104,6 +111,8 @@ target_link_libraries(${PROJECT}
     Qt6::DBus
     ${GLIB_LIBRARIES}
     ${GEOCLUE_LIBRARIES}
+    OpenSSL::SSL
+    OpenSSL::Crypto
 )
 
 install(TARGETS ${PROJECT}
