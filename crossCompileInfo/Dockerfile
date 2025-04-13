@@ -113,16 +113,16 @@ cmake -G Ninja \\\n\
       -DCMAKE_TOOLCHAIN_FILE=/opt/rpi-toolchain.cmake \\\n\
       -DQT_HOST_PATH=/opt/qt6-host \\\n\
       -DCMAKE_PREFIX_PATH=/opt/qt6-host \\\n\
+      -DFEATURE_translations=OFF \\\n\
       -DCMAKE_BUILD_TYPE=Release \\\n\
       -DCMAKE_INSTALL_PREFIX=/usr/local/qt6pi \\\n\
       -DQT_BUILD_EXAMPLES=OFF \\\n\
       -DQT_BUILD_TESTS=OFF \\\n\
       -DFEATURE_xcb=ON \\\n\
       -DFEATURE_eglfs=ON \\\n\
-      -DFEATURE_opengl_dynamic=ON \\\n\
+      -DFEATURE_opengles2=ON \\\n\
       -DFEATURE_sql=ON \\\n\
       -DFEATURE_sql_sqlite=ON \\\n\
-      -DFEATURE_sql_mysql=ON \\\n\
       -DFEATURE_sql_psql=ON \\\n\
       -DFEATURE_system_sqlite=ON \\\n\
       -DFEATURE_geoservices=ON \\\n\
@@ -149,6 +149,7 @@ cd /opt/qt6-host-build\n\
 cmake -G Ninja \\\n\
       -DCMAKE_BUILD_TYPE=Release \\\n\
       -DCMAKE_INSTALL_PREFIX=/opt/qt6-host \\\n\
+      -DFEATURE_translations=OFF \\\n\
       -DQT_BUILD_EXAMPLES=OFF \\\n\
       -DQT_BUILD_TESTS=OFF \\\n\
       ../qt-everywhere-src-6.3.2\n\
