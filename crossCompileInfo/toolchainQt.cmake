@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.16)
 include_guard(GLOBAL)
 
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
-set(TARGET_SYSROOT /home/adam/Qt6/sysroot)
+set(TARGET_SYSROOT /opt/sysroot)
 set(CMAKE_SYSROOT ${TARGET_SYSROOT})
 
 set(ENV{PKG_CONFIG_PATH} $PKG_CONFIG_PATH:/usr/lib/arm-linux-gnueabihf/pkgconfig)
@@ -28,53 +28,3 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_BUILD_RPATH ${TARGET_SYSROOT})
-
-
-include(CMakeInitializeConfigs)
-
-function(cmake_initialize_per_config_variable _PREFIX _DOCSTRING)
-  if (_PREFIX MATCHES "CMAKE_(C|CXX|ASM)_FLAGS")
-    set(CMAKE_${CMAKE_MATCH_1}_FLAGS_INIT "${QT_COMPILER_FLAGS}")
-        
-    foreach (config DEBUG RELEASE MINSIZEREL RELWITHDEBINFO)
-      if (DEFINED QT_COMPILER_FLAGS_${config})
-        set(CMAKE_${CMAKE_MATCH_1}_FLAGS_${config}_INIT "${QT_COMPILER_FLAGS_${config}}")
-      endif()
-    endforeach()
-  endif()
-
-
-  if (_PREFIX MATCHES "CMAKE_(SHARED|MODULE|EXE)_LINKER_FLAGS")
-    foreach (config SHARED MODULE EXE)
-      set(CMAKE_${config}_LINKER_FLAGS_INIT "${QT_LINKER_FLAGS}")
-    endforeach()
-  endif()
-
-  _cmake_initialize_per_config_variable(${ARGV})
-endfunction()
-
-set(XCB_PATH_VARIABLE ${TARGET_SYSROOT})
-
-set(GL_INC_DIR ${TARGET_SYSROOT}/usr/include)
-set(GL_LIB_DIR ${TARGET_SYSROOT}:${TARGET_SYSROOT}/usr/lib/arm-linux-gnueabihf/:${TARGET_SYSROOT}/usr:${TARGET_SYSROOT}/usr/lib)
-
-set(EGL_INCLUDE_DIR ${GL_INC_DIR})
-set(EGL_LIBRARY ${XCB_PATH_VARIABLE}/usr/lib/arm-linux-gnueabihf/libEGL.so)
-
-set(OPENGL_INCLUDE_DIR ${GL_INC_DIR})
-set(OPENGL_opengl_LIBRARY ${XCB_PATH_VARIABLE}/usr/lib/arm-linux-gnueabihf/libOpenGL.so)
-
-set(GLESv2_INCLUDE_DIR ${GL_INC_DIR})
-set(GLIB_LIBRARY ${XCB_PATH_VARIABLE}/usr/lib/arm-linux-gnueabihf/libGLESv2.so)
-
-set(GLESv2_INCLUDE_DIR ${GL_INC_DIR})
-set(GLESv2_LIBRARY ${XCB_PATH_VARIABLE}/usr/lib/arm-linux-gnueabihf/libGLESv2.so)
-
-set(gbm_INCLUDE_DIR ${GL_INC_DIR})
-set(gbm_LIBRARY ${XCB_PATH_VARIABLE}/usr/lib/arm-linux-gnueabihf/libgbm.so)
-
-set(Libdrm_INCLUDE_DIR ${GL_INC_DIR})
-set(Libdrm_LIBRARY ${XCB_PATH_VARIABLE}/usr/lib/arm-linux-gnueabihf/libdrm.so)
-
-set(XCB_XCB_INCLUDE_DIR ${GL_INC_DIR})
-set(XCB_XCB_LIBRARY ${XCB_PATH_VARIABLE}/usr/lib/arm-linux-gnueabihf/libxcb.so)
