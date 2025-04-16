@@ -73,6 +73,15 @@ RUN wget https://download.qt.io/archive/qt/6.3/6.3.2/submodules/qtshadertools-ev
     && tar -xf qtshadertools-everywhere-src-6.3.2.tar.xz \
     && rm qtshadertools-everywhere-src-6.3.2.tar.xz
 
+RUN wget https://download.qt.io/archive/qt/6.3/6.3.2/submodules/qtsvg-everywhere-src-6.3.2.tar.xz \
+    && tar -xf qtsvg-everywhere-src-6.3.2.tar.xz \
+    && rm qtsvg-everywhere-src-6.3.2.tar.xz
+
+
+RUN git clone https://code.qt.io/qt/qtpositioning.git
+
+RUN git clone https://code.qt.io/qt/qtlocation.git
+
 # Create a directory for build artifacts
 RUN mkdir -p /opt/qt6pi
 
@@ -156,6 +165,33 @@ RUN mkdir -p /opt/qt6-host-build \
  && cmake --build . --parallel 4 \
  && cmake --install .
 
+RUN cd /opt/qtpositioning \
+ && mkdir build \
+ && cd build \
+ && /opt/qt6-host/bin/qt-cmake -GNinja \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/opt/qt6-host \
+      -DFEATURE_translations=OFF \
+      -DQT_BUILD_EXAMPLES=OFF \
+      -DQT_BUILD_TESTS=OFF \
+      .. \
+ && cmake --build . --parallel 4 \
+ && cmake --install .
+
+
+RUN cd /opt/qtlocation \
+ && mkdir build \
+ && cd build \
+ && /opt/qt6-host/bin/qt-cmake -GNinja \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/opt/qt6-host \
+      -DFEATURE_translations=OFF \
+      -DQT_BUILD_EXAMPLES=OFF \
+      -DQT_BUILD_TESTS=OFF \
+      .. \
+ && cmake --build . --parallel 4 \
+ && cmake --install .
+
 # Make the build scripts executable
 RUN chmod +x /opt/build-qt6.sh
 
@@ -169,7 +205,7 @@ RUN cd /opt/qtshadertools-everywhere-src-6.3.2 \
     && cd build \
     /opt/qt6pi/bin/qt-cmake -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=/opt/qt6-host \
+    -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
     -DFEATURE_translations=OFF \
     -DQT_BUILD_EXAMPLES=OFF \
     -DQT_BUILD_TESTS=OFF \
@@ -184,13 +220,55 @@ RUN cd /opt/qtdeclarative-everywhere-src-6.3.2 \
     && cd build \
     /opt/qt6pi/bin/qt-cmake -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=/opt/qt6-host \
+    -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
     -DFEATURE_translations=OFF \
     -DQT_BUILD_EXAMPLES=OFF \
     -DQT_BUILD_TESTS=OFF \
     .. \
 && cmake --build . --parallel 4 \
 && cmake --install .
+
+# Build declarative for pi
+RUN cd /opt/qtdeclarative-everywhere-src-6.3.2 \
+    && rm -r build \
+    && mkdir build \
+    && cd build \
+    /opt/qt6pi/bin/qt-cmake -GNinja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
+    -DFEATURE_translations=OFF \
+    -DQT_BUILD_EXAMPLES=OFF \
+    -DQT_BUILD_TESTS=OFF \
+    .. \
+&& cmake --build . --parallel 4 \
+&& cmake --install .
+
+RUN cd /opt/qtpositioning \
+ && mkdir build \
+ && cd build \
+ && /opt/qt6pi/bin/qt-cmake -GNinja \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
+      -DFEATURE_translations=OFF \
+      -DQT_BUILD_EXAMPLES=OFF \
+      -DQT_BUILD_TESTS=OFF \
+      .. \
+ && cmake --build . --parallel 4 \
+ && cmake --install .
+
+
+RUN cd /opt/qtlocation \
+ && mkdir build \
+ && cd build \
+ && /opt/qt6pi/bin/qt-cmake -GNinja \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
+      -DFEATURE_translations=OFF \
+      -DQT_BUILD_EXAMPLES=OFF \
+      -DQT_BUILD_TESTS=OFF \
+      .. \
+ && cmake --build . --parallel 4 \
+ && cmake --install .
 
 # Create a test script for compiler functionality
 RUN echo '#!/bin/bash\n\
