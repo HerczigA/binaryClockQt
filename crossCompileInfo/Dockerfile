@@ -124,7 +124,7 @@ cmake -GNinja \\\n\
 cmake --build . --parallel $(nproc)\n\
 \n\
 # Install Qt\n\
-cmake --install . --prefix=/opt/qt6pi' > /opt/build-qt6.sh
+cmake --install . ' > /opt/build-qt6.sh
 
 # Create a script to first build Qt for the host system
 RUN mkdir -p /opt/qt6-host-build \
@@ -166,6 +166,7 @@ RUN mkdir -p /opt/qt6-host-build \
  && cmake --install .
 
 RUN cd /opt/qtpositioning \
+ && git checkout v6.3.2 \
  && mkdir build \
  && cd build \
  && /opt/qt6-host/bin/qt-cmake -GNinja \
@@ -180,6 +181,7 @@ RUN cd /opt/qtpositioning \
 
 
 RUN cd /opt/qtlocation \
+ && git checkout 6.3 \
  && mkdir build \
  && cd build \
  && /opt/qt6-host/bin/qt-cmake -GNinja \
@@ -203,7 +205,7 @@ RUN cd /opt/qtshadertools-everywhere-src-6.3.2 \
     && rm -r build \
     && mkdir build \
     && cd build \
-    /opt/qt6pi/bin/qt-cmake -GNinja \
+    && /opt/qt6pi/bin/qt-cmake -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
     -DFEATURE_translations=OFF \
@@ -218,7 +220,7 @@ RUN cd /opt/qtdeclarative-everywhere-src-6.3.2 \
     && rm -r build \
     && mkdir build \
     && cd build \
-    /opt/qt6pi/bin/qt-cmake -GNinja \
+    && /opt/qt6pi/bin/qt-cmake -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
     -DFEATURE_translations=OFF \
@@ -233,7 +235,7 @@ RUN cd /opt/qtdeclarative-everywhere-src-6.3.2 \
     && rm -r build \
     && mkdir build \
     && cd build \
-    /opt/qt6pi/bin/qt-cmake -GNinja \
+    && /opt/qt6pi/bin/qt-cmake -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
     -DFEATURE_translations=OFF \
@@ -244,6 +246,7 @@ RUN cd /opt/qtdeclarative-everywhere-src-6.3.2 \
 && cmake --install .
 
 RUN cd /opt/qtpositioning \
+ && rm -r build \ 
  && mkdir build \
  && cd build \
  && /opt/qt6pi/bin/qt-cmake -GNinja \
@@ -258,6 +261,7 @@ RUN cd /opt/qtpositioning \
 
 
 RUN cd /opt/qtlocation \
+ && rm -r build \
  && mkdir build \
  && cd build \
  && /opt/qt6pi/bin/qt-cmake -GNinja \
