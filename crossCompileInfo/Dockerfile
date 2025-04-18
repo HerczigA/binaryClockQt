@@ -230,21 +230,6 @@ RUN cd /opt/qtdeclarative-everywhere-src-6.3.2 \
 && cmake --build . --parallel 4 \
 && cmake --install .
 
-# Build declarative for pi
-RUN cd /opt/qtdeclarative-everywhere-src-6.3.2 \
-    && rm -r build \
-    && mkdir build \
-    && cd build \
-    && /opt/qt6pi/bin/qt-cmake -GNinja \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=/opt/qt6pi \
-    -DFEATURE_translations=OFF \
-    -DQT_BUILD_EXAMPLES=OFF \
-    -DQT_BUILD_TESTS=OFF \
-    .. \
-&& cmake --build . --parallel 4 \
-&& cmake --install .
-
 RUN cd /opt/qtpositioning \
  && rm -r build \ 
  && mkdir build \
