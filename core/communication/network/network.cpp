@@ -31,12 +31,10 @@ Network::Network(QObject *parent)
 Network::Network(Credentials &conf, QObject *parent)
     : QNetworkAccessManager{parent}
 {
-
 }
 
 Network::~Network()
 {
-
 }
 
 const QString Network::parseIPv6()
@@ -64,7 +62,7 @@ void Network::onRequestPackageReceived(QSharedPointer<NetworkRequestPackage> req
         return;
     
     QNetworkReply* reply = createRequest(requestPackage->getOperationType(),QNetworkRequest(QUrl(requestPackage->getRawUrl())));
-    connect(reply, &QNetworkReply::finished, this, &Network::requestReplied);
+    connect(reply, &QNetworkReply::readyRead, this, &Network::requestReplied);
     connect(this, &QNetworkAccessManager::authenticationRequired, this, &Network::requestReplied);
     connect(reply ,&QNetworkReply::errorOccurred, this, [reply](QNetworkReply::NetworkError code) {
         qDebug() << "error occured. Reason code: " << code << "Reason : " << Config::parseEnumKeyToString<QNetworkReply::NetworkError>(code);

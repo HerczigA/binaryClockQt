@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PositionResource.h"
+#include "positionResource.h"
 
 #include <QDBusInterface>
 #include <QString>

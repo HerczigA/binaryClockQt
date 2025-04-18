@@ -12,7 +12,6 @@ public:
     explicit I2C(QObject *parent = nullptr);
     I2C(char& i2cAddress, QString& devPath, QObject *parent = nullptr );
     virtual ~I2C();
-
     virtual void initSerialLine() override;
 
 signals:

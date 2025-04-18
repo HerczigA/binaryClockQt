@@ -23,14 +23,12 @@ public:
 
     struct ConfigPacket
     {
-        
-            ConfigPacket();
-            ConfigPacket(const ConfigPacket& configPacket);
-            ConfigPacket(const Config::Types& opType, const ConfigMap& configMap);
-            ~ConfigPacket(){}  
-            ConfigMap mConfigMap;
-            Config::Types  mConfigType;
-
+        ConfigPacket();
+        ConfigPacket(const ConfigPacket& configPacket);
+        ConfigPacket(const Config::Types& opType, const ConfigMap& configMap);
+        ~ConfigPacket(){}  
+        ConfigMap mConfigMap;
+        Config::Types  mConfigType;
     };
 
     void readConfig();
@@ -61,9 +59,8 @@ public slots:
     void writeConfig();
 
 private:
-    void getSubGroups(QStringList &groups);
+    void getSubGroups(QStringList &&groups);
     std::shared_ptr<Config::ConfigPacket> createPacket(const QString& enumString,const ConfigMap& setting);
-    QStringList mAllKeys;
     QList<std::shared_ptr<ConfigPacket>> mConfigPackets;
 };
 

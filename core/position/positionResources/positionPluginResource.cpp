@@ -1,11 +1,11 @@
-#include "PositionPluginResource.h"
+#include "positionPluginResource.h"
 
 #include <core/config/config.h>
 
 namespace position
 {
     
-constexpr int positionRequestInterval = 10000;
+constexpr int positionRequestInterval = 15000;
 
 PositionPluginResource::PositionPluginResource(QObject *parent)
     : PositionResource(parent)
@@ -23,7 +23,7 @@ PositionPluginResource::PositionPluginResource(QObject *parent)
                 }, Qt::QueuedConnection);
     }
     else
-        qInfo()<< "No geoPos";
+        qInfo()<< "Cannot connect to GeoClue2 plugin";
 }
 
 PositionPluginResource::~PositionPluginResource()
